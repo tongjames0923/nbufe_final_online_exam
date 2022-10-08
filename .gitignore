@@ -9,3 +9,21 @@ buildNumber.properties
 .mvn/timing.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
+*/.DS_Store
+feature_demo/maven_demo_sqlite/.idea
+feature_demo/maven_demo_sqlite/.DS_Store
+feature_demo/maven_demo_sqlite/.idea/compiler.xml
+feature_demo/maven_demo_sqlite/.idea/jarRepositories.xml
+feature_demo/maven_demo_sqlite/.idea/misc.xml
+feature_demo/maven_demo_sqlite/.idea/vcs.xml
+feature_demo/maven_demo_sqlite/database.db
+feature_demo/maven_demo_sqlite/maven_demo_sqlite/.idea/workspace.xml
+feature_demo/maven_demo_sqlite/src/.DS_Store
+feature_demo/maven_demo_sqlite/src/main/.DS_Store
+feature_demo/maven_demo_sqlite/.idea/compiler.xml
+feature_demo/maven_demo_sqlite/.idea/jarRepositories.xml
+feature_demo/maven_demo_sqlite/.idea/misc.xml
+feature_demo/maven_demo_sqlite/.idea/vcs.xml
+feature_demo/maven_demo_sqlite/database.db
+.DS_Store
+feature_demo/maven_demo_sqlite/.idea/vcs.xml

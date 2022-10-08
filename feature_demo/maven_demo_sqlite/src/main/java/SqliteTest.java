@@ -9,6 +9,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class SqliteTest {
     static String db_path = "database.db";
@@ -21,45 +22,103 @@ public class SqliteTest {
             ");";
     static Connection db_connection;
 
-    static <T> List<T> map_to_obj(Class<? extends T> cs, ResultSet set) {
-        try {
-
-            ResultSetMetaData metaData = set.getMetaData();
-            int cnt = metaData.getColumnCount();
-            HashMap<String, Method> getmp = new HashMap<>();
-            HashMap<String, Method> setmp = new HashMap<>();
-
-            for (int i = 1; i <= cnt; i++) {
-                String name = metaData.getColumnLabel(i);
-                String csName= metaData.getColumnClassName(i);
-                String h = String.valueOf(name.charAt(0));
-                h= h.toUpperCase() + name.substring(1);
+    static <T> int inser_map(String tb, T data) {
+        Class cs = data.getClass();
+        HashMap<String, Object> vp = new HashMap<String, Object>();
+        for (Method i : cs.getDeclaredMethods()) {
+            if (i.getName().toLowerCase().startsWith("get")) {
                 try {
-                    Method mt = cs.getDeclaredMethod("get" + h, null);
-                    if(mt!=null)
-                        getmp.put(name,mt);
-                }catch (Exception e) {
+                    vp.put(i.getName().substring(3).toLowerCase(), i.invoke(data, null));
+                } catch (Exception e) {
 
-                }
-                try {
-                    Method setMt=cs.getDeclaredMethod("set"+h, Class.forName(csName));
-                    if(setMt!=null)
-                        setmp.put(name,setMt);
-                }catch (Exception e) {
                 }
             }
-            ArrayList<T> ls=new ArrayList<>();
+        }
+//        "INSERT INTO COMPANY (ID,NAME,AGE,ADDRESS,SALARY)\n" +
+//                "VALUES (1, 'Paul', 32, 'California', 20000.00 );"
+        String sql = "INSERT INTO " + tb + " (";
+        for (String str : vp.keySet()) {
+            sql += str.toUpperCase() + ",";
+        }
+        sql = sql.substring(0, sql.length() - 1);
+        sql += ") VALUES(";
+        for (String str : vp.keySet()) {
+            sql += "?,";
+        }
+        sql = sql.substring(0, sql.length() - 1);
+        sql+=");";
+        try {
+            PreparedStatement statement = db_connection.prepareStatement(sql);
+            int cnt=1;
+            for (String str : vp.keySet()) {
+                statement.setObject(cnt++,vp.get(str));
+            }
+            statement.executeUpdate();
+        }catch (Exception e) {
+        }
+
+
+
+
+        return 0;
+    }
+
+    static HashMap<String, Method> getMethods(ResultSetMetaData metaData, Class<?> cs) {
+        try {
+            int cnt = metaData.getColumnCount();
+            HashMap<String, Method> mp = new HashMap<>();
+            for (int i = 1; i <= cnt; i++) {
+                String name = metaData.getColumnLabel(i);
+                String csName = metaData.getColumnClassName(i);
+                String h = String.valueOf(name.charAt(0));
+                h = h.toUpperCase() + name.substring(1);
+                try {
+                    Method mt = cs.getDeclaredMethod("get" + h, null);
+                    if (mt != null)
+                        mp.put(name, mt);
+                } catch (Exception e) {
+                }
+            }
+            return mp;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    static HashMap<String, Method> setMethod(ResultSetMetaData metaData, Class<?> cs) {
+        try {
+            int cnt = metaData.getColumnCount();
+            HashMap<String, Method> setmp = new HashMap<>();
+            for (int i = 1; i <= cnt; i++) {
+                String name = metaData.getColumnLabel(i);
+                String csName = metaData.getColumnClassName(i);
+                String h = String.valueOf(name.charAt(0));
+                h = h.toUpperCase() + name.substring(1);
+                try {
+                    Method setMt = cs.getDeclaredMethod("set" + h, Class.forName(csName));
+                    if (setMt != null)
+                        setmp.put(name, setMt);
+                } catch (Exception e) {
+                }
+            }
+            return setmp;
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    static <T> List<T> map_to_obj(Class<? extends T> cs, ResultSet set) {
+        try {
+            Map<String, Method> setmp = setMethod(set.getMetaData(), cs);
+            ArrayList<T> ls = new ArrayList<>();
             while (set.next()) {
                 T t = cs.getDeclaredConstructor(null).newInstance(null);
-                for(String m :setmp.keySet())
-                {
-                   Object obj= set.getObject(m);
-                   setmp.get(m).invoke(t, obj);
+                for (String m : setmp.keySet()) {
+                    Object obj = set.getObject(m);
+                    setmp.get(m).invoke(t, obj);
                 }
                 ls.add(t);
             }
-
-
             return ls;
         } catch (Exception e) {
             e.printStackTrace();
@@ -100,31 +159,18 @@ public class SqliteTest {
 
     public static void main(String[] args) throws Exception {
         init();
-        List<User> u= map_to_obj(User.class, getData());
-        System.out.println(u);
-    }
-
-    static void read_img() throws Exception {
-        Connection db_connection = DriverManager.getConnection("jdbc:sqlite:" + db_path);
-        PreparedStatement statement = db_connection.prepareStatement("select * from " +
-                "students");
-        ResultSet set = statement.executeQuery();
-        int cnt = set.getMetaData().getColumnCount();
-        while (set.next()) {
-            String filename = "";
-            for (int i = 1; i <= cnt - 1; ++i) {
-                String t = set.getString(i);
-                filename += t + "-";
-                System.out.println(t);
-            }
-            filename += "pic.jpeg";
-            byte[] data = set.getBytes(cnt);
-            FileOutputStream stream = new FileOutputStream(filename);
-            stream.write(data);
-            stream.close();
-            System.out.println("saveed");
+        List<User> u = map_to_obj(User.class, getData());
+        for(User i :u)
+        {
+            System.out.println(i);
         }
-        int k = 0;
+
+//        User user = new User();
+//        user.setId(92);
+//        user.setUsername("tim");
+//        user.setPassword("123456");
+//        user.setMoney(1000.2);
+//        inser_map("basicdata",user);
     }
 }
 
@@ -171,7 +217,15 @@ class User {
     }
 
     public void setData(Object data) {
-        this.data =(byte[]) data;
+        this.data = (byte[]) data;
     }
 
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", password='" + password + '\'' +
+                '}';
+    }
 }
