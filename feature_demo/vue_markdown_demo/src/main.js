@@ -6,7 +6,9 @@ import VMdPreview from '@kangc/v-md-editor/lib/preview';
 import '@kangc/v-md-editor/lib/style/preview.css';
 import githubTheme from '@kangc/v-md-editor/lib/theme/github.js';
 import '@kangc/v-md-editor/lib/theme/style/github.css';
-
+import axios from 'axios'
+// axios全局配置
+Vue.prototype.$http = axios
 // highlightjs
 import hljs from 'highlight.js';
 
