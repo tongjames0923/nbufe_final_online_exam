@@ -1,0 +1,19 @@
+BEGIN TRANSACTION;
+DROP TABLE IF EXISTS "exam_member";
+CREATE TABLE IF NOT EXISTS "exam_member" (
+	"id"	INTEGER NOT NULL UNIQUE,
+	"person_id"	TEXT NOT NULL,
+	"exam_number"	TEXT NOT NULL,
+	"name"	TEXT,
+	"phone"	TEXT,
+	"email"	TEXT,
+	PRIMARY KEY("id" AUTOINCREMENT)
+);
+DROP TABLE IF EXISTS "questions";
+CREATE TABLE IF NOT EXISTS "questions" (
+	"id"	INTEGER NOT NULL UNIQUE,
+	"ques_id"	INTEGER NOT NULL UNIQUE,
+	"max_score"	INTEGER NOT NULL,
+	PRIMARY KEY("id" AUTOINCREMENT)
+);
+COMMIT;
