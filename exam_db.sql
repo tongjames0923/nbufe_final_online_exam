@@ -7,7 +7,7 @@
 #
 # 主机: localhost (MySQL 8.0.30)
 # 数据库: exam_db
-# 生成时间: 2022-10-09 06:55:21 +0000
+# 生成时间: 2022-10-10 01:59:52 +0000
 # ************************************************************
 
 
@@ -72,10 +72,10 @@ CREATE TABLE `exam_ reply` (
 
 CREATE TABLE `per_exam` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '权限id',
-  `readable` int unsigned NOT NULL DEFAULT '1' COMMENT '可查看',
+  `readable` tinyint(1) NOT NULL DEFAULT '1' COMMENT '可查看',
   `exam_id` bigint(16) unsigned zerofill NOT NULL COMMENT '对应的考试id',
-  `checkable` int NOT NULL DEFAULT '0' COMMENT '可批改',
-  `writealbe` int NOT NULL DEFAULT '0' COMMENT '可修改试卷',
+  `checkable` tinyint(1) NOT NULL DEFAULT '0' COMMENT '可批改',
+  `writealbe` tinyint(1) NOT NULL DEFAULT '0' COMMENT '可修改试卷',
   `user` int(7) unsigned zerofill NOT NULL COMMENT '权限所有人',
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
@@ -95,7 +95,7 @@ CREATE TABLE `question` (
   `que_creator` int(7) unsigned zerofill NOT NULL COMMENT '题目创建者',
   `que_alter_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '题目修改时间',
   `que_file` mediumblob NOT NULL COMMENT '题目细节文件',
-  `public` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '是否公开',
+  `publicable` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '是否公开',
   `tag` smallint(5) unsigned zerofill DEFAULT NULL COMMENT '题目标签',
   `use_time` int NOT NULL DEFAULT '0' COMMENT '题目使用次数',
   `answerd` int NOT NULL DEFAULT '0' COMMENT '题目回答次数',
@@ -132,7 +132,7 @@ CREATE TABLE `user_info` (
   `note` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '用户个性签名',
   PRIMARY KEY (`id`),
   CONSTRAINT `user_info_ibfk_1` FOREIGN KEY (`id`) REFERENCES `user_sec` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
@@ -145,8 +145,9 @@ CREATE TABLE `user_sec` (
   `password` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户密码',
   `sec_ques` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '安全问题',
   `sec_ans` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '安全问题答案',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `name` (`name`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
