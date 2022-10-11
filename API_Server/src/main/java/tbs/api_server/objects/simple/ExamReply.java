@@ -7,7 +7,7 @@ public class ExamReply {
     private int exam_id;
     private String exam_number;
     private String person_id;
-    private InputStream reply_file;
+    private byte[] reply_file;
 
     public int getId() {
         return id;
@@ -41,11 +41,11 @@ public class ExamReply {
         this.person_id = person_id;
     }
 
-    public InputStream getReply_file() {
+    public byte[] getReply_file() {
         return reply_file;
     }
 
-    public void setReply_file(InputStream reply_file) {
+    public void setReply_file(byte[] reply_file) {
         this.reply_file = reply_file;
     }
 }
