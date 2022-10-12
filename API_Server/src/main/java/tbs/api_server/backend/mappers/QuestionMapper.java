@@ -29,16 +29,20 @@ public interface QuestionMapper
 
     //问题资源
     @Insert("INSERT INTO `ques_resource` ( `resource`, `note`, `resource_type`) VALUES (#{param2}, #{param3}, #{param1});\n")
-    int uploadResource(int res_type, byte[] res, String note);
+    int uploadResource(int res_type, String res, String note);
 
     @Select("SELECT * FROM `ques_resource` WHERE `resource_type` = #{t} limit #{from},#{num}")
     List<QuestionResource> getResourcesByType(int t, int from, int num);
 
-    @Select("SELECT `id`,`resource_type`,`note` FROM `ques_resource` WHERE `note` LIKE #{note} LIMIT #{from},#{num}")
+    @Select("SELECT * FROM `ques_resource` WHERE `note` LIKE %${note}% LIMIT #{from},#{num}")
     List<QuestionResource> findResourcesByNote(String note, int from, int num);
 
     @Select("SELECT * FROM `ques_resource` WHERE `id` = #{id}")
     QuestionResource getResourceById(int id);
+
+
+    @Select("SELECT COUNT(*) FROM `ques_resource` WHERE `resource` = #{res} ")
+    int containsResource(String res);
 
     @Delete("DELETE FROM `ques_resource` WHERE `id`= #{id}")
     int deleteResourceById(int id);

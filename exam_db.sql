@@ -7,7 +7,7 @@
 #
 # 主机: localhost (MySQL 8.0.30)
 # 数据库: exam_db
-# 生成时间: 2022-10-11 07:41:47 +0000
+# 生成时间: 2022-10-12 01:37:45 +0000
 # ************************************************************
 
 
@@ -26,8 +26,8 @@ SET NAMES utf8mb4;
 CREATE TABLE `answer` (
   `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `ques_id` int(10) unsigned zerofill NOT NULL,
-  `answer_content` mediumblob NOT NULL,
-  `answer_analysis` longblob,
+  `answer_content` blob NOT NULL,
+  `answer_analysis` mediumblob,
   PRIMARY KEY (`id`),
   KEY `ques_id` (`ques_id`),
   CONSTRAINT `answer_ibfk_1` FOREIGN KEY (`ques_id`) REFERENCES `question` (`que_id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -45,8 +45,9 @@ CREATE TABLE `exam` (
   `exam_len` int NOT NULL DEFAULT '90' COMMENT '考试长度（单位：分钟）',
   `exam_file` mediumblob NOT NULL COMMENT '试题文件(sqlite db)',
   `exam_note` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '其他考试文件',
-  `exam_status` tinyint DEFAULT NULL COMMENT '考试状态',
-  PRIMARY KEY (`exam_id`)
+  `exam_status` tinyint NOT NULL DEFAULT '0' COMMENT '考试状态',
+  PRIMARY KEY (`exam_id`),
+  UNIQUE KEY `exam_name` (`exam_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -57,11 +58,14 @@ CREATE TABLE `exam` (
 CREATE TABLE `exam_ reply` (
   `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
   `exam_id` bigint(16) unsigned zerofill NOT NULL,
-  `exam_number` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `person_id` tinytext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `exam_number` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `person_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `reply_file` mediumblob NOT NULL,
+  `status` int NOT NULL DEFAULT '0',
+  `check_file` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
+  KEY `exam_number` (`exam_number`),
   CONSTRAINT `exam_ reply_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`exam_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -82,7 +86,7 @@ CREATE TABLE `per_exam` (
   KEY `user` (`user`),
   CONSTRAINT `per_exam_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`exam_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `per_exam_ibfk_2` FOREIGN KEY (`user`) REFERENCES `user_sec` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
@@ -91,11 +95,12 @@ CREATE TABLE `per_exam` (
 
 CREATE TABLE `ques_resource` (
   `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `resource` longblob NOT NULL,
+  `resource` varchar(96) NOT NULL,
   `note` text,
   `altertime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `resource_type` tinyint(3) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `resource` (`resource`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 

@@ -6,7 +6,7 @@ import java.util.Date;
 
 public class QuestionResource {
     private int id;
-    private byte[] resource;
+    private String resource;
     private String note;
     private int resource_type;
 
@@ -31,11 +31,13 @@ public class QuestionResource {
         this.id = id;
     }
 
-    public byte[] getResource() {
+    public String getResource()
+    {
         return resource;
     }
 
-    public void setResource(byte[] resource) {
+    public void setResource(String resource)
+    {
         this.resource = resource;
     }
 

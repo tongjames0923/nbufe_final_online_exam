@@ -4,8 +4,30 @@ import java.io.InputStream;
 
 public class ExamReply {
     private int id;
-    private int exam_id;
-    private String exam_number;
+    private int exam_id,status;
+
+    public int getStatus()
+    {
+        return status;
+    }
+
+    public void setStatus(int status)
+    {
+        this.status = status;
+    }
+
+    private String exam_number,check_file;
+
+    public String getCheck_file()
+    {
+        return check_file;
+    }
+
+    public void setCheck_file(String check_file)
+    {
+        this.check_file = check_file;
+    }
+
     private String person_id;
     private byte[] reply_file;
 

@@ -18,7 +18,7 @@ class ApiServerApplicationTests {
     QuestionMapper mp;
     @Test
     void contextLoads() {
-        System.out.println(mp.uploadResource(1, test.getBytes(StandardCharsets.UTF_8),null));
+       // System.out.println(mp.uploadResource(1, test.getBytes(StandardCharsets.UTF_8),null));
        // System.out.println(mp.deleteUser(4));
         //System.out.println(mp.setValueForUserSecurity(2, usec_ques, "are you a good man ?"));
     }
