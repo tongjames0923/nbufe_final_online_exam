@@ -8,7 +8,7 @@ public class ExamInfo {
     private String exam_name;
     private Date exam_begin;
     private int exam_len;
-    private byte[] exam_file;
+    private String exam_file;
     private String exam_note;
     private int exam_status;
 
@@ -44,11 +44,13 @@ public class ExamInfo {
         this.exam_len = exam_len;
     }
 
-    public byte[] getExam_file() {
+    public String getExam_file()
+    {
         return exam_file;
     }
 
-    public void setExam_file(byte[] exam_file) {
+    public void setExam_file(String exam_file)
+    {
         this.exam_file = exam_file;
     }
 

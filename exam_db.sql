@@ -7,7 +7,7 @@
 #
 # 主机: localhost (MySQL 8.0.30)
 # 数据库: exam_db
-# 生成时间: 2022-10-12 01:37:45 +0000
+# 生成时间: 2022-10-12 03:57:05 +0000
 # ************************************************************
 
 
@@ -43,7 +43,7 @@ CREATE TABLE `exam` (
   `exam_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '考试名称',
   `exam_begin` datetime NOT NULL COMMENT '考试开始时间',
   `exam_len` int NOT NULL DEFAULT '90' COMMENT '考试长度（单位：分钟）',
-  `exam_file` mediumblob NOT NULL COMMENT '试题文件(sqlite db)',
+  `exam_file` varchar(128) NOT NULL COMMENT '试题文件(sqlite db)',
   `exam_note` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '其他考试文件',
   `exam_status` tinyint NOT NULL DEFAULT '0' COMMENT '考试状态',
   PRIMARY KEY (`exam_id`),
@@ -184,7 +184,7 @@ CREATE TABLE `user_sec` (
   `level` tinyint NOT NULL DEFAULT '0' COMMENT '用户权限等级',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
