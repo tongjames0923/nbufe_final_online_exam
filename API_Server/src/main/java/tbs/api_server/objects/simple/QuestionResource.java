@@ -1,6 +1,5 @@
 package tbs.api_server.objects.simple;
 
-import tbs.api_server.config.Resource_Type;
 
 import java.util.Date;
 
@@ -49,13 +48,11 @@ public class QuestionResource {
         this.note = note;
     }
 
-    public int getResource_type() {
+    public int getResource_type()
+    {
         return resource_type;
     }
-    public void setResource_type(Resource_Type type)
-    {
-        this.resource_type=type.ordinal();
-    }
+
     public void setResource_type(int resource_type) {
         this.resource_type = resource_type;
     }

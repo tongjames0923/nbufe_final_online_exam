@@ -15,6 +15,19 @@ public class UserSecurityInfo {
         return level;
     }
 
+    @Override
+    public String toString()
+    {
+        return "UserSecurityInfo{" +
+                "id=" + id +
+                ", level=" + level +
+                ", name='" + name + '\'' +
+                ", password='" + password + '\'' +
+                ", sec_ques='" + sec_ques + '\'' +
+                ", sec_ans='" + sec_ans + '\'' +
+                '}';
+    }
+
     public void setLevel(int level)
     {
         this.level = level;

@@ -11,6 +11,18 @@ public class UserDetailInfo {
         return id;
     }
 
+    @Override
+    public String toString()
+    {
+        return "UserDetailInfo{" +
+                "id=" + id +
+                ", address='" + address + '\'' +
+                ", phone='" + phone + '\'' +
+                ", email='" + email + '\'' +
+                ", note='" + note + '\'' +
+                '}';
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -47,14 +59,4 @@ public class UserDetailInfo {
         this.note = note;
     }
 
-    @Override
-    public String toString() {
-        return "UserDetailInfo{" +
-                "id=" + id +
-                ", address='" + address + '\'' +
-                ", phone='" + phone + '\'' +
-                ", email='" + email + '\'' +
-                ", note='" + note + '\'' +
-                '}';
-    }
 }

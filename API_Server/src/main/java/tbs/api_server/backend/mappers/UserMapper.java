@@ -10,11 +10,11 @@ import tbs.api_server.objects.simple.UserSecurityInfo;
 @Validated
 public interface UserMapper {
 
-    @Select("select * from `user_sec` where `name`=#{name} and `password`=#{password}")
-    UserSecurityInfo getUserSecurityInfo(@NonNull String name, @NonNull String password);
+    @Select("select * from `user_sec` where `id`=#{id}")
+    UserSecurityInfo getUserSecurityInfo(int id);
 
-    @Select("select * from `user_sec` where `id`=#{id} and `password`=#{password}")
-    UserSecurityInfo getUserSecurityInfoByID(int id, @NonNull String password);
+    @Select("select * from `user_sec` where `name`=#{name}")
+    UserSecurityInfo getUserSecurityInfoByName( @NonNull String name);
 
     @Select("select * from `user_info` where `id`=#{id}")
     UserDetailInfo getUserDetailInfoByID(int id);
