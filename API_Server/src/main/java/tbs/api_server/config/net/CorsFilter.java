@@ -1,4 +1,4 @@
-package tbs.api_server.config;
+package tbs.api_server.config.net;
 
 import org.springframework.stereotype.Component;
 

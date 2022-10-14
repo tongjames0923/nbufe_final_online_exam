@@ -5,6 +5,15 @@ public class ServiceResult<T>
     private int code;
     T obj;
 
+    public static ServiceResult makeResult(int code,Object obj)
+    {
+        return new ServiceResult(code, obj);
+    }
+    public static ServiceResult makeResult(int code)
+    {
+        return makeResult(code,null);
+    }
+
     public int getCode()
     {
         return code;

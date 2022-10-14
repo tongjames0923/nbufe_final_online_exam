@@ -1,26 +1,18 @@
 package tbs.api_server.objects.simple;
 
-import java.io.InputStream;
-
 public class UserSecurityInfo {
     private int id;
-    private int level;
+
     private String name;
     private String password;
     private String sec_ques;
     private String sec_ans;
-
-    public int getLevel()
-    {
-        return level;
-    }
 
     @Override
     public String toString()
     {
         return "UserSecurityInfo{" +
                 "id=" + id +
-                ", level=" + level +
                 ", name='" + name + '\'' +
                 ", password='" + password + '\'' +
                 ", sec_ques='" + sec_ques + '\'' +
@@ -28,10 +20,7 @@ public class UserSecurityInfo {
                 '}';
     }
 
-    public void setLevel(int level)
-    {
-        this.level = level;
-    }
+
     public int getId() {
         return id;
     }

@@ -2,18 +2,22 @@ package tbs.api_server.backend.mappers;
 
 import org.apache.ibatis.annotations.*;
 import org.springframework.lang.NonNull;
-import org.springframework.validation.annotation.Validated;
 import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.objects.simple.UserSecurityInfo;
+
+import java.util.List;
 
 @Mapper
 public interface UserMapper {
 
     @Select("select * from `user_sec` where `id`=#{id}")
     UserSecurityInfo getUserSecurityInfo(int id);
-
     @Select("select * from `user_sec` where `name`=#{name}")
     UserSecurityInfo getUserSecurityInfoByName( @NonNull String name);
+
+    @Select("select * from `user_info` limit #{from},#{num}")
+    List<UserDetailInfo> getUserDetailInfos(int from,int num);
+
 
     @Select("select * from `user_info` where `id`=#{id}")
     UserDetailInfo getUserDetailInfoByID(int id);

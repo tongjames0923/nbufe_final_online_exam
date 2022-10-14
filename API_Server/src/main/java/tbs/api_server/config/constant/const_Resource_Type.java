@@ -1,4 +1,4 @@
-package tbs.api_server.config;
+package tbs.api_server.config.constant;
 
 public class const_Resource_Type
 {

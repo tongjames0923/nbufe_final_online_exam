@@ -6,7 +6,15 @@ public class UserDetailInfo {
     private String phone;
     private String email;
     private String note;
-
+    private int level;
+    public int getLevel()
+    {
+        return level;
+    }
+    public void setLevel(int level)
+    {
+        this.level = level;
+    }
 
     public int getId() {
         return id;
