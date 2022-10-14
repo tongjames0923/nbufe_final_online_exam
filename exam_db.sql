@@ -7,7 +7,7 @@
 #
 # 主机: localhost (MySQL 8.0.30)
 # 数据库: exam_db
-# 生成时间: 2022-10-12 03:57:05 +0000
+# 生成时间: 2022-10-14 09:07:25 +0000
 # ************************************************************
 
 
@@ -24,10 +24,10 @@ SET NAMES utf8mb4;
 # ------------------------------------------------------------
 
 CREATE TABLE `answer` (
-  `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `ques_id` int(10) unsigned zerofill NOT NULL,
-  `answer_content` blob NOT NULL,
-  `answer_analysis` mediumblob,
+  `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '标准答案id',
+  `ques_id` int(10) unsigned zerofill NOT NULL COMMENT '对应题目id',
+  `answer_content` blob NOT NULL COMMENT '标准答案内容',
+  `answer_analysis` mediumblob COMMENT '解题分析',
   PRIMARY KEY (`id`),
   KEY `ques_id` (`ques_id`),
   CONSTRAINT `answer_ibfk_1` FOREIGN KEY (`ques_id`) REFERENCES `question` (`que_id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -56,13 +56,13 @@ CREATE TABLE `exam` (
 # ------------------------------------------------------------
 
 CREATE TABLE `exam_ reply` (
-  `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `exam_id` bigint(16) unsigned zerofill NOT NULL,
-  `exam_number` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `person_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `reply_file` mediumblob NOT NULL,
-  `status` int NOT NULL DEFAULT '0',
-  `check_file` varchar(128) DEFAULT NULL,
+  `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '答题id',
+  `exam_id` bigint(16) unsigned zerofill NOT NULL COMMENT '答题对应的试卷',
+  `exam_number` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '考号',
+  `person_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '身份证号',
+  `reply_file` mediumblob NOT NULL COMMENT '答题卷文件',
+  `status` int NOT NULL DEFAULT '0' COMMENT '批阅状态',
+  `check_file` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '批阅数据文件',
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
   KEY `exam_number` (`exam_number`),
@@ -166,9 +166,10 @@ CREATE TABLE `user_info` (
   `phone` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '用户手机号',
   `email` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '用户email',
   `note` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '用户个性签名',
+  `level` tinyint NOT NULL DEFAULT '0' COMMENT '用户权限等级',
   PRIMARY KEY (`id`),
   CONSTRAINT `user_info_ibfk_1` FOREIGN KEY (`id`) REFERENCES `user_sec` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
@@ -181,10 +182,9 @@ CREATE TABLE `user_sec` (
   `password` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户密码',
   `sec_ques` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '安全问题',
   `sec_ans` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '安全问题答案',
-  `level` tinyint NOT NULL DEFAULT '0' COMMENT '用户权限等级',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
