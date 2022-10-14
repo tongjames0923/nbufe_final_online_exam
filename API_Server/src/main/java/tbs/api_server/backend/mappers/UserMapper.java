@@ -7,7 +7,6 @@ import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.objects.simple.UserSecurityInfo;
 
 @Mapper
-@Validated
 public interface UserMapper {
 
     @Select("select * from `user_sec` where `id`=#{id}")

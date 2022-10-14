@@ -5,6 +5,13 @@ public class NetResult <T>{
     private T data;
     private String message;
 
+    public NetResult(boolean isSuccess, T data, String message)
+    {
+        this.isSuccess = isSuccess;
+        this.data = data;
+        this.message = message;
+    }
+
     @Override
     public String toString() {
         return "NetResult{" +

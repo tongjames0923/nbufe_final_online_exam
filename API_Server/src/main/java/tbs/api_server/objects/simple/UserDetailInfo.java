@@ -7,6 +7,7 @@ public class UserDetailInfo {
     private String email;
     private String note;
 
+
     public int getId() {
         return id;
     }
