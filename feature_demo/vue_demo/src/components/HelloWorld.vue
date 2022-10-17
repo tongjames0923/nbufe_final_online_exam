@@ -39,7 +39,7 @@
 		name: 'HelloWorld',
 		methods: {
 			getdata() {
-				axios.get("http://localhost:8080/login?username=jack&password=tongyi0923").then(function(res) {
+				axios.get("http://localhost:8080/user/login?username=abstergo&password=tongyi0923").then(function(res) {
 					console.log(res)
 				})
 			}

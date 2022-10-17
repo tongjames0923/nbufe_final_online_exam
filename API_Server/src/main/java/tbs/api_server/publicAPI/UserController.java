@@ -2,7 +2,9 @@ package tbs.api_server.publicAPI;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tbs.api_server.config.constant.const_Text;
@@ -75,11 +77,13 @@ public class UserController
                     sc.getObj().setSec_ans(null);
                     return new NetResult<>(true
                             ,  info, const_Text.NET_success);
-                } else
+                }
+                else
                 {
                     return new NetResult<>(false, null, const_Text.ERRROR_CODE_TEXT(sc.getCode()));
                 }
-            } else
+            }
+            else
             {
                 return new NetResult<>(false, null, const_Text.ERROR_BAD_USERNAME_OR_PASSWORD(username, password));
             }
@@ -145,6 +149,9 @@ public class UserController
      * @param answer 密保答案
      * @return 仅在出NET_UNKNOWN错误时候为错误消息，否则为空
      */
+
+    //事务注解
+    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
     public NetResult register(String username, String password, String question, String answer)
     {
         try
@@ -160,6 +167,9 @@ public class UserController
                 ServiceResult<UserSecurityInfo> sc = service.registerUser(username, password, question, answer);
                 if (sc.getCode() == userregister_Success)
                 {
+                    service.UpdateUserDetails(sc.getObj().getId(),null,
+                                              null,null,null);
+
                     return new NetResult<>(true
                             , null, const_Text.NET_success);
                 } else
@@ -172,6 +182,8 @@ public class UserController
             }
         } catch (Exception e)
         {
+            //执行回滚
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return new NetResult<>(false, e.getMessage(), const_Text.NET_UNKNOWN);
         }
     }

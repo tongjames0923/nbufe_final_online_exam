@@ -104,7 +104,8 @@ public class UserImp implements UserService
         {
             int c = mp.insertSecurityInfo(username, password, question, answer);
             if (c == 1)
-                return new ServiceResult<>(userregister_Success, null);
+                return new ServiceResult<>(userregister_Success, mp.getUserSecurityInfoByName(username));
+//                            return new ServiceResult<>(userregister_Success, null);
         } catch (Exception e)
         {
             if (e.getClass().equals(DuplicateKeyException.class))
