@@ -2,6 +2,7 @@ package tbs.api_server.publicAPI;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tbs.api_server.config.constant.const_Text;
@@ -10,7 +11,6 @@ import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.UserService;
-import tbs.api_server.utility.Error;
 import tbs.api_server.utility.UserUtility;
 
 import static tbs.api_server.config.constant.const_User.*;

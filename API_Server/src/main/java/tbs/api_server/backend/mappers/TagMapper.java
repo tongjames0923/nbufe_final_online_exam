@@ -1,6 +1,5 @@
 package tbs.api_server.backend.mappers;
 
-import com.sun.tools.corba.se.idl.StringGen;
 import org.apache.ibatis.annotations.*;
 import tbs.api_server.objects.simple.Tag;
 
@@ -28,5 +27,17 @@ public interface TagMapper
             "VALUES\n" +
             "\t(#{tag});\n")
     int insertTag(String tag);
+
+
+    @Select("SELECT * FROM `tag` WHERE `ques_id`=#{ques_id}")
+    List<Tag> findTagsByQuestion(int ques);
+
+
+    @Insert("INSERT INTO `tag_link`(`tag_id`,`ques_id`) VALUES\n" +
+    "(#{tagid},#{ques_id})\n" )
+    int linkTag(int ques_id,int tagid);
+
+    @Delete("delete from `tag_link` where `tag_id`=#{tagid} and `ques_id`=#{ques_id}")
+    int unLinkTag(int ques_id,int tagid);
 
 }

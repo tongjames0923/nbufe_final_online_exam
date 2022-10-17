@@ -5,6 +5,15 @@ public class NetResult <T>{
     private T data;
     private String message;
 
+    public static NetResult makeResult(boolean isSuccess,String msg)
+    {
+        return new NetResult(isSuccess,null,msg);
+    }
+    public static NetResult makeResult(boolean isSuccess,String msg,Object data)
+    {
+        return new NetResult(isSuccess,data,msg);
+    }
+
     public NetResult(boolean isSuccess, T data, String message)
     {
         this.isSuccess = isSuccess;

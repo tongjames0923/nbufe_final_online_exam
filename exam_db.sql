@@ -7,7 +7,7 @@
 #
 # 主机: localhost (MySQL 8.0.30)
 # 数据库: exam_db
-# 生成时间: 2022-10-14 09:07:25 +0000
+# 生成时间: 2022-10-17 01:19:21 +0000
 # ************************************************************
 
 
@@ -86,7 +86,7 @@ CREATE TABLE `per_exam` (
   KEY `user` (`user`),
   CONSTRAINT `per_exam_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`exam_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `per_exam_ibfk_2` FOREIGN KEY (`user`) REFERENCES `user_sec` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
@@ -101,7 +101,7 @@ CREATE TABLE `ques_resource` (
   `resource_type` tinyint(3) unsigned zerofill NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `resource` (`resource`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
@@ -115,16 +115,13 @@ CREATE TABLE `question` (
   `que_alter_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP COMMENT '题目修改时间',
   `que_file` mediumblob NOT NULL COMMENT '题目细节文件',
   `publicable` tinyint unsigned NOT NULL DEFAULT '1' COMMENT '是否公开',
-  `tag` smallint(5) unsigned zerofill DEFAULT NULL COMMENT '题目标签',
   `use_time` int NOT NULL DEFAULT '0' COMMENT '题目使用次数',
   `answerd` int NOT NULL DEFAULT '0' COMMENT '题目回答次数',
   `answerd_right` float NOT NULL DEFAULT '0' COMMENT '题目回答正确情况，一次最多为1',
   PRIMARY KEY (`que_id`),
   KEY `que_creator` (`que_creator`),
-  KEY `tag` (`tag`),
-  CONSTRAINT `question_ibfk_1` FOREIGN KEY (`que_creator`) REFERENCES `user_sec` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `question_ibfk_2` FOREIGN KEY (`tag`) REFERENCES `tag` (`tag_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  CONSTRAINT `question_ibfk_1` FOREIGN KEY (`que_creator`) REFERENCES `user_sec` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
@@ -140,7 +137,7 @@ CREATE TABLE `resource_link` (
   KEY `resource_id` (`resource_id`),
   CONSTRAINT `resource_link_ibfk_1` FOREIGN KEY (`ques_id`) REFERENCES `question` (`que_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `resource_link_ibfk_2` FOREIGN KEY (`resource_id`) REFERENCES `ques_resource` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
@@ -150,10 +147,26 @@ CREATE TABLE `resource_link` (
 CREATE TABLE `tag` (
   `tag_id` smallint(5) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '题目标签id',
   `tag_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '标签名',
-  `tag_used` int NOT NULL DEFAULT '0' COMMENT '标签使用次数',
+  `tag_used` int unsigned NOT NULL DEFAULT '0' COMMENT '标签使用次数',
   PRIMARY KEY (`tag_id`),
   UNIQUE KEY `tag_name` (`tag_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+
+# 转储表 tag_link
+# ------------------------------------------------------------
+
+CREATE TABLE `tag_link` (
+  `id` int unsigned NOT NULL AUTO_INCREMENT,
+  `tag_id` smallint(5) unsigned zerofill NOT NULL,
+  `ques_id` int(10) unsigned zerofill NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ques_id` (`ques_id`),
+  KEY `tag_id` (`tag_id`),
+  CONSTRAINT `tag_link_ibfk_1` FOREIGN KEY (`ques_id`) REFERENCES `question` (`que_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tag_link_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`tag_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
@@ -169,7 +182,7 @@ CREATE TABLE `user_info` (
   `level` tinyint NOT NULL DEFAULT '0' COMMENT '用户权限等级',
   PRIMARY KEY (`id`),
   CONSTRAINT `user_info_ibfk_1` FOREIGN KEY (`id`) REFERENCES `user_sec` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
@@ -184,7 +197,7 @@ CREATE TABLE `user_sec` (
   `sec_ans` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '安全问题答案',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
 
