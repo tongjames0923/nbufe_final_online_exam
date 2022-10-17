@@ -1,5 +1,7 @@
 package tbs.api_server.utility;
 
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
 import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -32,6 +34,10 @@ public final  class Error
             }
         });
         return isValid[0];
+    }
+    public void rollback()
+    {
+        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
     }
 
     public void throwError(int error,String detail) throws RuntimeException

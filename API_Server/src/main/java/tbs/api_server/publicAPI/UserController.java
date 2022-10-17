@@ -8,6 +8,7 @@ import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tbs.api_server.config.constant.const_Text;
+import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.simple.UserDetailInfo;
@@ -16,6 +17,7 @@ import tbs.api_server.services.UserService;
 import tbs.api_server.utility.UserUtility;
 
 import static tbs.api_server.config.constant.const_User.*;
+import static tbs.api_server.utility.Error._ERROR;
 
 @RestController
 public class UserController
@@ -43,14 +45,15 @@ public class UserController
                 if (t.getCode() == plUser_SUCCESS)
                     return new NetResult(true, t.getObj(), const_Text.NET_success);
                 else
-                    return new NetResult(false, null, const_Text.NET_FAILURE);
+                    return new NetResult(false, null, const_Text.ERRROR_CODE_TEXT(t.getCode()));
             } else
             {
                 return new NetResult(false, null, const_Text.ERROR_LEVEL_LIMIT());
             }
         } catch (Exception e)
         {
-            return new NetResult(false, e.getMessage(), const_Text.NET_FAILURE);
+            _ERROR.rollback();
+            return new NetResult(false, e.getMessage(), const_Text.NET_UNKNOWN);
         }
 
     }
@@ -101,6 +104,7 @@ public class UserController
      * @param ans 密保答案
      * @return 成功为个人安全信息，密保答案隐藏，否则为错误信息
      */
+
     public NetResult updateSecQues(int id, String ques, String ans)
     {
         try
@@ -110,7 +114,8 @@ public class UserController
             return new NetResult(true, sc, const_Text.NET_success);
         } catch (Exception e)
         {
-            return new NetResult(false, e.getMessage(),const_Text.NET_FAILURE);
+            _ERROR.rollback();
+            return new NetResult(false, e.getMessage(),const_Text.NET_UNKNOWN);
         }
 
     }
@@ -128,15 +133,22 @@ public class UserController
      */
     public NetResult updatedetails(int id, String email, String phone, String address, String note)
     {
+        try
+        {
+            ServiceResult<UserDetailInfo> dt = service.UpdateUserDetails(id, address.length() > 0 ? address : null,
+                                                                         phone.length() > 0 ? phone : null,
+                                                                         email.length() > 0 ? email : null,
+                                                                         note.length() > 0 ? note : null);
+            if (dt.getCode() > 0)
+                return new NetResult(true, service.getUserInfo(id).getObj(), const_Text.NET_success);
+            else
+                return new NetResult(false, null, const_Text.NET_FAILURE);
+        }catch (Exception e)
+        {
+            _ERROR.rollback();
+            return NetResult.makeResult(false, e.getMessage(), const_Text.NET_UNKNOWN);
+        }
 
-        ServiceResult<UserDetailInfo> dt = service.UpdateUserDetails(id, address.length() > 0 ? address : null,
-                                                                     phone.length() > 0 ? phone : null,
-                                                                     email.length() > 0 ? email : null,
-                                                                     note.length() > 0 ? note : null);
-        if (dt.getCode() > 0)
-            return new NetResult(true, service.getUserInfo(id).getObj(), const_Text.NET_success);
-        else
-            return new NetResult(false, null, const_Text.NET_FAILURE);
     }
 
 
@@ -149,9 +161,6 @@ public class UserController
      * @param answer 密保答案
      * @return 仅在出NET_UNKNOWN错误时候为错误消息，否则为空
      */
-
-    //事务注解
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
     public NetResult register(String username, String password, String question, String answer)
     {
         try
@@ -183,7 +192,7 @@ public class UserController
         } catch (Exception e)
         {
             //执行回滚
-            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+            _ERROR.rollback();
             return new NetResult<>(false, e.getMessage(), const_Text.NET_UNKNOWN);
         }
     }
@@ -203,12 +212,17 @@ public class UserController
         {
             result = service.UpdateUserPassword(id, UserUtility.passwordEncode(password),
                                                 UserUtility.passwordEncode(oldpassword));
+            if(result.getCode()== userpdchange_Success)
+                return NetResult.makeResult(true,const_Text.NET_success);
+            else
+                return NetResult.makeResult(false,const_Text.ERRROR_CODE_TEXT(result.getCode()));
         } catch (Exception e)
         {
+            _ERROR.rollback();
             e.printStackTrace();
+            return NetResult.makeResult(false,const_Text.NET_UNKNOWN);
         }
-        return new NetResult(result.getCode() == userpdchange_Success, null,
-                             const_Text.ERRROR_CODE_TEXT(result.getCode()));
+
     }
 
 
@@ -227,12 +241,16 @@ public class UserController
         {
             result = service.updateUserPasswordByQuestion(id, UserUtility.passwordEncode(password)
                     , answer);
+            if(result.getCode()== userpdchange_Success)
+                return NetResult.makeResult(true,const_Text.NET_success);
+            else
+                return NetResult.makeResult(false,const_Text.ERRROR_CODE_TEXT(result.getCode()));
         } catch (Exception e)
         {
+            _ERROR.rollback();
             e.printStackTrace();
+            return NetResult.makeResult(false,const_Text.NET_UNKNOWN);
         }
-        return new NetResult(result.getCode() == userpdchange_Success, null,
-        String.valueOf(result.getCode()));
     }
 
     @RequestMapping("/user/pullusers")

@@ -39,8 +39,10 @@
 		name: 'HelloWorld',
 		methods: {
 			getdata() {
-				axios.get("http://localhost:8080/user/login?username=abstergo&password=tongyi0923").then(function(res) {
+				axios.get("http://localhost:8080/user/login?username=abstergo&password=tongyi0123").then(function(res) {
 					console.log(res)
+					if(res.data.success==false)
+					alert(res.data.message)
 				})
 			}
 		},
