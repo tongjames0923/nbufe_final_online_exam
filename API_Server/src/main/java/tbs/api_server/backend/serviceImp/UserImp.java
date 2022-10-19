@@ -8,6 +8,7 @@ import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.UserService;
+import tbs.api_server.utility.MapperStore;
 
 import static tbs.api_server.config.constant.const_User.*;
 import static tbs.api_server.utility.Error.*;
@@ -93,8 +94,7 @@ public class UserImp implements UserService
         }
     }
 
-    @Autowired
-    UserMapper mp;
+    UserMapper mp= MapperStore.userMapper;
 
     @Override
     public ServiceResult registerUser(String username, String password, String question,

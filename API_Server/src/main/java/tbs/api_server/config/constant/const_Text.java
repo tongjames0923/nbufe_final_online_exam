@@ -32,6 +32,10 @@ private static HashMap<Integer,String> errorTEXT;
         }
         return String.format("error code: %d", error);
     }
+    public static String ERROR_BAND_COLUMN_NAME(String name)
+    {
+        return String.format("you set a invalid column name :%s",name);
+    }
     public static String ERROR_BAD_USERNAME_OR_PASSWORD(String u,String p)
     {
         return String.format("your username length is %d characters,password length is %d  " +

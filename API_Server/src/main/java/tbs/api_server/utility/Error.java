@@ -9,9 +9,9 @@ import java.util.function.Consumer;
 public final  class Error
 {
     public static final Error _ERROR = new Error();
-    public static final int EC_UNKNOWN = 40001,EC_InvalidParameter=40002;
-    private int[] errorCode = {EC_UNKNOWN,EC_InvalidParameter};
-    private String[] error_msg = {"未知错误，请联系开发人员","非法参数,请检查传参"};
+    public static final int EC_UNKNOWN = 40001,EC_InvalidParameter=40002,EC_BAND_COL=40003,EC_LOW_PERMISSIONS=40004;
+    private int[] errorCode = {EC_UNKNOWN,EC_InvalidParameter,EC_BAND_COL,EC_LOW_PERMISSIONS};
+    private String[] error_msg = {"未知错误，请联系开发人员","非法参数,请检查传参","禁止修改的数据列","权限不足"};
     private HashMap<Integer,String> map=new HashMap<>();
 
 
@@ -39,7 +39,6 @@ public final  class Error
     {
         TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
     }
-
     public void throwError(int error,String detail) throws RuntimeException
     {
         if(map.containsKey(error))

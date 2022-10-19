@@ -9,8 +9,6 @@ public interface ExamPermissionService
     ServiceResult getCheckerList(int examid,int from,int num);
 
     ServiceResult setPermission(int examid, int userid,Boolean read,Boolean write,Boolean check);
-
-    ServiceResult getExamsFORALL(int userid,int from,int num);
     ServiceResult getExamsFORREAD(int userid,int from,int num);
     ServiceResult getExamsFORWRITE(int userid,int from,int num);
     ServiceResult getExamsFORCHECK(int user,int from,int num);
