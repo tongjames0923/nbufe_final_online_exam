@@ -19,7 +19,7 @@ public class TagImp implements TagService
     public ServiceResult changeUsed(String tagname, int altervalue)
     {
         final int[] res = {0, 0};
-        Optional.of(tg.getTagByName(tagname)).ifPresent(tag ->
+        Optional.ofNullable(tg.getTagByName(tagname)).ifPresent(tag ->
                                                         {
                                                             res[0] = tg.setUsed(tag.getTag_id(),
                                                                                 tag.getTag_used() + altervalue);
@@ -64,7 +64,7 @@ public class TagImp implements TagService
     public ServiceResult unLinkTag(int ques_id, String tagname)
     {
         final int[] res={0};
-        Optional.of(tg.getTagByName(tagname)).ifPresent(tag -> {
+        Optional.ofNullable(tg.getTagByName(tagname)).ifPresent(tag -> {
             res[0]= tg.unLinkTag(ques_id,tag.getTag_id());
         });
         return ServiceResult.makeResult(res[0]);

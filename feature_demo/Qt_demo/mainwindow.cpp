@@ -1,20 +1,18 @@
-//
-// Created by abstergo on 2022/10/17.
-//
 
-// You may need to build the project (run Qt uic code generator) to get "ui_MainWindow.h" resolved
-
-#include <QMessageBox>
 #include "mainwindow.h"
 #include "ui_MainWindow.h"
-
+#include <QMessageBox>
 
 MainWindow::MainWindow(QWidget *parent) :
 		QMainWindow(parent), ui(new Ui::MainWindow)
 {
 	ui->setupUi(this);
 	connect(ui->pushButton,&QAbstractButton::clicked, this,&MainWindow::button_clicked);
-	installEventFilter(this);
+	ui->menuBar->setNativeMenuBar(false);
+	for (QAction *ac:ui->menuFile->actions())
+	{
+		connect(ac,&QAction::triggered, this,&MainWindow::button_clicked);
+	}
 }
 
 MainWindow::~MainWindow()
@@ -29,15 +27,11 @@ void MainWindow::button_clicked()
 
 bool MainWindow::eventFilter(QObject *watched, QEvent *event)
 {
-	if(event->type()==QEvent::ActivationChange)
+	QEvent::Type tp= event->type();
+	if (tp==QEvent::MouseButtonPress)
 	{
-		if (QApplication::activeWindow()!= this)
-		{
-			QMessageBox::information(this,"","you need back to mainWindow");
-			removeEventFilter(this);
-		}
+		QMessageBox::information(this,"clicked me!","you click !");
 	}
-
 
 	return QObject::eventFilter(watched, event);
 }
