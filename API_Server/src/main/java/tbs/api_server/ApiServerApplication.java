@@ -12,7 +12,7 @@ import tbs.api_server.utility.FileUtility;
 @EnableTransactionManagement
 public class ApiServerApplication {
 
-    private  static void Starter()
+    public static void Starter()
     {
         String[] dirs={ApplicationConfig.resourceDir,ApplicationConfig.ReplyDir};
         for(String str:dirs)
@@ -20,8 +20,6 @@ public class ApiServerApplication {
             FileUtility.existDIR(str,null);
         }
     }
-
-
 
     public static void main(String[] args) {
         Starter();

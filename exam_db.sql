@@ -1,13 +1,13 @@
 # ************************************************************
 # Sequel Ace SQL dump
-# 版本号： 20035
+# 版本号： 20039
 #
 # https://sequel-ace.com/
 # https://github.com/Sequel-Ace/Sequel-Ace
 #
-# 主机: localhost (MySQL 8.0.30)
+# 主机: localhost (MySQL 8.0.31)
 # 数据库: exam_db
-# 生成时间: 2022-10-17 01:19:21 +0000
+# 生成时间: 2022-10-24 05:11:46 +0000
 # ************************************************************
 
 
@@ -60,10 +60,11 @@ CREATE TABLE `exam_ reply` (
   `exam_id` bigint(16) unsigned zerofill NOT NULL COMMENT '答题对应的试卷',
   `exam_number` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '考号',
   `person_id` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '身份证号',
-  `reply_file` mediumblob NOT NULL COMMENT '答题卷文件',
+  `reply_file` varchar(128) NOT NULL COMMENT '答题卷文件',
   `status` int NOT NULL DEFAULT '0' COMMENT '批阅状态',
   `check_file` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '批阅数据文件',
   PRIMARY KEY (`id`),
+  UNIQUE KEY `reply_file` (`reply_file`),
   KEY `exam_id` (`exam_id`),
   KEY `exam_number` (`exam_number`),
   CONSTRAINT `exam_ reply_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`exam_id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -98,7 +99,7 @@ CREATE TABLE `ques_resource` (
   `resource` varchar(96) NOT NULL,
   `note` text,
   `altertime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `resource_type` tinyint(3) unsigned zerofill NOT NULL,
+  `resource_type` smallint(3) unsigned zerofill NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `resource` (`resource`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -1,5 +1,6 @@
 package tbs.api_server.backend.serviceImp;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tbs.api_server.backend.mappers.QuestionMapper;
 import tbs.api_server.config.constant.const_Question;
@@ -23,7 +24,8 @@ import static tbs.api_server.utility.Error._ERROR;
 public class QuestionImp implements QuestionService
 {
 
-    private QuestionMapper mp= MapperStore.questionMapper;
+    @Autowired
+    private QuestionMapper mp;
 
 
     private boolean ownsQuestion(int queid,int userid)

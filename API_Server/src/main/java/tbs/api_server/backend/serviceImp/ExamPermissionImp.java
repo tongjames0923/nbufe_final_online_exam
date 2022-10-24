@@ -1,5 +1,6 @@
 package tbs.api_server.backend.serviceImp;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +20,8 @@ public class ExamPermissionImp implements ExamPermissionService
 {
 
 
-    private ExamPermissionMapper mp= MapperStore.examPermissionMapper;
+    @Autowired
+    private ExamPermissionMapper mp;
     @Override
     public ServiceResult getPermission(int exam_id, int userid)
     {

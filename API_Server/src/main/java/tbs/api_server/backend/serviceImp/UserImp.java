@@ -94,7 +94,8 @@ public class UserImp implements UserService
         }
     }
 
-    UserMapper mp= MapperStore.userMapper;
+    @Autowired
+    UserMapper mp;
 
     @Override
     public ServiceResult registerUser(String username, String password, String question,

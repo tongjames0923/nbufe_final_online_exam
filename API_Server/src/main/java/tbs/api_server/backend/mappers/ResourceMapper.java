@@ -22,6 +22,8 @@ public interface ResourceMapper
     QuestionResource getResourceById(int id);
 
 
+
+
     @Select("SELECT COUNT(*) FROM `ques_resource` WHERE `resource` = #{res} ")
     int containsResource(String res);
 
@@ -37,5 +39,8 @@ public interface ResourceMapper
 
     @Delete("DELETE FROM `resource_link` WHERE `resource_id`=#{param2} and `ques_id` = #{param1}")
     int unlinkResource(int ques_id, int resource_id);
+
+    @Select("SELECT `resource_id` FROM `resource_link` WHERE `ques_id`=#{ques}")
+    List<Integer> getQuestionLink(int ques);
 
 }

@@ -1,11 +1,11 @@
 package tbs.api_server.backend.serviceImp;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tbs.api_server.backend.mappers.TagMapper;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.simple.Tag;
 import tbs.api_server.services.TagService;
-import tbs.api_server.utility.MapperStore;
 
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +13,8 @@ import java.util.Optional;
 @Service
 public class TagImp implements TagService
 {
-    TagMapper tg= MapperStore.tagMapper;
+    @Autowired
+    TagMapper tg;
 
     @Override
     public ServiceResult changeUsed(String tagname, int altervalue)
