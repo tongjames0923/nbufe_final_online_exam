@@ -1,18 +1,57 @@
 package tbs.api_server.utility;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.interceptor.TransactionAspectSupport;
-import tbs.api_server.config.constant.const_Text;
 
+import java.util.HashMap;
 import java.util.Optional;
 import java.util.function.Consumer;
 
-public final class Error {
-    public static final Error _ERROR = new Error();
-    public static final int EC_UNKNOWN = 40001, EC_InvalidParameter = 40002, EC_BAND_COL = 40003, EC_LOW_PERMISSIONS = 40004;
-    private final int[] errorCode = {EC_UNKNOWN, EC_InvalidParameter, EC_BAND_COL, EC_LOW_PERMISSIONS};
+@Service
+public class Error {
 
+    public static final int EC_UNKNOWN = 40001,
+            EC_InvalidParameter = 40002,
+            EC_BAND_COL = 40003,
+            EC_LOW_PERMISSIONS = 40004,
+            EC_DB_INSERT_FAIL = 40005, EC_DB_SELECT_NOTHING = 40006,
+            EC_DB_UPDATE_FAIL = 40007, EC_DB_DELETE_FAIL = 40008, EC_FILESYSTEM_ERROR = 40013;
+    public static final int SUCCESS = 40000;
+    public static final int FC_NOTFOUND = 40009, FC_WRONG_PASSTEXT = 40010,
+            FC_DUPLICATE = 40011, FC_UNAVALIABLE = 40012;
+    private static final int[] codes = {
+            EC_UNKNOWN, EC_InvalidParameter, EC_BAND_COL, EC_LOW_PERMISSIONS,
+            EC_DB_INSERT_FAIL, EC_DB_DELETE_FAIL, EC_DB_UPDATE_FAIL, EC_DB_SELECT_NOTHING,
+            FC_DUPLICATE, FC_NOTFOUND, FC_UNAVALIABLE, FC_WRONG_PASSTEXT, EC_FILESYSTEM_ERROR
 
-    private Error() {
+    };
+    private static final String[] texts = {
+            "未知错误", "错误参数", "系统控制的数据域", "权限不足", "数据库插入失败", "数据库删除失败", "数据库更新失败", "数据库查找失败",
+            "数据重复错误", "数据丢失错误", "功能不可用错误", "验证错误", "文件操作错误"
+    };
+    @Autowired
+    public static Error _ERROR;
+    private static HashMap<Integer, String> mp = null;
+
+    @Autowired
+    public Error() {
+        if (mp == null) {
+            mp = new HashMap<>();
+            int j = 0;
+            for (int i : codes) {
+                mp.put(i, texts[j++]);
+            }
+        }
+        System.out.println("error class made!");
+        _ERROR = this;
+    }
+
+    private static String ERRROR_CODE_TEXT(int error) {
+        if (mp.containsKey(error)) {
+            return mp.get(error);
+        } else
+            return "NULL CODE";
     }
 
     public static boolean lengthCheck(String text, int length) {
@@ -28,12 +67,52 @@ public final class Error {
     }
 
     public void rollback() {
-        TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        try {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+
     }
 
-    public void throwError(int error, String detail) throws RuntimeException {
-        throw new RuntimeException(String.format("error code: %d,msg=%s,Detail:%s", error, const_Text.ERRROR_CODE_TEXT(error), detail));
+    public BackendError throwError(int error, String detail, Object data) throws BackendError {
+        return BackendError.newError(error, String.format("error code: %d,msg=%s,Detail:%s", error, ERRROR_CODE_TEXT(error), detail), data);
     }
 
+    public BackendError throwError(int error, String detail) throws BackendError {
+        return throwError(error, detail, null);
+    }
+
+    public static class BackendError extends Exception {
+        private int code;
+        private Object data = null;
+
+        private BackendError(String msg) {
+            super(msg);
+        }
+
+        public static BackendError newError(int code, String msg, Object data) {
+            BackendError backendError = new BackendError(msg);
+            backendError.setCode(code);
+            backendError.setData(data);
+            return backendError;
+        }
+
+        public Object getData() {
+            return data;
+        }
+
+        public void setData(Object data) {
+            this.data = data;
+        }
+
+        public int getCode() {
+            return code;
+        }
+
+        public void setCode(int code) {
+            this.code = code;
+        }
+    }
 
 }

@@ -4,7 +4,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tbs.api_server.backend.mappers.QuestionMapper;
 import tbs.api_server.config.constant.const_Question;
-import tbs.api_server.config.constant.const_Text;
 import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.simple.Question;
@@ -17,8 +16,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import static tbs.api_server.utility.Error.EC_LOW_PERMISSIONS;
-import static tbs.api_server.utility.Error._ERROR;
+import static tbs.api_server.utility.Error.*;
 
 @Service
 public class QuestionImp implements QuestionService
@@ -41,79 +39,97 @@ public class QuestionImp implements QuestionService
     }
 
     @Override
-    public ServiceResult uploadQuestion(int que_type,String title, int creator_id, byte[] que_file, Integer isopen, Integer tagid)
-    {
-        return ServiceResult.makeResult(mp.insertQuestion(que_type, creator_id, que_file,title, isopen, tagid));
+    public ServiceResult uploadQuestion(int que_type,String title, int creator_id, byte[] que_file, Integer isopen, Integer tagid) throws BackendError {
+        int c= mp.insertQuestion(que_type, creator_id, que_file,title, isopen, tagid);
+        if(c>0)
+        return ServiceResult.makeResult(SUCCESS);
+        else
+          throw   _ERROR.throwError(EC_DB_INSERT_FAIL,"上传问题失败");
     }
 
     @Override
-    public ServiceResult deleteQuestion(int quesid, int userid)
-    {
+    public ServiceResult deleteQuestion(int quesid, int userid) throws Error.BackendError {
         if(ownsQuestion(quesid, userid))
         {
            return ServiceResult.makeResult(mp.deleteQuestion(quesid),null);
         }
-        _ERROR.throwError(EC_LOW_PERMISSIONS,null);
-        return null;
+        throw   _ERROR.throwError(EC_LOW_PERMISSIONS,"用户权限不足，无法删除此问题");
     }
 
     @Override
-    public ServiceResult findQuestionsByTags(int[] tags, int from, int num)
-    {
+    public ServiceResult findQuestionsByTags(int[] tags, int from, int num) throws BackendError {
+            HashSet<Question> res=new HashSet<>();
+            for(int tg:tags)
+            {
+                List<Question> questions = mp.getQuestionsByTag(tg,from,num);
+                res.addAll(questions);
+            }
+            List<Question> result=new ArrayList<>(res);
+            if(result.size()>0)
+            return ServiceResult.makeResult(result.size(), result);
+            else
+                throw   _ERROR.throwError(EC_DB_SELECT_NOTHING,"不存在此标签的问题");
 
-        HashSet<Question> res=new HashSet<>();
-        for(int tg:tags)
-        {
-            List<Question> questions = mp.getQuestionsByTag(tg,from,num);
-            res.addAll(questions);
-        }
-        List<Question> result=new ArrayList<>(res);
-        return ServiceResult.makeResult(result.size(), result);
+
     }
 
     @Override
-    public ServiceResult findQuestionsByType(int[] types, int from, int num)
-    {
-        HashSet<Question> res=new HashSet<>();
-        for(int tg:types)
-        {
-            List<Question> questions = mp.getQuestionsByType(tg,from,num);
-            res.addAll(questions);
-        }
-        List<Question> result=new ArrayList<>(res);
-        return ServiceResult.makeResult(result.size(), result);
+    public ServiceResult findQuestionsByType(int[] types, int from, int num) throws BackendError {
+            HashSet<Question> res=new HashSet<>();
+            for(int tg:types)
+            {
+                List<Question> questions = mp.getQuestionsByType(tg,from,num);
+                res.addAll(questions);
+            }
+            List<Question> result=new ArrayList<>(res);
+            if(result.size()>0)
+                return ServiceResult.makeResult(result.size(), result);
+            else
+                throw   _ERROR.throwError(EC_DB_SELECT_NOTHING,"不存在此类型的问题");
+
     }
 
     @Override
-    public ServiceResult findQuestionsByTitle(String title, int from, int num) {
-        List<Question> ls=mp.findQuestionByTitle(title, from, num);
-        return ServiceResult.makeResult(ls.size(),ls);
+    public ServiceResult findQuestionsByTitle(String title, int from, int num) throws BackendError {
+            List<Question> ls=mp.findQuestionByTitle(title, from, num);
+            if(ls.size()>0)
+            return ServiceResult.makeResult(ls.size(),ls);
+            else
+                throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"不存在相关标题的问题");
+
     }
 
     @Override
-    public ServiceResult listQuestions(int from, int num)
-    {
-        List<Question> obj=mp.getQuestions(from, num);
-        return ServiceResult.makeResult(obj.size(), obj);
+    public ServiceResult listQuestions(int from, int num) throws BackendError {
+
+            List<Question> obj=mp.getQuestions(from, num);
+            if(obj.size()>0)
+            return ServiceResult.makeResult(obj.size(), obj);
+            else
+                throw  _ERROR.throwError(EC_DB_SELECT_NOTHING,"问题列表为空");
+
     }
 
     @Override
-    public ServiceResult updateQuestionValue(int ques_id, String field, Object value)
-    {
-        String[] banded={const_Question.col_id,const_Question.col_altertime};
-        for(String i:banded)
-        {
-            if(field.equals(i))
-                _ERROR.throwError(Error.EC_BAND_COL, const_Text.ERROR_BAND_COLUMN_NAME(i));
-        }
-        int m= mp.updateQuestionValue(ques_id,field,value);
-        return ServiceResult.makeResult(m,null);
+    public ServiceResult updateQuestionValue(int ques_id, String field, Object value) throws Error.BackendError {
+
+            String[] banded={const_Question.col_id,const_Question.col_altertime};
+            for(String i:banded)
+            {
+                if(field.equals(i))
+                    throw  _ERROR.throwError(Error.EC_BAND_COL,String.format("%s 无法手动修改",i));
+            }
+            int m= mp.updateQuestionValue(ques_id,field,value);
+            if(m>0)
+            return ServiceResult.makeResult(m,null);
+            else
+                throw  _ERROR.throwError(EC_DB_UPDATE_FAIL,"更新问题失败");
+
     }
 
 
     @Override
-    public ServiceResult questionsLength()
-    {
-        return ServiceResult.makeResult(mp.countQuestions(), null);
+    public ServiceResult questionsLength() throws BackendError {
+            return ServiceResult.makeResult(mp.countQuestions(), null);
     }
 }

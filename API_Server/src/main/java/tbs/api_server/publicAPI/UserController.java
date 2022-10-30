@@ -2,32 +2,29 @@ package tbs.api_server.publicAPI;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import tbs.api_server.config.constant.const_Text;
-import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.UserService;
+import tbs.api_server.utility.Error;
 import tbs.api_server.utility.UserUtility;
 
-import static tbs.api_server.config.constant.const_User.*;
-import static tbs.api_server.utility.Error._ERROR;
+import static tbs.api_server.utility.Error.*;
 
 @RestController
-public class UserController
-{
+@RequestMapping("user/*")
+public class UserController {
 
     @Autowired
     UserService service;
 
 
-    @RequestMapping("user/updatelevel")
+    @RequestMapping("updatelevel")
     /***
      * 更新用户权限
      * @param id 修改人 需要EXAM_STAFF
@@ -35,68 +32,51 @@ public class UserController
      * @param lv 权限等级 0-2
      * @return 成功为修改数量int，否则为空
      */
-    public NetResult updateLevel(int id, int target, int lv)
-    {
-        try
-        {
-            if (lv >= 0 && lv <= 2)
-            {
-                ServiceResult t = service.updateUserLevel(id, target, lv);
-                if (t.getCode() == plUser_SUCCESS)
-                    return new NetResult(true, t.getObj(), const_Text.NET_success);
-                else
-                    return new NetResult(false, null, const_Text.ERRROR_CODE_TEXT(t.getCode()));
-            } else
-            {
-                return new NetResult(false, null, const_Text.ERROR_LEVEL_LIMIT());
-            }
-        } catch (Exception e)
-        {
+    @Transactional
+    public NetResult updateLevel(int id, int target, int lv) {
+        try {
+            ServiceResult t = service.updateUserLevel(id, target, lv);
+            return NetResult.makeResult(t.getCode(), null, null);
+        } catch (Error.BackendError e) {
             _ERROR.rollback();
-            return new NetResult(false, e.getMessage(), const_Text.NET_UNKNOWN);
+            return NetResult.makeResult(e.getCode(), e.getMessage());
+        } catch (Exception ex) {
+            _ERROR.rollback();
+            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
         }
 
     }
 
-    @RequestMapping("user/login")
+    @RequestMapping("login")
     /***
      * 登录
      * @param username 用户名
      * @param password 密码
      * @return 成功为用户信息，否则为空或错误消息
      */
-    public NetResult login(String username, String password)
-    {
-        try
-        {
+    @Transactional
+    public NetResult login(String username, String password) {
+        try {
             UserDetailInfo info = null;
-            if (UserUtility.isValidForUsername(username) && UserUtility.isValidForPassword(password))
-            {
+            if (UserUtility.isValidForUsername(username) && UserUtility.isValidForPassword(password)) {
                 password = UserUtility.passwordEncode(password);
                 ServiceResult<UserSecurityInfo> sc = service.loginUser(username, password);
-                if (sc.getCode() == userLogin_Success)
-                {
-                    info = (UserDetailInfo) service.getUserInfo(sc.getObj().getId()).getObj();
-                    sc.getObj().setSec_ans(null);
-                    return new NetResult<>(true
-                            ,  info, const_Text.NET_success);
-                }
-                else
-                {
-                    return new NetResult<>(false, null, const_Text.ERRROR_CODE_TEXT(sc.getCode()));
-                }
+                info = (UserDetailInfo) service.getUserInfo(sc.getObj().getId()).getObj();
+                sc.getObj().setSec_ans(null);
+                return NetResult.makeResult(sc.getCode(), null, info);
+            } else {
+                return NetResult.makeResult(EC_InvalidParameter, "用户名和密码的强度不足", null);
             }
-            else
-            {
-                return new NetResult<>(false, null, const_Text.ERROR_BAD_USERNAME_OR_PASSWORD(username, password));
-            }
-        } catch (Exception e)
-        {
-            return new NetResult<>(false, e.getMessage(), const_Text.NET_UNKNOWN);
+        } catch (Error.BackendError e) {
+            _ERROR.rollback();
+            return NetResult.makeResult(e.getCode(), e.getMessage());
+        } catch (Exception ex) {
+            _ERROR.rollback();
+            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
         }
     }
 
-    @RequestMapping("/user/updateSecQues")
+    @RequestMapping("updateSecQues")
     /**
      * 更新密保问题
      * @param id 所需更新的用户id
@@ -104,24 +84,24 @@ public class UserController
      * @param ans 密保答案
      * @return 成功为个人安全信息，密保答案隐藏，否则为错误信息
      */
-
-    public NetResult updateSecQues(int id, String ques, String ans)
-    {
-        try
-        {
-            UserSecurityInfo sc = (UserSecurityInfo) service.UpdateUserSecQuestion(id, ques, ans).getObj();
-            sc.setSec_ans(null);
-            return new NetResult(true, sc, const_Text.NET_success);
-        } catch (Exception e)
-        {
+    @Transactional
+    public NetResult updateSecQues(int id, String ques, String ans) {
+        try {
+            ServiceResult sc = service.UpdateUserSecQuestion(id, ques, ans);
+            ((UserSecurityInfo) sc.getObj()).setSec_ans(null);
+            return NetResult.makeResult(sc.getCode(), null, sc.getObj());
+        } catch (Error.BackendError e) {
             _ERROR.rollback();
-            return new NetResult(false, e.getMessage(),const_Text.NET_UNKNOWN);
+            return NetResult.makeResult(e.getCode(), e.getMessage());
+        } catch (Exception ex) {
+            _ERROR.rollback();
+            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
         }
 
     }
 
 
-    @RequestMapping("user/updatedetails")
+    @RequestMapping("updatedetails")
     /***
      * 更新用户常规信息,长度为0将不进行修改
      * @param id 用户id
@@ -131,28 +111,26 @@ public class UserController
      * @param note 简介
      * @return 成功为用户详细信息，否则为空
      */
-    public NetResult updatedetails(int id, String email, String phone, String address, String note)
-    {
-        try
-        {
+    @Transactional
+    public NetResult updatedetails(int id, String email, String phone, String address, String note) {
+        try {
             ServiceResult<UserDetailInfo> dt = service.UpdateUserDetails(id, address.length() > 0 ? address : null,
-                                                                         phone.length() > 0 ? phone : null,
-                                                                         email.length() > 0 ? email : null,
-                                                                         note.length() > 0 ? note : null);
-            if (dt.getCode() > 0)
-                return new NetResult(true, service.getUserInfo(id).getObj(), const_Text.NET_success);
-            else
-                return new NetResult(false, null, const_Text.NET_FAILURE);
-        }catch (Exception e)
-        {
+                    phone.length() > 0 ? phone : null,
+                    email.length() > 0 ? email : null,
+                    note.length() > 0 ? note : null);
+            return NetResult.makeResult(dt.getCode(), null, dt.getObj());
+        } catch (Error.BackendError e) {
             _ERROR.rollback();
-            return NetResult.makeResult(false, e.getMessage(), const_Text.NET_UNKNOWN);
+            return NetResult.makeResult(e.getCode(), e.getMessage());
+        } catch (Exception ex) {
+            _ERROR.rollback();
+            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
         }
 
     }
 
 
-    @RequestMapping("user/register")
+    @RequestMapping("register")
     /***
      * 注册 密保问题和答案一个为空即视为不设置密保。
      * @param username 用户名
@@ -161,43 +139,38 @@ public class UserController
      * @param answer 密保答案
      * @return 仅在出NET_UNKNOWN错误时候为错误消息，否则为空
      */
-    public NetResult register(String username, String password, String question, String answer)
-    {
-        try
-        {
-            if (UserUtility.isValidForUsername(username) && UserUtility.isValidForPassword(password))
-            {
-                password = UserUtility.passwordEncode(password);
-                if(!(question.length()>0&&answer.length()>0))
-                {
-                    question=null;
-                    answer=null;
-                }
-                ServiceResult<UserSecurityInfo> sc = service.registerUser(username, password, question, answer);
-                if (sc.getCode() == userregister_Success)
-                {
-                    service.UpdateUserDetails(sc.getObj().getId(),null,
-                                              null,null,null);
+    @Transactional
+    public NetResult register(String username, String password, @RequestParam(required = false) String question, @RequestParam(required = false) String answer,
+                              @RequestParam(required = false) String address, @RequestParam(required = false) String phone, @RequestParam(required = false) String email,
+                              @RequestParam(required = false) String note) {
+        try {
+            if (UserUtility.isValidForUsername(username) && UserUtility.isValidForPassword(password)) {
 
-                    return new NetResult<>(true
-                            , null, const_Text.NET_success);
-                } else
-                {
-                    return new NetResult<>(false, null, const_Text.ERRROR_CODE_TEXT(sc.getCode()));
+                if (question != null && answer != null) {
+                    if (question.length() == 0)
+                        question = null;
+                    if (answer.length() == 0)
+                        answer = null;
                 }
-            } else
-            {
-                return new NetResult<>(false, null, const_Text.ERROR_BAD_USERNAME_OR_PASSWORD(username, password));
+                password = UserUtility.passwordEncode(password);
+                ServiceResult<UserSecurityInfo> sc = service.registerUser(username, password, question, answer);
+                ServiceResult result = service.UpdateUserDetails(sc.getObj().getId(), address,
+                        phone, email, note);
+
+                return NetResult.makeResult(result, null);
+            } else {
+                return NetResult.makeResult(EC_InvalidParameter, "用户名或密码强度不足");
             }
-        } catch (Exception e)
-        {
-            //执行回滚
+        } catch (Error.BackendError e) {
             _ERROR.rollback();
-            return new NetResult<>(false, e.getMessage(), const_Text.NET_UNKNOWN);
+            return NetResult.makeResult(e.getCode(), e.getMessage());
+        } catch (Exception ex) {
+            _ERROR.rollback();
+            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
         }
     }
 
-    @RequestMapping("user/updatePassword")
+    @RequestMapping("updatePassword")
     /***
      * 通过旧密码更新密码
      * @param id 用户id
@@ -205,55 +178,50 @@ public class UserController
      * @param oldpassword ji
      * @return
      */
-    public NetResult updatePassword(int id, String password, String oldpassword)
-    {
+    @Transactional
+    public NetResult updatePassword(int id, String password, String oldpassword) {
         ServiceResult result = null;
-        try
-        {
+        try {
             result = service.UpdateUserPassword(id, UserUtility.passwordEncode(password),
-                                                UserUtility.passwordEncode(oldpassword));
-            if(result.getCode()== userpdchange_Success)
-                return NetResult.makeResult(true,const_Text.NET_success);
-            else
-                return NetResult.makeResult(false,const_Text.ERRROR_CODE_TEXT(result.getCode()));
-        } catch (Exception e)
-        {
+                    UserUtility.passwordEncode(oldpassword));
+            return NetResult.makeResult(result, null);
+        } catch (Error.BackendError e) {
             _ERROR.rollback();
-            e.printStackTrace();
-            return NetResult.makeResult(false,const_Text.NET_UNKNOWN);
+            return NetResult.makeResult(e.getCode(), e.getMessage());
+        } catch (Exception ex) {
+            _ERROR.rollback();
+            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
         }
 
     }
 
 
-    @RequestMapping("user/findpdbyques")
+    @RequestMapping("findpdbyques")
     /***
      * 通过密保问题重置密码
      * @param id 用户id
      * @param password 新密码
      * @param answer 密保问题答案
-     * @return 是否成功,data都为空，msg为服务结果代码
+     * @return 是否成功, data都为空，msg为服务结果代码
      */
-    public NetResult updatePasswordByQues(int id, String password, String answer)
-    {
+    @Transactional
+    public NetResult updatePasswordByQues(int id, String password, String answer) {
         ServiceResult result = null;
-        try
-        {
+        try {
             result = service.updateUserPasswordByQuestion(id, UserUtility.passwordEncode(password)
                     , answer);
-            if(result.getCode()== userpdchange_Success)
-                return NetResult.makeResult(true,const_Text.NET_success);
-            else
-                return NetResult.makeResult(false,const_Text.ERRROR_CODE_TEXT(result.getCode()));
-        } catch (Exception e)
-        {
+            return NetResult.makeResult(result, null);
+        } catch (Error.BackendError e) {
             _ERROR.rollback();
-            e.printStackTrace();
-            return NetResult.makeResult(false,const_Text.NET_UNKNOWN);
+            return NetResult.makeResult(e.getCode(), e.getMessage());
+        } catch (Exception ex) {
+            _ERROR.rollback();
+            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
         }
     }
 
-    @RequestMapping("/user/pullusers")
+    @Transactional
+    @RequestMapping("pullusers")
     /***
      * 为EXAM_STAFF 用户获取用户列表
      * @param id 拉取人
@@ -261,21 +229,16 @@ public class UserController
      * @param num 数量
      * @return 成功为用户信息列表，否则为错误信息或空，msg为NET_FAILURE时候data为错误信息
      */
-    public NetResult getUserinfoPage(int id, int from, int num)
-    {
-        try
-        {
+    public NetResult getUserinfoPage(int id, int from, int num) {
+        try {
             ServiceResult result = service.pullUserInfo(id, from, num);
-            if (result.getCode() == plUser_SUCCESS)
-            {
-                return new NetResult(true, result.getObj(), const_Text.NET_success);
-            } else
-            {
-                return new NetResult(false, null, const_Text.ERRROR_CODE_TEXT(result.getCode()));
-            }
-        } catch (Exception e)
-        {
-            return new NetResult(false, e.getMessage(), const_Text.NET_FAILURE);
+            return NetResult.makeResult(result, null);
+        } catch (Error.BackendError e) {
+            _ERROR.rollback();
+            return NetResult.makeResult(e.getCode(), e.getMessage());
+        } catch (Exception ex) {
+            _ERROR.rollback();
+            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
         }
 
     }

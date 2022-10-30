@@ -4,34 +4,36 @@ import org.springframework.lang.NonNull;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.utility.Error;
+
 public interface UserService
 {
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
-    ServiceResult registerUser(@NonNull String username, @NonNull String password, String question, String answer);
 
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
+    ServiceResult registerUser(@NonNull String username, @NonNull String password, String question, String answer) throws Error.BackendError;
+
+
     ServiceResult UpdateUserDetails(int userid,String address,
                               String phone,
                               String email,
-                              String note);
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
-    ServiceResult UpdateUserPassword(int userid,String password,String old);
+                              String note) throws Error.BackendError;
 
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
-    ServiceResult updateUserPasswordByQuestion(int userid,String password,String ans);
+    ServiceResult UpdateUserPassword(int userid,String password,String old) throws Error.BackendError;
 
 
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
-    ServiceResult UpdateUserSecQuestion(int userid,String question,String answer);
+    ServiceResult updateUserPasswordByQuestion(int userid,String password,String ans) throws Error.BackendError;
 
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
-    ServiceResult updateUserLevel(int userid,int target,int level);
 
-   ServiceResult loginUser(@NonNull String username, @NonNull String password);
+
+    ServiceResult UpdateUserSecQuestion(int userid,String question,String answer) throws Error.BackendError;
+
+
+    ServiceResult updateUserLevel(int userid,int target,int level) throws Error.BackendError;
+
+   ServiceResult loginUser(@NonNull String username, @NonNull String password) throws Error.BackendError;
 
 
    ServiceResult getUserInfo(int userid);
 
-   ServiceResult pullUserInfo(int id,int from,int num);
+   ServiceResult pullUserInfo(int id,int from,int num) throws Error.BackendError;
 
 }

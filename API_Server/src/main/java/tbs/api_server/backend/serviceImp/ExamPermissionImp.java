@@ -15,6 +15,8 @@ import tbs.api_server.utility.MapperStore;
 import java.util.ArrayList;
 import java.util.List;
 
+import static tbs.api_server.utility.Error.*;
+
 @Service
 public class ExamPermissionImp implements ExamPermissionService
 {
@@ -23,31 +25,32 @@ public class ExamPermissionImp implements ExamPermissionService
     @Autowired
     private ExamPermissionMapper mp;
     @Override
-    public ServiceResult getPermission(int exam_id, int userid)
-    {
+    public ServiceResult getPermission(int exam_id, int userid) throws BackendError {
         ExamPermission ep= mp.getPermission(exam_id, userid);
-        return ServiceResult.makeResult(ep==null?0:1, ep);
+        if(ep!=null)
+        return ServiceResult.makeResult(SUCCESS, ep);
+        else
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"不存在针对该考试的权限",exam_id);
     }
 
     @Override
-    public ServiceResult getCheckerList(int examid, int from, int num)
-    {
+    public ServiceResult getCheckerList(int examid, int from, int num) throws BackendError {
         List<Integer> ls= mp.getCheckerList(examid, from, num);
         ArrayList<UserDetailInfo> userDetailInfos =new ArrayList<>();
         for(int i:ls)
         {
             userDetailInfos.add(MapperStore.userMapper.getUserDetailInfoByID(i));
         }
-
+        if(userDetailInfos.size()>0)
         return ServiceResult.makeResult(userDetailInfos.size(),userDetailInfos);
+        else
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"该考试不存在批阅人",examid);
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
     public ServiceResult setPermission(int examid, int userid, Boolean read, Boolean write, Boolean check)
     {
-        try
-        {
             ExamPermission permission = mp.getPermission(userid,examid);
             int r=read?1:0,w=write?1:0,c=check?1:0;
 
@@ -72,33 +75,33 @@ public class ExamPermissionImp implements ExamPermissionService
             {
                 return ServiceResult.makeResult(mp.putPermission(userid,examid,r,w,c)) ;
             }
-        }
-        catch (Exception e)
-        {
-            Error._ERROR.rollback();
-            return ServiceResult.makeResult(-1);
-        }
     }
 
 
     @Override
-    public ServiceResult getExamsFORREAD(int userid, int from, int num)
-    {
+    public ServiceResult getExamsFORREAD(int userid, int from, int num) throws BackendError {
         List<ExamPermission> permissions = mp.getReadable(userid,from,num);
+        if(permissions.size()>0)
         return ServiceResult.makeResult(permissions.size(),permissions);
+        else
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"用户不存在可读的考试");
     }
 
     @Override
-    public ServiceResult getExamsFORWRITE(int userid, int from, int num)
-    {
+    public ServiceResult getExamsFORWRITE(int userid, int from, int num) throws BackendError {
         List<ExamPermission> permissions = mp.getWritealbe(userid,from,num);
+        if(permissions.size()>0)
         return ServiceResult.makeResult(permissions.size(),permissions);
+        else
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"用户不存在可修改的考试");
     }
 
     @Override
-    public ServiceResult getExamsFORCHECK(int user, int from, int num)
-    {
+    public ServiceResult getExamsFORCHECK(int user, int from, int num) throws BackendError {
         List<ExamPermission> permissions = mp.getCheckable(user,from,num);
+        if(permissions.size()>0)
         return ServiceResult.makeResult(permissions.size(),permissions);
+        else
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"不存在可批阅的考试");
     }
 }

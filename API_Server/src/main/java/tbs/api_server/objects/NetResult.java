@@ -1,41 +1,36 @@
 package tbs.api_server.objects;
 
 public class NetResult <T>{
-    private boolean isSuccess;
+    private int code;
     private T data;
     private String message;
 
-    public static NetResult makeResult(boolean isSuccess,String msg)
+    public static NetResult makeResult(int code,String msg)
     {
-        return new NetResult(isSuccess,null,msg);
+        return new NetResult(code,null,msg);
     }
-    public static NetResult makeResult(boolean isSuccess,String msg,Object data)
+    public static NetResult makeResult(int code,String msg,Object data)
     {
-        return new NetResult(isSuccess,data,msg);
+        return new NetResult(code,data,msg);
     }
 
-    public NetResult(boolean isSuccess, T data, String message)
+    public static NetResult makeResult(ServiceResult result,String msg)
     {
-        this.isSuccess = isSuccess;
+        return new NetResult(result.getCode(),result.getObj(),msg);
+    }
+    public NetResult(int code, T data, String message)
+    {
+        this.code= code;
         this.data = data;
         this.message = message;
     }
 
-    @Override
-    public String toString() {
-        return "NetResult{" +
-                "isSuccess=" + isSuccess +
-                ", data=" + data.toString() +
-                ", message='" + message + '\'' +
-                '}';
+    public int getCode() {
+        return code;
     }
 
-    public boolean isSuccess() {
-        return isSuccess;
-    }
-
-    public void setSuccess(boolean success) {
-        isSuccess = success;
+    public void setCode(int code) {
+        this.code = code;
     }
 
     public T getData() {

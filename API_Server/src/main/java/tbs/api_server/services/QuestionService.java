@@ -3,25 +3,25 @@ package tbs.api_server.services;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.utility.Error;
 
 public interface QuestionService
 {
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
-    ServiceResult uploadQuestion(int que_type,String title, int creator_id, byte[] que_file, Integer isopen, Integer tagid);
 
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
-    ServiceResult deleteQuestion(int quesid,int userid);
+    ServiceResult uploadQuestion(int que_type,String title, int creator_id, byte[] que_file, Integer isopen, Integer tagid) throws Error.BackendError;
 
-    ServiceResult findQuestionsByTags(int[] tags,int from,int num);
-    ServiceResult findQuestionsByType(int[] types,int from,int num);
-    ServiceResult findQuestionsByTitle(String title,int from,int num);
 
-    ServiceResult listQuestions(int from,int num);
+    ServiceResult deleteQuestion(int quesid,int userid) throws Error.BackendError;
 
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
-    ServiceResult updateQuestionValue(int ques_id,String field,Object value);
+    ServiceResult findQuestionsByTags(int[] tags,int from,int num) throws Error.BackendError;
+    ServiceResult findQuestionsByType(int[] types,int from,int num) throws Error.BackendError;
+    ServiceResult findQuestionsByTitle(String title,int from,int num) throws Error.BackendError;
 
-    ServiceResult questionsLength();
+    ServiceResult listQuestions(int from,int num) throws Error.BackendError;
+
+    ServiceResult updateQuestionValue(int ques_id,String field,Object value) throws Error.BackendError;
+
+    ServiceResult questionsLength() throws Error.BackendError;
 
 
 

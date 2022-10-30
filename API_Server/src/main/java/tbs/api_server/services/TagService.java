@@ -3,27 +3,28 @@ package tbs.api_server.services;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.utility.Error;
 
 public interface TagService
 {
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
-    ServiceResult changeUsed(String tagname, int altervalue);
 
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
-    ServiceResult newTag(String tagname);
+    ServiceResult changeUsed(String tagname, int altervalue) throws Error.BackendError;
 
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
-    ServiceResult deleteTag(String tagname);
 
-    ServiceResult listTags();
+    ServiceResult newTag(String tagname) throws Error.BackendError;
 
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
-    ServiceResult linkTag(int ques_id,String tagname);
 
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
-    ServiceResult unLinkTag(int ques_id,String tagname);
+    ServiceResult deleteTag(String tagname) throws Error.BackendError;
 
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
-    ServiceResult findTagsByQuestion(int ques_id);
+    ServiceResult listTags() throws Error.BackendError;
+
+
+    ServiceResult linkTag(int ques_id,String tagname) throws Error.BackendError;
+
+
+    ServiceResult unLinkTag(int ques_id,String tagname) throws Error.BackendError;
+
+
+    ServiceResult findTagsByQuestion(int ques_id) throws Error.BackendError;
 
 }

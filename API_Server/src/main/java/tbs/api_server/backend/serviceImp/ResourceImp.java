@@ -10,6 +10,8 @@ import tbs.api_server.services.ResourceService;
 import java.util.ArrayList;
 import java.util.List;
 
+import static tbs.api_server.utility.Error.*;
+
 @Service
 public class ResourceImp implements ResourceService
 {
@@ -17,22 +19,25 @@ public class ResourceImp implements ResourceService
     ResourceMapper mp;
 
     @Override
-    public ServiceResult getResourceById(int id)
-    {
+    public ServiceResult getResourceById(int id) throws BackendError {
         QuestionResource resource = mp.getResourceById(id);
-        return ServiceResult.makeResult(resource!=null?1:0,resource);
+        if(resource!=null)
+        return ServiceResult.makeResult(SUCCESS,resource);
+        else
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"不存在此id的资源");
     }
 
     @Override
-    public ServiceResult getResourceByNote(String note,int from,int n)
-    {
+    public ServiceResult getResourceByNote(String note,int from,int n) throws BackendError {
         List<QuestionResource> ls=mp.findResourcesByNote(note,from,n);
-        return ServiceResult.makeResult(ls.size(),ls);
+        if(ls.size()>0)
+            return ServiceResult.makeResult(SUCCESS,ls);
+        else
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"此备注没有资源");
     }
 
     @Override
-    public ServiceResult getResourceByQuestion(int ques)
-    {
+    public ServiceResult getResourceByQuestion(int ques) throws BackendError {
         List<Integer> lnk=mp.getQuestionLink(ques);
         ArrayList<QuestionResource> resources =new ArrayList<>();
 
@@ -40,41 +45,50 @@ public class ResourceImp implements ResourceService
         {
             resources.add(mp.getResourceById(i));
         }
-        return ServiceResult.makeResult(resources.size(),resources);
+        if(resources.size()>0)
+            return ServiceResult.makeResult(SUCCESS,resources);
+        else
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"此问题不存在资源");
     }
 
     @Override
-    public ServiceResult getResourcesByType(int type, int from, int num)
-    {
+    public ServiceResult getResourcesByType(int type, int from, int num) throws BackendError {
         List<QuestionResource> ls=mp.getResourcesByType(type,from,num);
-        return ServiceResult.makeResult(ls.size(),ls);
+        if(ls.size()>0)
+            return ServiceResult.makeResult(SUCCESS,ls);
+        else
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"此类型不存在资源");
     }
 
     @Override
-    public ServiceResult UploadResource(int type, String path, String note)
-    {
+    public ServiceResult UploadResource(int type, String path, String note) throws BackendError {
         int up= mp.uploadResource(type,path,note);
-        return ServiceResult.makeResult(up);
+        if(up>0)
+            return ServiceResult.makeResult(SUCCESS);
+        throw _ERROR.throwError(EC_DB_INSERT_FAIL,"问题上传失败");
     }
 
     @Override
-    public ServiceResult DeleteResource(int id)
-    {
+    public ServiceResult DeleteResource(int id) throws BackendError {
         int dp=mp.deleteResourceById(id);
-        return ServiceResult.makeResult(dp);
+        if(dp>0)
+            return ServiceResult.makeResult(SUCCESS);
+        throw _ERROR.throwError(EC_DB_DELETE_FAIL,"资源删除失败");
     }
 
     @Override
-    public ServiceResult linkResource(int res_id, int ques_id)
-    {
+    public ServiceResult linkResource(int res_id, int ques_id) throws BackendError {
         int lr=mp.linkResource(ques_id,res_id);
-        return ServiceResult.makeResult(lr);
+        if(lr>0)
+            return ServiceResult.makeResult(SUCCESS);
+        throw _ERROR.throwError(EC_DB_INSERT_FAIL,"资源链接失败");
     }
 
     @Override
-    public ServiceResult unlinkResource(int res_id, int ques_id)
-    {
+    public ServiceResult unlinkResource(int res_id, int ques_id) throws BackendError {
         int ulr=mp.unlinkResource(ques_id,res_id);
-        return ServiceResult.makeResult(ulr);
+        if(ulr>0)
+        return ServiceResult.makeResult(SUCCESS);
+        throw _ERROR.throwError(EC_DB_DELETE_FAIL,"取消资源链接失败");
     }
 }

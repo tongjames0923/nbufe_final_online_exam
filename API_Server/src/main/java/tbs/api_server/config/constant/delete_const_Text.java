@@ -2,7 +2,7 @@ package tbs.api_server.config.constant;
 
 import java.util.HashMap;
 
-public class const_Text
+public class delete_const_Text
 {
 public static final String NET_INSERT_FAIL="can not insert this",NET_NOT_FIND="can not find anythings",NET_UPDATE_FIAL="can not update this field",NET_FIND_QUES_ERROR="not a good type for find question",NET_success = "Success",NET_FAILURE = "Failure",NET_UNKNOWN = "Unknown error",NET_NO_WRITE="File Not Write in System";
 
@@ -10,24 +10,7 @@ public static final String NET_INSERT_FAIL="can not insert this",NET_NOT_FIND="c
  private static    String[] text={"登录失败，用户不存在","登录失败,密码错误","权限不足","注册失败,用户名已存在",
             "注册失败,未知错误","用户密码修改失败，原密码错误","用户密码设置失败,未设置密保问题","用户密码修改失败,密保答案错误"};
 private static HashMap<Integer,String> errorTEXT;
-    public static String ERRROR_CODE_TEXT(int error)
-    {
-        if(errorTEXT==null)
-        {
-            errorTEXT=new HashMap<>();
 
-            int j=0;
-            for(int i:ck)
-            {
-                errorTEXT.put(i,text[j++]);
-            }
-        }
-        if(errorTEXT.containsKey(error))
-        {
-            return errorTEXT.get(error);
-        }
-        return String.format("error code: %d", error);
-    }
     public static String ERROR_BAND_COLUMN_NAME(String name)
     {
         return String.format("you set a invalid column name :%s",name);
