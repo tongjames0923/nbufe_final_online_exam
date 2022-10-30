@@ -1,28 +1,24 @@
-# ************************************************************
-# Sequel Ace SQL dump
-# 版本号： 20039
-#
-# https://sequel-ace.com/
-# https://github.com/Sequel-Ace/Sequel-Ace
-#
-# 主机: localhost (MySQL 8.0.31)
-# 数据库: exam_db
-# 生成时间: 2022-10-24 05:11:46 +0000
-# ************************************************************
+/*
+Navicat MySQL Data Transfer
 
+Source Server         : localhost_3306
+Source Server Version : 80030
+Source Host           : localhost:3306
+Source Database       : exam_db
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-SET NAMES utf8mb4;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE='NO_AUTO_VALUE_ON_ZERO', SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+Target Server Type    : MYSQL
+Target Server Version : 80030
+File Encoding         : 65001
 
+Date: 2022-10-30 14:37:05
+*/
 
-# 转储表 answer
-# ------------------------------------------------------------
+SET FOREIGN_KEY_CHECKS=0;
 
+-- ----------------------------
+-- Table structure for `answer`
+-- ----------------------------
+DROP TABLE IF EXISTS `answer`;
 CREATE TABLE `answer` (
   `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '标准答案id',
   `ques_id` int(10) unsigned zerofill NOT NULL COMMENT '对应题目id',
@@ -33,11 +29,14 @@ CREATE TABLE `answer` (
   CONSTRAINT `answer_ibfk_1` FOREIGN KEY (`ques_id`) REFERENCES `question` (`que_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- ----------------------------
+-- Records of answer
+-- ----------------------------
 
-
-# 转储表 exam
-# ------------------------------------------------------------
-
+-- ----------------------------
+-- Table structure for `exam`
+-- ----------------------------
+DROP TABLE IF EXISTS `exam`;
 CREATE TABLE `exam` (
   `exam_id` bigint(16) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '考试id',
   `exam_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '考试名称',
@@ -50,11 +49,14 @@ CREATE TABLE `exam` (
   UNIQUE KEY `exam_name` (`exam_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- ----------------------------
+-- Records of exam
+-- ----------------------------
 
-
-# 转储表 exam_ reply
-# ------------------------------------------------------------
-
+-- ----------------------------
+-- Table structure for `exam_ reply`
+-- ----------------------------
+DROP TABLE IF EXISTS `exam_ reply`;
 CREATE TABLE `exam_ reply` (
   `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '答题id',
   `exam_id` bigint(16) unsigned zerofill NOT NULL COMMENT '答题对应的试卷',
@@ -70,11 +72,14 @@ CREATE TABLE `exam_ reply` (
   CONSTRAINT `exam_ reply_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`exam_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- ----------------------------
+-- Records of exam_ reply
+-- ----------------------------
 
-
-# 转储表 per_exam
-# ------------------------------------------------------------
-
+-- ----------------------------
+-- Table structure for `per_exam`
+-- ----------------------------
+DROP TABLE IF EXISTS `per_exam`;
 CREATE TABLE `per_exam` (
   `id` int unsigned NOT NULL AUTO_INCREMENT COMMENT '权限id',
   `readable` tinyint(1) NOT NULL DEFAULT '1' COMMENT '可查看',
@@ -89,26 +94,14 @@ CREATE TABLE `per_exam` (
   CONSTRAINT `per_exam_ibfk_2` FOREIGN KEY (`user`) REFERENCES `user_sec` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- ----------------------------
+-- Records of per_exam
+-- ----------------------------
 
-
-# 转储表 ques_resource
-# ------------------------------------------------------------
-
-CREATE TABLE `ques_resource` (
-  `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `resource` varchar(96) NOT NULL,
-  `note` text,
-  `altertime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `resource_type` smallint(3) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `resource` (`resource`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
-
-
-# 转储表 question
-# ------------------------------------------------------------
-
+-- ----------------------------
+-- Table structure for `question`
+-- ----------------------------
+DROP TABLE IF EXISTS `question`;
 CREATE TABLE `question` (
   `que_id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '题目id',
   `que_type` smallint NOT NULL COMMENT '题目类型',
@@ -119,16 +112,35 @@ CREATE TABLE `question` (
   `use_time` int NOT NULL DEFAULT '0' COMMENT '题目使用次数',
   `answerd` int NOT NULL DEFAULT '0' COMMENT '题目回答次数',
   `answerd_right` float NOT NULL DEFAULT '0' COMMENT '题目回答正确情况，一次最多为1',
+  `title` varchar(32) NOT NULL,
   PRIMARY KEY (`que_id`),
   KEY `que_creator` (`que_creator`),
   CONSTRAINT `question_ibfk_1` FOREIGN KEY (`que_creator`) REFERENCES `user_sec` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- ----------------------------
+-- Records of question
+-- ----------------------------
+
+-- ----------------------------
+-- Table structure for `ques_resource`
+-- ----------------------------
+DROP TABLE IF EXISTS `ques_resource`;
+CREATE TABLE `ques_resource` (
+  `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `resource` varchar(96) NOT NULL,
+  `note` text,
+  `altertime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `resource_type` smallint(3) unsigned zerofill NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `resource` (`resource`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-# 转储表 resource_link
-# ------------------------------------------------------------
-
+-- ----------------------------
+-- Table structure for `resource_link`
+-- ----------------------------
+DROP TABLE IF EXISTS `resource_link`;
 CREATE TABLE `resource_link` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `ques_id` int(10) unsigned zerofill NOT NULL,
@@ -140,11 +152,14 @@ CREATE TABLE `resource_link` (
   CONSTRAINT `resource_link_ibfk_2` FOREIGN KEY (`resource_id`) REFERENCES `ques_resource` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- ----------------------------
+-- Records of resource_link
+-- ----------------------------
 
-
-# 转储表 tag
-# ------------------------------------------------------------
-
+-- ----------------------------
+-- Table structure for `tag`
+-- ----------------------------
+DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag` (
   `tag_id` smallint(5) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '题目标签id',
   `tag_name` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '标签名',
@@ -153,11 +168,14 @@ CREATE TABLE `tag` (
   UNIQUE KEY `tag_name` (`tag_name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- ----------------------------
+-- Records of tag
+-- ----------------------------
 
-
-# 转储表 tag_link
-# ------------------------------------------------------------
-
+-- ----------------------------
+-- Table structure for `tag_link`
+-- ----------------------------
+DROP TABLE IF EXISTS `tag_link`;
 CREATE TABLE `tag_link` (
   `id` int unsigned NOT NULL AUTO_INCREMENT,
   `tag_id` smallint(5) unsigned zerofill NOT NULL,
@@ -169,11 +187,14 @@ CREATE TABLE `tag_link` (
   CONSTRAINT `tag_link_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`tag_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- ----------------------------
+-- Records of tag_link
+-- ----------------------------
 
-
-# 转储表 user_info
-# ------------------------------------------------------------
-
+-- ----------------------------
+-- Table structure for `user_info`
+-- ----------------------------
+DROP TABLE IF EXISTS `user_info`;
 CREATE TABLE `user_info` (
   `id` int(7) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '用户id',
   `address` varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '用户住址',
@@ -185,11 +206,14 @@ CREATE TABLE `user_info` (
   CONSTRAINT `user_info_ibfk_1` FOREIGN KEY (`id`) REFERENCES `user_sec` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- ----------------------------
+-- Records of user_info
+-- ----------------------------
 
-
-# 转储表 user_sec
-# ------------------------------------------------------------
-
+-- ----------------------------
+-- Table structure for `user_sec`
+-- ----------------------------
+DROP TABLE IF EXISTS `user_sec`;
 CREATE TABLE `user_sec` (
   `id` int(7) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '用户安全信息id',
   `name` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '用户名',
@@ -200,12 +224,6 @@ CREATE TABLE `user_sec` (
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-
-
-
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+-- ----------------------------
+-- Records of user_sec
+-- ----------------------------

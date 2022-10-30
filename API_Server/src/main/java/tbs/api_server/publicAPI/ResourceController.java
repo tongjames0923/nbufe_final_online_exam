@@ -22,132 +22,93 @@ import tbs.api_server.utility.SecurityTools;
 
 import java.io.File;
 import java.util.Date;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 
+import static tbs.api_server.publicAPI.ResourceController.Help.*;
+
 @RestController
 @RequestMapping(value = "/resource/*")
-public class ResourceController
-{
+public class ResourceController {
     @Autowired
     ResourceService service;
 
 
-
-
-
     @RequestMapping("/getByType")
-    public NetResult getResourcesByType(int type, int from, int num)
-    {
-        try
-        {
+    public NetResult getResourcesByType(int type, int from, int num) {
+        try {
 
             ServiceResult result = service.getResourcesByType(type, from, num);
+            resourcesLinkApply((List<QuestionResource>) result.getObj());
+
             return NetResult.makeResult(result.getCode() > 0, const_Text.NET_success, result.getObj());
-        } catch (Exception e)
-        {
-            return NetResult.makeResult(false, const_Text.NET_FAILURE, e.getMessage().toString());
+        } catch (Exception e) {
+            return NetResult.makeResult(false, const_Text.NET_FAILURE, e.getMessage());
         }
-    }
-
-    String makePath(int type, String note) throws Exception
-    {
-        Date date = new Date();
-        String d = Integer.toHexString((int) (date.getTime() % Integer.MAX_VALUE)) + note;
-
-        d = SecurityTools.Encrypt_str(d);
-        d = d.substring(32, 64);
-        switch (type)
-        {
-            case const_Resource_Type
-                    .Audio:
-                d += ".mp3";
-                break;
-            case const_Resource_Type.Image:
-                d += ".jpeg";
-                break;
-            case const_Resource_Type.Video:
-                d += ".mp4";
-                break;
-            case const_Resource_Type.Text:
-                d += ".md";
-                break;
-        }
-        return d;
-    }
-
-    String genPath(String filename)
-    {
-        return ApplicationConfig.resourceDir + "/" + filename;
     }
 
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
 
-    public NetResult upload(@RequestParam MultipartFile file, @RequestParam int type, @RequestParam String note)
-    {
-        try
-        {
+    public NetResult upload(@RequestParam MultipartFile file, @RequestParam int type, @RequestParam String note) {
+        try {
             MultipartFile bytes = file;
             int tp = type;
 
-            String filepath = makePath(tp, note);
+            String name= file.getOriginalFilename();
+            name=name.substring(name.lastIndexOf("."));
+            String filepath = makePath(name, note);
             File file1 = new File(genPath(filepath));
             int total = 0;
             ServiceResult result = service.UploadResource(tp, filepath, note);
-            if (!bytes.isEmpty())
-            {
+            if (!bytes.isEmpty()) {
                 FileUtility.BaseThen then = new FileUtility.FileWriteThen(bytes.getInputStream(), true);
                 FileUtility.existFile(file1.getAbsolutePath(), then);
                 total = (int) then.result();
             }
-
+            if(total>0)
             return NetResult.makeResult(result.getCode() > 0, const_Text.NET_success, total);
-        } catch (Throwable e)
-        {
+            else
+            {
+                Error._ERROR.rollback();
+                return NetResult.makeResult(false,const_Text.NET_NO_WRITE,null);
+            }
+        } catch (Throwable e) {
             Error._ERROR.rollback();
             return NetResult.makeResult(false, const_Text.NET_FAILURE, e.getMessage());
         }
     }
 
     @RequestMapping("/delete")
-    public NetResult delete(int userid, int resource_id)
-    {
+    public NetResult delete(int userid, int resource_id) {
         final NetResult result = new NetResult(false, null, const_Text.NET_FAILURE);
-        try
-        {
+        try {
             QuestionResource resource = (QuestionResource) service.getResourceById(resource_id).getObj();
-            Optional.ofNullable(resource).ifPresent(new Consumer<QuestionResource>()
-            {
+            Optional.ofNullable(resource).ifPresent(new Consumer<QuestionResource>() {
                 @Override
-                public void accept(QuestionResource questionResource)
-                {
+                public void accept(QuestionResource questionResource) {
                     UserDetailInfo info = MapperStore.userMapper.getUserDetailInfoByID(userid);
-                    if (info.getLevel() == const_User.LEVEL_EXAM_STAFF)
-                    {
+                    if (info.getLevel() == const_User.LEVEL_EXAM_STAFF) {
 
                         service.DeleteResource(userid);
                         FileUtility.BaseThen then = new FileUtility.FileDeleteThen();
                         FileUtility.existFile(genPath(questionResource.getResource()), then);
-                        try
-                        {
+                        try {
                             result.setData(then.result());
                             result.setSuccess(true);
-                        } catch (Throwable e)
-                        {
+                        } catch (Throwable e) {
                             result.setMessage(e.getMessage());
                         }
 
 
-                    } else
-                    {
+                    } else {
                         result.setMessage(const_Text.ERRROR_CODE_TEXT(const_User.plUser_NO_RIGHTS));
                     }
                 }
             });
 
-        } catch (Throwable e)
-        {
+        } catch (Throwable e) {
             Error._ERROR.rollback();
             result.setMessage(e.getMessage());
         }
@@ -155,57 +116,123 @@ public class ResourceController
     }
 
     @RequestMapping("/link")
-    public NetResult linkResource(int ques_id, int resource_id)
-    {
+    public NetResult linkResource(int ques_id, int resource_id) {
 
-        try
-        {
-           return NetResult.makeResult(service.linkResource(resource_id,ques_id).getCode()>1,const_Text.NET_success);
-        }catch (Throwable e)
-        {
+        try {
+            return NetResult.makeResult(service.linkResource(resource_id, ques_id).getCode() > 1, const_Text.NET_success);
+        } catch (Throwable e) {
             Error._ERROR.rollback();
-            return NetResult.makeResult(false,const_Text.NET_FAILURE,e.getMessage());
+            return NetResult.makeResult(false, const_Text.NET_FAILURE, e.getMessage());
         }
     }
 
     @RequestMapping("/unlink")
-    public NetResult unLinkResource(int ques_id, int resource_id)
-    {
-        try
-        {
-            return NetResult.makeResult(service.unlinkResource(resource_id,ques_id).getCode()>1,const_Text.NET_success);
-        }catch (Throwable e)
-        {
+    public NetResult unLinkResource(int ques_id, int resource_id) {
+        try {
+            return NetResult.makeResult(service.unlinkResource(resource_id, ques_id).getCode() > 1, const_Text.NET_success);
+        } catch (Throwable e) {
             Error._ERROR.rollback();
-            return NetResult.makeResult(false,const_Text.NET_FAILURE,e.getMessage());
+            return NetResult.makeResult(false, const_Text.NET_FAILURE, e.getMessage());
         }
     }
 
     @RequestMapping("/getByNote")
-    public NetResult getResourcesByNote(String note,int from,int to)
-    {
-        try
-        {
-         ServiceResult rs= service.getResourceByNote(note, from, to);
-         return NetResult.makeResult(rs.getCode()>0,const_Text.NET_success,rs.getObj());
-        }
-        catch (Throwable e)
-        {
-            return NetResult.makeResult(false,const_Text.NET_FAILURE,e.getMessage());
+    public NetResult getResourcesByNote(String note, int from, int to) {
+        try {
+            ServiceResult rs = service.getResourceByNote(note, from, to);
+            resourcesLinkApply((List<QuestionResource>)rs.getObj());
+            return NetResult.makeResult(rs.getCode() > 0, const_Text.NET_success, rs.getObj());
+        } catch (Throwable e) {
+            return NetResult.makeResult(false, const_Text.NET_FAILURE, e.getMessage());
         }
     }
+
     @RequestMapping("/getByQues")
-    public NetResult getResourcesByQuestion(int ques)
-    {
-        try
-        {
-            ServiceResult rs=service.getResourceByQuestion(ques);
-            return NetResult.makeResult(rs.getCode()>0,const_Text.NET_success,rs.getObj());
-        }catch (Throwable e)
-        {
-            return NetResult.makeResult(false,const_Text.NET_FAILURE,e.getMessage());
+    public NetResult getResourcesByQuestion(int ques) {
+        try {
+            ServiceResult rs = service.getResourceByQuestion(ques);
+            resourcesLinkApply((List<QuestionResource>) rs.getObj());
+            return NetResult.makeResult(rs.getCode() > 0, const_Text.NET_success, rs.getObj());
+        } catch (Throwable e) {
+            return NetResult.makeResult(false, const_Text.NET_FAILURE, e.getMessage());
         }
     }
 
 
+   public static class Help {
+
+        public static void resourcesLinkApply(List<QuestionResource> resources)
+        {
+            for(QuestionResource r :resources)
+            {
+                r.setResource(gen_file_link(r));
+            }
+
+        }
+
+
+        public static String gen_file_link(QuestionResource resource)
+        {
+            String res="/file/res/";
+            switch (resource.getResource_type())
+            {
+                case const_Resource_Type.Audio:
+                    res+="audio?";
+                    break;
+                case const_Resource_Type.Video:
+                    res+="video?";
+                    break;
+                case const_Resource_Type.Text:
+                    res+="text?";
+                    break;
+                case const_Resource_Type.Image:
+                    res+="image?";
+                    break;
+            }
+            res+="id="+resource.getId();
+            return res;
+        }
+
+
+
+        public static byte[] getFile(ResourceService service,int id,int type)
+        {
+            try {
+                ServiceResult result=  service.getResourceById(id);
+                QuestionResource questionResource=(QuestionResource)result.getObj();
+                if(questionResource.getResource_type()!=type)
+                    return null;
+                if(result.getCode()>0)
+                {
+                    FileUtility.FileReadThen readThen=new  FileUtility.FileReadThen();
+                    FileUtility.existFile(genPath(questionResource.getResource()) ,readThen);
+                    return (byte[])(readThen.result());
+                }
+                else
+                {
+                    return null;
+                }
+
+            }catch (Throwable ex)
+            {
+                return null;
+            }
+        }
+
+        public static String makePath(String type, String note) throws Exception {
+            Date date = new Date();
+            String d = Integer.toHexString((int) (date.getTime() % Integer.MAX_VALUE)) + note;
+
+            d = SecurityTools.Encrypt_str(d);
+
+            d = d.substring(32, 64);
+            d+=type;
+            return d;
+        }
+
+        public static String genPath(String filename) {
+            return ApplicationConfig.resourceDir + "/" + filename;
+        }
+    }
 }
+

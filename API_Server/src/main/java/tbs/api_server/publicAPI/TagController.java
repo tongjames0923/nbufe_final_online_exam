@@ -1,6 +1,7 @@
 package tbs.api_server.publicAPI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tbs.api_server.config.constant.const_Text;
 import tbs.api_server.objects.NetResult;
@@ -8,6 +9,7 @@ import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.services.TagService;
 
 @RestController
+@RequestMapping("tag/*")
 public class TagController
 {
 
@@ -22,6 +24,7 @@ public class TagController
     }
 
 
+    @RequestMapping("list")
     public NetResult list()
     {
         try
@@ -34,6 +37,7 @@ public class TagController
         }
 
     }
+    @RequestMapping
     public NetResult getTagsByQuestion(int ques)
     {
         try
@@ -45,6 +49,7 @@ public class TagController
             return NetResult.makeResult(false,e.getMessage());
         }
     }
+    @RequestMapping
     public NetResult addTag(String tag)
     {
         try
@@ -56,6 +61,7 @@ public class TagController
             return NetResult.makeResult(false,e.getMessage());
         }
     }
+    @RequestMapping
     public NetResult removeTag(String tag)
     {
         try
@@ -67,6 +73,7 @@ public class TagController
             return NetResult.makeResult(false,e.getMessage());
         }
     }
+    @RequestMapping
     public NetResult linkTag(String tag,int ques)
     {
         try
@@ -82,6 +89,7 @@ public class TagController
             return NetResult.makeResult(false,e.getMessage());
         }
     }
+    @RequestMapping
     public NetResult unLinkTag(String tag,int ques)
     {
         try

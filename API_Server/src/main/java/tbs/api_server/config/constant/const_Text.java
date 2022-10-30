@@ -4,17 +4,18 @@ import java.util.HashMap;
 
 public class const_Text
 {
-public static final String NET_success = "Success",NET_FAILURE = "Failure",NET_UNKNOWN = "Unknown error";
+public static final String NET_INSERT_FAIL="can not insert this",NET_NOT_FIND="can not find anythings",NET_UPDATE_FIAL="can not update this field",NET_FIND_QUES_ERROR="not a good type for find question",NET_success = "Success",NET_FAILURE = "Failure",NET_UNKNOWN = "Unknown error",NET_NO_WRITE="File Not Write in System";
 
+   private static int[] ck={102,103,112,105,106,108,109,110};
+ private static    String[] text={"登录失败，用户不存在","登录失败,密码错误","权限不足","注册失败,用户名已存在",
+            "注册失败,未知错误","用户密码修改失败，原密码错误","用户密码设置失败,未设置密保问题","用户密码修改失败,密保答案错误"};
 private static HashMap<Integer,String> errorTEXT;
     public static String ERRROR_CODE_TEXT(int error)
     {
         if(errorTEXT==null)
         {
             errorTEXT=new HashMap<>();
-            int[] ck={102,103,112,105,106,108,109,110};
-            String[] text={"登录失败，用户不存在","登录失败,密码错误","权限不足","注册失败,用户名已存在",
-            "注册失败,未知错误","用户密码修改失败，原密码错误","用户密码设置失败,未设置密保问题","用户密码修改失败,密保答案错误"};
+
             int j=0;
             for(int i:ck)
             {

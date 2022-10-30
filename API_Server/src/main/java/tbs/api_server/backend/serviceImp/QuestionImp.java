@@ -41,9 +41,9 @@ public class QuestionImp implements QuestionService
     }
 
     @Override
-    public ServiceResult uploadQuestion(int que_type, int creator_id, byte[] que_file, Integer isopen, Integer tagid)
+    public ServiceResult uploadQuestion(int que_type,String title, int creator_id, byte[] que_file, Integer isopen, Integer tagid)
     {
-        return ServiceResult.makeResult(mp.insertQuestion(que_type, creator_id, que_file, isopen, tagid));
+        return ServiceResult.makeResult(mp.insertQuestion(que_type, creator_id, que_file,title, isopen, tagid));
     }
 
     @Override
@@ -85,6 +85,12 @@ public class QuestionImp implements QuestionService
     }
 
     @Override
+    public ServiceResult findQuestionsByTitle(String title, int from, int num) {
+        List<Question> ls=mp.findQuestionByTitle(title, from, num);
+        return ServiceResult.makeResult(ls.size(),ls);
+    }
+
+    @Override
     public ServiceResult listQuestions(int from, int num)
     {
         List<Question> obj=mp.getQuestions(from, num);
@@ -104,13 +110,6 @@ public class QuestionImp implements QuestionService
         return ServiceResult.makeResult(m,null);
     }
 
-    @Override
-    public ServiceResult deleteQuestion(int quesid)
-    {
-        int m=mp.deleteQuestion(quesid);
-
-        return ServiceResult.makeResult(m,null);
-    }
 
     @Override
     public ServiceResult questionsLength()

@@ -5,6 +5,7 @@ import java.util.Date;
 public class Question {
     private int que_id;
     private int que_type;
+    private String title;
     private int que_creator;
     private Date que_alter_time;
     private byte[] que_file;
@@ -26,6 +27,14 @@ public class Question {
     public int getQue_type()
     {
         return que_type;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public void setQue_type(int que_type)

@@ -17,4 +17,6 @@ public interface ExamPermissionService
     ServiceResult getExamsFORCHECK(int user,int from,int num);
 
 
+
+
 }

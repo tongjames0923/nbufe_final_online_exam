@@ -11,8 +11,8 @@ public interface QuestionMapper
     //问题
 
 
-    @Insert("INSERT INTO `question` (`que_type`, `que_creator`, `que_alter_time`, `que_file`, `publicable`, `tag`, `use_time`, `answerd`, `answerd_right`) VALUES (#{param1},#{param2}, CURRENT_TIMESTAMP, #{param3}, #{param4}, #{param5}, '0', '0', '0')")
-    int insertQuestion(int que_type, int creator_id, byte[] que_file, Integer isopen, Integer tagid);
+    @Insert("INSERT INTO `question` (`que_type`, `que_creator`, `que_alter_time`, `que_file`, `publicable`, `tag`, `use_time`, `answerd`, `answerd_right`,`title`) VALUES (#{que_type},#{creator_id}, CURRENT_TIMESTAMP, #{que_file}, #{isopen}, #{tagid}, '0', '0', '0',#{title})")
+    int insertQuestion(int que_type, int creator_id, byte[] que_file,String title, Integer isopen, Integer tagid);
 
     @Select("SELECT * FROM `question` LIMIT #{from},#{num}")
     List<Question> getQuestions(int from, int num);
@@ -22,6 +22,11 @@ public interface QuestionMapper
 
     @Select("SELECT * FROM `question` WHERE `que_type`=#{type} LIMIT #{from},#{num}")
     List<Question> getQuestionsByType(int type, int from, int num);
+
+    @Select("SELECT * FROM `question` WHERE `title` LIKE %${title}% LIMIT #{from},#{num}")
+    List<Question> findQuestionByTitle(String title,int from,int num);
+
+
 
     @Update("UPDATE `question` SET `${field}`=#{value} WHERE `que_id`=#{id}")
     int updateQuestionValue(int que_id,String field,Object value);
