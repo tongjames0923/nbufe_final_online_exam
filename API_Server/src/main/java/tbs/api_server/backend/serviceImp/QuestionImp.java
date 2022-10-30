@@ -3,6 +3,7 @@ package tbs.api_server.backend.serviceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tbs.api_server.backend.mappers.QuestionMapper;
+import tbs.api_server.backend.mappers.UserMapper;
 import tbs.api_server.config.constant.const_Question;
 import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.ServiceResult;
@@ -10,7 +11,6 @@ import tbs.api_server.objects.simple.Question;
 import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.services.QuestionService;
 import tbs.api_server.utility.Error;
-import tbs.api_server.utility.MapperStore;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -24,14 +24,15 @@ public class QuestionImp implements QuestionService
 
     @Autowired
     private QuestionMapper mp;
-
+    @Autowired
+    private UserMapper userMapper;
 
     private boolean ownsQuestion(int queid,int userid)
     {
         Question question= mp.OwnQuestion(queid,userid);
         if(question==null)
         {
-            UserDetailInfo ud= MapperStore.userMapper.getUserDetailInfoByID(userid);
+            UserDetailInfo ud= userMapper.getUserDetailInfoByID(userid);
             return ud!=null&&ud.getLevel()== const_User.LEVEL_EXAM_STAFF;
         }
         else

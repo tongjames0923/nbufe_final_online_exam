@@ -4,11 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import tbs.api_server.backend.mappers.UserMapper;
-import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.UserService;
-import tbs.api_server.utility.MapperStore;
 
 import static tbs.api_server.config.constant.const_User.*;
 import static tbs.api_server.utility.Error.*;
@@ -109,7 +107,12 @@ public class UserImp implements UserService
             {
                 throw _ERROR.throwError(EC_DB_INSERT_FAIL,"插入数据失败");
             }
-        } catch (Exception e)
+        }
+        catch (BackendError ex)
+        {
+            throw  ex;
+        }
+        catch (Exception e)
         {
             if (e.getClass().equals(DuplicateKeyException.class))
             {
@@ -122,7 +125,6 @@ public class UserImp implements UserService
     @Override
     public ServiceResult UpdateUserDetails(int userid, String address, String phone, String email,
                                            String note) throws BackendError {
-        try {
             int a = 0;
             if (mp.getUserDetailInfoByID(userid) == null)
             {
@@ -139,10 +141,6 @@ public class UserImp implements UserService
                     a += mp.setValueForUserDetails(userid, uinfo_note, note) * 10;
             }
             return new ServiceResult<>(a, mp.getUserDetailInfoByID(userid));
-        }catch (Exception ex)
-        {
-            throw _ERROR.throwError(EC_UNKNOWN,ex.getMessage(),ex);
-        }
 
     }
 
@@ -180,10 +178,14 @@ public class UserImp implements UserService
                 } else
                     throw _ERROR.throwError(FC_WRONG_PASSTEXT,"密码错误");
             }
-        } catch (Exception e)
-        {
-            _ERROR.throwError(EC_UNKNOWN,e.getMessage(),e);
         }
-        return null;
+        catch (BackendError ex)
+        {
+            throw  ex;
+        }
+        catch (Exception e)
+        {
+           throw  _ERROR.throwError(EC_UNKNOWN,e.getMessage(),e);
+        }
     }
 }

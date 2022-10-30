@@ -5,12 +5,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import tbs.api_server.backend.mappers.ExamPermissionMapper;
+import tbs.api_server.backend.mappers.UserMapper;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.simple.ExamPermission;
 import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.services.ExamPermissionService;
-import tbs.api_server.utility.Error;
-import tbs.api_server.utility.MapperStore;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +23,8 @@ public class ExamPermissionImp implements ExamPermissionService
 
     @Autowired
     private ExamPermissionMapper mp;
+    @Autowired
+    private UserMapper userMapper;
     @Override
     public ServiceResult getPermission(int exam_id, int userid) throws BackendError {
         ExamPermission ep= mp.getPermission(exam_id, userid);
@@ -39,7 +40,7 @@ public class ExamPermissionImp implements ExamPermissionService
         ArrayList<UserDetailInfo> userDetailInfos =new ArrayList<>();
         for(int i:ls)
         {
-            userDetailInfos.add(MapperStore.userMapper.getUserDetailInfoByID(i));
+            userDetailInfos.add(userMapper.getUserDetailInfoByID(i));
         }
         if(userDetailInfos.size()>0)
         return ServiceResult.makeResult(userDetailInfos.size(),userDetailInfos);
@@ -53,7 +54,6 @@ public class ExamPermissionImp implements ExamPermissionService
     {
             ExamPermission permission = mp.getPermission(userid,examid);
             int r=read?1:0,w=write?1:0,c=check?1:0;
-
             if(permission!=null)
             {
                 int upc=0;

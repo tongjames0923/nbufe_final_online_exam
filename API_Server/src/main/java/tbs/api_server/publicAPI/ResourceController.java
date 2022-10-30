@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import tbs.api_server.backend.mappers.UserMapper;
 import tbs.api_server.config.ApplicationConfig;
 import tbs.api_server.config.constant.const_Resource_Type;
 import tbs.api_server.config.constant.const_User;
@@ -17,7 +18,6 @@ import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.services.ResourceService;
 import tbs.api_server.utility.Error;
 import tbs.api_server.utility.FileUtility;
-import tbs.api_server.utility.MapperStore;
 import tbs.api_server.utility.SecurityTools;
 
 import java.io.File;
@@ -88,6 +88,8 @@ public class ResourceController {
             return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
         }
     }
+    @Autowired
+    UserMapper userMapper;
 
     @Transactional
     @RequestMapping("/delete")
@@ -98,7 +100,7 @@ public class ResourceController {
             Optional.ofNullable(resource).ifPresent(new Consumer<QuestionResource>() {
                 @Override
                 public void accept(QuestionResource questionResource) {
-                    UserDetailInfo info = MapperStore.userMapper.getUserDetailInfoByID(userid);
+                    UserDetailInfo info =userMapper.getUserDetailInfoByID(userid);
                     if (info.getLevel() == const_User.LEVEL_EXAM_STAFF) {
 
                         try {
