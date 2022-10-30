@@ -48,10 +48,13 @@ public class Error {
     }
 
     private static String ERRROR_CODE_TEXT(int error) {
+        String errorcode="NULL CODE";
         if (mp.containsKey(error)) {
-            return mp.get(error);
-        } else
-            return "NULL CODE";
+            errorcode= mp.get(error);
+        }
+        System.out.println(String.format("ERROR:%d,DETAIL:%s",error,errorcode));
+
+            return errorcode;
     }
 
     public static boolean lengthCheck(String text, int length) {
@@ -76,7 +79,7 @@ public class Error {
     }
 
     public BackendError throwError(int error, String detail, Object data) throws BackendError {
-        return BackendError.newError(error, String.format("error code: %d,msg=%s,Detail:%s", error, ERRROR_CODE_TEXT(error), detail), data);
+        return BackendError.newError(error, detail,ERRROR_CODE_TEXT(error), data);
     }
 
     public BackendError throwError(int error, String detail) throws BackendError {
@@ -86,13 +89,23 @@ public class Error {
     public static class BackendError extends Exception {
         private int code;
         private Object data = null;
+        private String detail=null;
 
-        private BackendError(String msg) {
-            super(msg);
+        public String getDetail() {
+            return detail;
         }
 
-        public static BackendError newError(int code, String msg, Object data) {
-            BackendError backendError = new BackendError(msg);
+        public void setDetail(String detail) {
+            this.detail = detail;
+        }
+
+        private BackendError(String msg, String detail) {
+            super(msg);
+            setDetail(detail);
+        }
+
+        public static BackendError newError(int code, String msg,String detail, Object data) {
+            BackendError backendError = new BackendError(msg,detail);
             backendError.setCode(code);
             backendError.setData(data);
             return backendError;
