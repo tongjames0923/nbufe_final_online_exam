@@ -1,16 +1,19 @@
 package tbs.api_server.publicAPI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tbs.api_server.config.constant.const_Exam;
 import tbs.api_server.objects.NetResult;
+import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.simple.ExamInfo;
 import tbs.api_server.services.ExamService;
 import tbs.api_server.utility.ApiMethod;
 import tbs.api_server.utility.Error;
+import tbs.api_server.utility.TimeUtil;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -18,47 +21,155 @@ import static tbs.api_server.utility.Error.SUCCESS;
 
 @RestController
 @RequestMapping("exam/*")
-public class ExamController
-{
+public class ExamController {
     @Autowired
     ExamService service;
 
-
-    public NetResult list(int from, int num)
-    {
-        return ApiMethod.make(new ApiMethod.IAction()
-        {
-            @Override
-            public NetResult action() throws Error.BackendError, Exception
-            {
-                Date now = new Date();
-                List<ExamInfo> list = (List<ExamInfo>) service.list(from, num).getObj();
-                for (ExamInfo info : list)
-                {
-                    try
-                    {
-                        Calendar calendar = Calendar.getInstance();
-                        calendar.setTime(info.getExam_begin());
-                        calendar.add(Calendar.MINUTE, info.getExam_len());
-                        Date ed = calendar.getTime();
-                        if (now.after(
-                                ed) && (info.getExam_status() == const_Exam.EXAM_STATUS_WAIT || info.getExam_status() == const_Exam.EXAM_STATUS_START))
-                        {
-                            service.updateStatus(const_Exam.EXAM_STATUS_CLOSED, info.getExam_id());
-                            info.setExam_status(const_Exam.EXAM_STATUS_CLOSED);
-                        } else if (now.after(
-                                info.getExam_begin()) && info.getExam_status() == const_Exam.EXAM_STATUS_WAIT)
-                        {
-                            service.updateStatus(const_Exam.EXAM_STATUS_START, info.getExam_id());
-                            info.setExam_status(const_Exam.EXAM_STATUS_START);
-                        }
-                    } catch (Exception e)
-                    {
-                    }
+    private void update(List<ExamInfo> list) {
+        for (ExamInfo info : list) {
+            try {
+                if (TimeUtil.isClosed(info) && (info.getExam_status() == const_Exam.EXAM_STATUS_WAIT || info.getExam_status() == const_Exam.EXAM_STATUS_START)) {
+                    service.updateStatus(const_Exam.EXAM_STATUS_CLOSED, info.getExam_id());
+                    info.setExam_status(const_Exam.EXAM_STATUS_CLOSED);
+                } else if (TimeUtil.isStart(info) && info.getExam_status() == const_Exam.EXAM_STATUS_WAIT) {
+                    service.updateStatus(const_Exam.EXAM_STATUS_START, info.getExam_id());
+                    info.setExam_status(const_Exam.EXAM_STATUS_START);
                 }
-                return NetResult.makeResult(SUCCESS,null,list);
+            } catch (Exception e) {
+            }
+        }
+    }
+
+
+
+    @RequestMapping("list")
+    @Transactional
+    public NetResult list(int from, int num) {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws Exception {
+
+                List<ExamInfo> list = (List<ExamInfo>) service.list(from, num).getObj();
+                update(list);
+                return NetResult.makeResult(SUCCESS, null, list);
             }
         }).method();
     }
+    @RequestMapping("byStatus")
+    @Transactional
+    public NetResult listStatus(int status, int from, int num) {
 
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws Exception {
+
+                List<ExamInfo> list = (List<ExamInfo>) service.list(from, num).getObj();
+                update(list);
+
+                ServiceResult result = service.getExamByStatus(status, from, num);
+                return NetResult.makeResult(result, null);
+            }
+        }).method();
+    }
+    @RequestMapping("updateLen")
+    @Transactional
+    public NetResult updateLen(int len, int user, int examid) {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws Exception {
+
+                return NetResult.makeResult(service.updateLen(len, user, examid), null);
+            }
+        }).method();
+    }
+    @RequestMapping("updateName")
+    @Transactional
+    public NetResult updateName(String name, int user, int examid) {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws Exception {
+
+                return NetResult.makeResult(service.updateName(name, user, examid), null);
+            }
+        }).method();
+    }
+    @RequestMapping("updateNote")
+    @Transactional
+    public NetResult updateNote(String note, int user, int examid) {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws Exception {
+
+                return NetResult.makeResult(service.updateNote(note, user, examid), null);
+            }
+        }).method();
+    }
+    @RequestMapping("updateBegin")
+    @Transactional
+    public NetResult updateBegin(Date time, int user, int examid) {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws Exception {
+
+                return NetResult.makeResult(service.updateBegin(time, user, examid), null);
+            }
+        }).method();
+    }
+    @RequestMapping("get")
+    @Transactional
+    public NetResult getExamByName(String name) {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws Exception {
+
+                return NetResult.makeResult(service.getExamByName(name), null);
+            }
+        }).method();
+    }
+    @RequestMapping("upload")
+    @Transactional
+    public NetResult upload(int user, String name, Date beg, byte[] file, @RequestParam(required = false) String note, @RequestParam(required = false) Integer length) {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws Exception {
+                return NetResult.makeResult(service.uploadExam(user, name, beg, note, length, file), null);
+            }
+        }).method();
+    }
+    @RequestMapping("delete")
+    @Transactional
+    public NetResult delete(int id, int user) {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws Exception {
+                return NetResult.makeResult(service.deleteExam(id, user), null);
+            }
+        }).method();
+    }
+    @RequestMapping("bytime")
+    @Transactional
+    public NetResult findByTime(Date date,int from,int num)
+    {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws Exception {
+                List<ExamInfo> list = (List<ExamInfo>) service.getExamBeforeTime(date,from,num).getObj();
+                update(list);
+                return NetResult.makeResult(SUCCESS, null, list);
+            }
+        }).method();
+    }
+    @RequestMapping("bynote")
+    @Transactional
+    public NetResult findByNote(String note,int from,int num)
+    {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws Exception {
+                List<ExamInfo> list = (List<ExamInfo>) service.getExamByNote(note,from,num).getObj();
+                update(list);
+                return NetResult.makeResult(SUCCESS, null, list);
+            }
+        }).method();
+    }
 }

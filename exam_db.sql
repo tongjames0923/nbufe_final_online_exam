@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 80030
 File Encoding         : 65001
 
-Date: 2022-10-30 14:37:05
+Date: 2022-10-31 11:42:35
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -42,7 +42,7 @@ CREATE TABLE `exam` (
   `exam_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '考试名称',
   `exam_begin` datetime NOT NULL COMMENT '考试开始时间',
   `exam_len` int NOT NULL DEFAULT '90' COMMENT '考试长度（单位：分钟）',
-  `exam_file` varchar(128) NOT NULL COMMENT '试题文件(sqlite db)',
+  `exam_file` mediumblob NOT NULL COMMENT '考试文件(sqlite db)',
   `exam_note` varchar(512) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '其他考试文件',
   `exam_status` tinyint NOT NULL DEFAULT '0' COMMENT '考试状态',
   PRIMARY KEY (`exam_id`),
@@ -136,6 +136,9 @@ CREATE TABLE `ques_resource` (
   UNIQUE KEY `resource` (`resource`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- ----------------------------
+-- Records of ques_resource
+-- ----------------------------
 
 -- ----------------------------
 -- Table structure for `resource_link`
@@ -166,7 +169,7 @@ CREATE TABLE `tag` (
   `tag_used` int unsigned NOT NULL DEFAULT '0' COMMENT '标签使用次数',
   PRIMARY KEY (`tag_id`),
   UNIQUE KEY `tag_name` (`tag_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Records of tag
@@ -204,7 +207,7 @@ CREATE TABLE `user_info` (
   `level` tinyint NOT NULL DEFAULT '0' COMMENT '用户权限等级',
   PRIMARY KEY (`id`),
   CONSTRAINT `user_info_ibfk_1` FOREIGN KEY (`id`) REFERENCES `user_sec` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Records of user_info
@@ -222,7 +225,7 @@ CREATE TABLE `user_sec` (
   `sec_ans` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '安全问题答案',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Records of user_sec

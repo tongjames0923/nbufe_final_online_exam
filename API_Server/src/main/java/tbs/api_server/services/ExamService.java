@@ -18,4 +18,8 @@ public interface ExamService
     ServiceResult updateBegin(Date date,int user,int examid) throws Error.BackendError;
     ServiceResult updateName(String name ,int user,int examid) throws Error.BackendError;
 
+    ServiceResult getExamByNote(String note,int from,int num)throws Error.BackendError;
+    ServiceResult getExamBeforeTime(Date d,int from,int num)throws Error.BackendError;
+
+
 }
