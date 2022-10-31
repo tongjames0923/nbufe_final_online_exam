@@ -20,8 +20,6 @@ import static tbs.api_server.utility.Error.*;
 public class QuestionController {
     @Autowired
     QuestionService service;
-
-
     @RequestMapping(value = "create", method = RequestMethod.POST)
     @Transactional
     public NetResult uploadQuestion(@RequestParam int type, @RequestParam int creator, @RequestParam String title, @RequestParam MultipartFile file, @RequestParam(required = false) Integer isopen, @RequestParam(required = false) Integer tag) {

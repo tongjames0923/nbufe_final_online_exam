@@ -4,6 +4,8 @@ package tbs.api_server.publicAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import tbs.api_server.backend.mappers.ExamMapper;
+import tbs.api_server.backend.mappers.QuestionMapper;
 import tbs.api_server.config.constant.const_Resource_Type;
 import tbs.api_server.services.ResourceService;
 
@@ -35,5 +37,25 @@ public class FileController {
     {
         return getFile(service,id,const_Resource_Type.Audio);
     }
+
+    @Autowired
+    ExamMapper examMapper;
+
+    @RequestMapping("exam")
+    public byte[] downloadExam(int id)
+    {
+        return examMapper.getExamFile(id);
+    }
+
+    @Autowired
+    QuestionMapper qmp;
+
+    @RequestMapping(value = "question")
+    public byte[] downloadQuestion(int id)
+    {
+      return qmp.getQuestionFile(id);
+    }
+
+
 
 }

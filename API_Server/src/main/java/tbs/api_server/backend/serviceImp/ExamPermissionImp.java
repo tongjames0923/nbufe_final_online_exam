@@ -2,8 +2,6 @@ package tbs.api_server.backend.serviceImp;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import tbs.api_server.backend.mappers.ExamPermissionMapper;
 import tbs.api_server.backend.mappers.UserMapper;
 import tbs.api_server.objects.ServiceResult;
@@ -49,7 +47,36 @@ public class ExamPermissionImp implements ExamPermissionService
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class,propagation = Propagation.REQUIRED)
+    public ServiceResult getReadList(int examid, int from, int num) throws BackendError
+    {
+        List<Integer> ls= mp.getReaderList(examid, from, num);
+        ArrayList<UserDetailInfo> userDetailInfos =new ArrayList<>();
+        for(int i:ls)
+        {
+            userDetailInfos.add(userMapper.getUserDetailInfoByID(i));
+        }
+        if(userDetailInfos.size()>0)
+            return ServiceResult.makeResult(userDetailInfos.size(),userDetailInfos);
+        else
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"该考试不存在可读人",examid);
+    }
+
+    @Override
+    public ServiceResult getWriteList(int examid, int from, int num) throws BackendError
+    {
+        List<Integer> ls= mp.getWriterList(examid, from, num);
+        ArrayList<UserDetailInfo> userDetailInfos =new ArrayList<>();
+        for(int i:ls)
+        {
+            userDetailInfos.add(userMapper.getUserDetailInfoByID(i));
+        }
+        if(userDetailInfos.size()>0)
+            return ServiceResult.makeResult(userDetailInfos.size(),userDetailInfos);
+        else
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"该考试不存在编写人",examid);
+    }
+
+    @Override
     public ServiceResult setPermission(int examid, int userid, Boolean read, Boolean write, Boolean check)
     {
             ExamPermission permission = mp.getPermission(userid,examid);

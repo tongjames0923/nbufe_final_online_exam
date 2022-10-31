@@ -1,6 +1,5 @@
 package tbs.api_server.objects.simple;
 
-import java.io.InputStream;
 import java.util.Date;
 
 public class ExamInfo {
@@ -8,10 +7,9 @@ public class ExamInfo {
     private String exam_name;
     private Date exam_begin;
     private int exam_len;
-    private String exam_file;
+    private byte[] exam_file;
     private String exam_note;
     private int exam_status;
-
     public int getExam_id() {
         return exam_id;
     }
@@ -44,12 +42,12 @@ public class ExamInfo {
         this.exam_len = exam_len;
     }
 
-    public String getExam_file()
+    public byte[] getExam_file()
     {
         return exam_file;
     }
 
-    public void setExam_file(String exam_file)
+    public void setExam_file(byte[] exam_file)
     {
         this.exam_file = exam_file;
     }

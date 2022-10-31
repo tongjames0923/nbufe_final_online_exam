@@ -1,5 +1,21 @@
 package tbs.api_server.services;
 
+import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.utility.Error;
+
+import java.util.Date;
+
 public interface ExamService
 {
+    ServiceResult getExamByStatus(int status,int from,int num) throws Error.BackendError;
+    ServiceResult getExamByName(String name) throws Error.BackendError;
+    ServiceResult uploadExam(int user,String name, Date beg,String note,Integer length,byte[] file) throws Error.BackendError;
+    ServiceResult deleteExam(int id,int userid) throws Error.BackendError;
+    ServiceResult list(int from,int num) throws Error.BackendError;
+    ServiceResult updateStatus(int status,int examid) throws Error.BackendError;
+    ServiceResult updateLen(int len,int user,int examid) throws Error.BackendError;
+    ServiceResult updateNote(String note,int user,int examid) throws Error.BackendError;
+    ServiceResult updateBegin(Date date,int user,int examid) throws Error.BackendError;
+    ServiceResult updateName(String name ,int user,int examid) throws Error.BackendError;
+
 }
