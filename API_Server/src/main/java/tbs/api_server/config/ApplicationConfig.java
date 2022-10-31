@@ -8,6 +8,6 @@ public class ApplicationConfig
     public static final String Default_Text = ApplicationConfig.PROJECT_SPEC+" " +
             ApplicationConfig.PROJECT_NAME+" " + ApplicationConfig.VERSION;
 
-    public static final String resourceDir="resources",ReplyDir="ReplyDir";
+    public static final String resourceDir="resources",ReplyDir="ReplyDir",CheckFileDir="CheckFileDir";
 
 }

@@ -59,7 +59,6 @@ public class ResourceController {
         try {
             MultipartFile bytes = file;
             int tp = type;
-
             String name = file.getOriginalFilename();
             name = name.substring(name.lastIndexOf("."));
             String filepath = makePath(name, note);
@@ -210,8 +209,6 @@ public class ResourceController {
             }
 
         }
-
-
         public static String gen_file_link(QuestionResource resource) {
             String res = "/file/res/";
             switch (resource.getResource_type()) {
