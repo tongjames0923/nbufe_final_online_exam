@@ -69,7 +69,7 @@ public class UserImp implements UserService
         }
         int a = mp.setValueForUserSecurity(userid, usec_ques, question) + mp.setValueForUserSecurity(userid,
                                                                                                      usec_ans, answer);
-        return new ServiceResult<>(a, mp.getUserSecurityInfo(userid));
+        return new ServiceResult<>(SUCCESS, mp.getUserSecurityInfo(userid));
     }
 
     @Override
@@ -140,7 +140,7 @@ public class UserImp implements UserService
                 if (note != null)
                     a += mp.setValueForUserDetails(userid, uinfo_note, note) * 10;
             }
-            return new ServiceResult<>(a, mp.getUserDetailInfoByID(userid));
+            return new ServiceResult<>(SUCCESS, mp.getUserDetailInfoByID(userid));
 
     }
 

@@ -6,7 +6,6 @@ import 'element-ui/lib/theme-chalk/index.css';
 Vue.config.productionTip = false
 Vue.use(ElementUI);
 
-
 import {
   Pagination,
   Dialog,
@@ -163,6 +162,10 @@ Vue.use(CascaderPanel);
 
 Vue.use(Loading.directive);
 
+import axios from "axios";
+//引入qs模块
+import qs from 'qs'     
+Vue.prototype.$qs = qs
 Vue.prototype.$loading = Loading.service;
 Vue.prototype.$msgbox = MessageBox;
 Vue.prototype.$alert = MessageBox.alert;
@@ -171,6 +174,30 @@ Vue.prototype.$prompt = MessageBox.prompt;
 Vue.prototype.$notify = Notification;
 Vue.prototype.$message = Message;
 
+Vue.prototype.$postMethod= function (url,data) {
+  return axios
+  .post(url, this.$qs.stringify(data));
+}
+Vue.prototype.$getMethod= function(url)
+{
+  return axios.get(url);
+}
+Vue.prototype.allowed=function(f,name,success,error)
+{
+  f.$refs[name].validate((valid) => {
+    if(valid)
+    {
+      success();
+      return true;
+    }
+    else
+    {
+      error();
+      return false;
+    }
+
+  });
+}
 new Vue({
   render: h => h(App),
 }).$mount('#app')

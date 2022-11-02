@@ -2,21 +2,38 @@
   <div id="app">
     <!-- <img alt="Vue logo" src="./assets/logo.png">
     <HelloWorld msg="Welcome to Your Vue.js App"/> -->
-    <UploadFile :url="'http://localhost:8080/resource/upload'"></UploadFile>
+
+    <el-tabs type="border-card">
+      <el-tab-pane label="注册">
+        <Register :url="'http://localhost:8080/user/register'"></Register>
+      </el-tab-pane>
+      <el-tab-pane label="登录">
+        <Login :url="'http://localhost:8080/user/login'"></Login>
+      </el-tab-pane>
+      <el-tab-pane label="其他">
+        <UploadFile :url="'http://localhost:8080/resource/upload'"></UploadFile>
+      </el-tab-pane>
+    </el-tabs>
+
+
+
   </div>
 </template>
 
 <script>
 // import HelloWorld from './components/HelloWorld.vue'
-import UploadFile from './components/UploadFile.vue'
+import UploadFile from "./components/UploadFile.vue";
+import Login from "./components/Login.vue";
+import Register from "./components/Register.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
-    // HelloWorld,
-    UploadFile
-  }
-}
+    UploadFile,
+    Login,
+    Register,
+  },
+};
 </script>
 
 <style>
@@ -24,7 +41,7 @@ export default {
   font-family: comic code, Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  text-align:center;
+  text-align: center;
   color: #2c3e50;
   margin-top: 60px;
 }

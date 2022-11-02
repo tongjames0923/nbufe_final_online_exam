@@ -4,6 +4,7 @@ package tbs.api_server.publicAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tbs.api_server.objects.NetResult;
@@ -39,7 +40,7 @@ public class UserController {
             return NetResult.makeResult(t.getCode(), null, null);
         } catch (Error.BackendError e) {
             _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
+            return NetResult.makeResult(e.getCode(), e.getDetail());
         } catch (Exception ex) {
             _ERROR.rollback();
             return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
@@ -69,7 +70,7 @@ public class UserController {
             }
         } catch (Error.BackendError e) {
             _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
+            return NetResult.makeResult(e.getCode(), e.getDetail());
         } catch (Exception ex) {
             _ERROR.rollback();
             return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
@@ -92,7 +93,7 @@ public class UserController {
             return NetResult.makeResult(sc.getCode(), null, sc.getObj());
         } catch (Error.BackendError e) {
             _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
+            return NetResult.makeResult(e.getCode(), e.getDetail());
         } catch (Exception ex) {
             _ERROR.rollback();
             return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
@@ -121,7 +122,7 @@ public class UserController {
             return NetResult.makeResult(dt.getCode(), null, dt.getObj());
         } catch (Error.BackendError e) {
             _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
+            return NetResult.makeResult(e.getCode(), e.getDetail());
         } catch (Exception ex) {
             _ERROR.rollback();
             return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
@@ -130,7 +131,7 @@ public class UserController {
     }
 
 
-    @RequestMapping("register")
+    @RequestMapping(value = "register",method = RequestMethod.POST)
     /***
      * 注册 密保问题和答案一个为空即视为不设置密保。
      * @param username 用户名
@@ -163,7 +164,7 @@ public class UserController {
             }
         } catch (Error.BackendError e) {
             _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
+            return NetResult.makeResult(e.getCode(), e.getDetail());
         } catch (Exception ex) {
             _ERROR.rollback();
             return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
@@ -187,7 +188,7 @@ public class UserController {
             return NetResult.makeResult(result, null);
         } catch (Error.BackendError e) {
             _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
+            return NetResult.makeResult(e.getCode(), e.getDetail());
         } catch (Exception ex) {
             _ERROR.rollback();
             return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
@@ -213,7 +214,7 @@ public class UserController {
             return NetResult.makeResult(result, null);
         } catch (Error.BackendError e) {
             _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
+            return NetResult.makeResult(e.getCode(), e.getDetail());
         } catch (Exception ex) {
             _ERROR.rollback();
             return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
@@ -235,12 +236,11 @@ public class UserController {
             return NetResult.makeResult(result, null);
         } catch (Error.BackendError e) {
             _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
+            return NetResult.makeResult(e.getCode(), e.getDetail());
         } catch (Exception ex) {
             _ERROR.rollback();
             return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
         }
-
     }
 
 

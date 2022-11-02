@@ -62,7 +62,7 @@ public class Error
     public static boolean lengthCheck(String text, int length)
     {
         final boolean[] isValid = {false};
-        Optional.of(text).ifPresent(new Consumer<String>()
+        Optional.ofNullable(text).ifPresent(new Consumer<String>()
         {
             @Override
             public void accept(String s)
