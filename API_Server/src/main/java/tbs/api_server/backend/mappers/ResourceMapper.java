@@ -43,4 +43,7 @@ public interface ResourceMapper
     @Select("SELECT `resource_id` FROM `resource_link` WHERE `ques_id`=#{ques}")
     List<Integer> getQuestionLink(int ques);
 
+
+
+
 }

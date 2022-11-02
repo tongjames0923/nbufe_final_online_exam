@@ -10,8 +10,11 @@
       <el-tab-pane label="登录">
         <Login :url="'http://localhost:8080/user/login'"></Login>
       </el-tab-pane>
-      <el-tab-pane label="其他">
+      <el-tab-pane label="上传资源">
         <UploadFile :url="'http://localhost:8080/resource/upload'"></UploadFile>
+      </el-tab-pane>
+      <el-tab-pane label="查看资源">
+        <ListResourceVue :url="'http://localhost:8080/resource/getByType'"></ListResourceVue>
       </el-tab-pane>
     </el-tabs>
 
@@ -25,13 +28,14 @@
 import UploadFile from "./components/UploadFile.vue";
 import Login from "./components/Login.vue";
 import Register from "./components/Register.vue";
-
+import ListResourceVue from "./components/ListResource.vue";
 export default {
   name: "App",
   components: {
     UploadFile,
     Login,
     Register,
+    ListResourceVue
   },
 };
 </script>

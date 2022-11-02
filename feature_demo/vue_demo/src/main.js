@@ -173,7 +173,7 @@ Vue.prototype.$confirm = MessageBox.confirm;
 Vue.prototype.$prompt = MessageBox.prompt;
 Vue.prototype.$notify = Notification;
 Vue.prototype.$message = Message;
-
+Vue.prototype.$baseUrl="http://localhost:8080/"
 Vue.prototype.$postMethod= function (url,data) {
   return axios
   .post(url, this.$qs.stringify(data));

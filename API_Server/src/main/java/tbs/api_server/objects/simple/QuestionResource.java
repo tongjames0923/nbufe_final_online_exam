@@ -1,6 +1,9 @@
 package tbs.api_server.objects.simple;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class QuestionResource {
@@ -8,6 +11,11 @@ public class QuestionResource {
     private String resource;
     private String note;
     private int resource_type;
+
+
+    @DateTimeFormat(pattern="yyyy年MM月dd日 hh:mm:ss")
+    @JsonFormat(pattern="yyyy年MM月dd日 hh:mm:ss",timezone="GMT+8")
+    private Date altertime;
 
     public Date getAltertime()
     {
@@ -20,7 +28,7 @@ public class QuestionResource {
     }
 
 
-    private Date altertime;
+
 
     public int getId() {
         return id;

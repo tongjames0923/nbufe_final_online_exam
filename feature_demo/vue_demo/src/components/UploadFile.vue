@@ -4,9 +4,9 @@
     :model="ruleForm"
     :rules="rules"
     ref="ruleForm"
-    class="demo-ruleForm"
     :v-loading="isloading"
     :on-submit="submit"
+
   >
     <el-form-item label="资源类型" prop="type" required>
       <el-radio v-model="ruleForm.type" @change="selectChange" label="1000"
@@ -36,14 +36,9 @@
         :on-change="submitUpload"
         action="#"
         :accept="acp"
-        drag
+        :file-list="files"
       >
-        <i class="el-icon-upload"></i>
-        <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-
-        <div class="el-upload__tip" slot="tip">
-          {{ tip }}
-        </div>
+      <el-button slot="trigger" size="small" type="primary"> {{ tip }}</el-button>
       </el-upload>
     </el-form-item>
     <el-button type="primary" @click="submit(ruleForm)">提交</el-button>
@@ -64,6 +59,7 @@ export default {
         type: 1000,
         file: null,
       },
+      files:[],
       hasFile:false
       ,
       selected: false,
@@ -103,8 +99,8 @@ export default {
         that.isloading = false;
         console.log(res.data);
         that.$notify({
-          title: res.data.success ? "上传成功" : "上传失败",
-          message: "上传大小：" + res.data.data + "字节",
+          title: res.data.code==40000 ? "上传成功" : "上传失败",
+          message: "",
           duration: 1500,
         });
       });
@@ -133,6 +129,8 @@ export default {
           return false;
         }
       });
+      this.hasFile=false;
+      this.files=[];
     },
     cancel() {},
     submitUpload(file, fileList) {
