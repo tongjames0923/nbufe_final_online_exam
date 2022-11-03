@@ -104,12 +104,11 @@ public class ResourceController {
 
                         try {
 
+                            ServiceResult rs = service.DeleteResource(resource_id);
                             FileUtility.BaseThen then = new FileUtility.FileDeleteThen();
                             FileUtility.existFile(genPath(questionResource.getResource()), then);
                             boolean deleted = (boolean) then.result();
-                            if (deleted) {
-                                ServiceResult rs = service.DeleteResource(userid);
-                            } else {
+                            if (!deleted) {
                                 result.setCode(EC_FILESYSTEM_ERROR);
                                 result.setMessage("删除资源文件失败");
                             }
@@ -170,14 +169,14 @@ public class ResourceController {
 
     @Transactional
     @RequestMapping("/getByNote")
-    public NetResult getResourcesByNote(String note, int from, int to) {
+    public NetResult getResourcesByNote(String note, int from, int num) {
         try {
-            ServiceResult rs = service.getResourceByNote(note, from, to);
+            ServiceResult rs = service.getResourceByNote(note, from, num);
             resourcesLinkApply((List<QuestionResource>) rs.getObj());
             return NetResult.makeResult(SUCCESS, null, rs.getObj());
         } catch (Error.BackendError e) {
             _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
+            return NetResult.makeResult(e.getCode(), e.getDetail());
         } catch (Exception ex) {
             _ERROR.rollback();
             return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());

@@ -14,7 +14,7 @@
         <UploadFile :url="'http://localhost:8080/resource/upload'"></UploadFile>
       </el-tab-pane>
       <el-tab-pane label="查看资源">
-        <ListResourceVue :url="'http://localhost:8080/resource/getByType'"></ListResourceVue>
+        <ListResourceVue :url="'http://localhost:8080/resource'" :user=1></ListResourceVue>
       </el-tab-pane>
     </el-tabs>
 

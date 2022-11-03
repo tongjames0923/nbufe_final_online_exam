@@ -15,7 +15,7 @@ public interface ResourceMapper
     @Select("SELECT * FROM `ques_resource` WHERE `resource_type` = #{t} limit #{from},#{num}")
     List<QuestionResource> getResourcesByType(int t, int from, int num);
 
-    @Select("SELECT * FROM `ques_resource` WHERE `note` LIKE %${note}% LIMIT #{from},#{num}")
+    @Select("SELECT * FROM `ques_resource` WHERE `note` LIKE '%${note}%' LIMIT #{from},#{num}")
     List<QuestionResource> findResourcesByNote(String note, int from, int num);
 
     @Select("SELECT * FROM `ques_resource` WHERE `id` = #{id}")
