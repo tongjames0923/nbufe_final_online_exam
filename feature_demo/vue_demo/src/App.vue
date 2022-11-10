@@ -16,6 +16,9 @@
       <el-tab-pane label="查看资源">
         <ListResourceVue :url="'http://localhost:8080/resource'" :user=1></ListResourceVue>
       </el-tab-pane>
+      <el-tab-pane label="MarkDown">
+        <Question></Question>
+      </el-tab-pane>
     </el-tabs>
 
 
@@ -29,13 +32,15 @@ import UploadFile from "./components/UploadFile.vue";
 import Login from "./components/Login.vue";
 import Register from "./components/Register.vue";
 import ListResourceVue from "./components/ListResource.vue";
+import Question from './components/question.vue';
 export default {
   name: "App",
   components: {
     UploadFile,
     Login,
     Register,
-    ListResourceVue
+    ListResourceVue,
+    Question
   },
 };
 </script>
