@@ -1,6 +1,7 @@
 package tbs.api_server.backend.serviceImp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import tbs.api_server.backend.mappers.AnswerMapper;
@@ -14,6 +15,7 @@ import tbs.api_server.utility.Error;
 import static tbs.api_server.utility.Error.*;
 
 @Service
+@Scope("prototype")
 public class AnswerImp implements AnswerService
 {
     @Autowired

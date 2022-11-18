@@ -2,6 +2,7 @@ package tbs.api_server.publicAPI;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tbs.api_server.backend.mappers.*;
@@ -18,6 +19,7 @@ import static tbs.api_server.publicAPI.ResourceController.Help.getFile;
 
 @RestController
 @RequestMapping("/file/*")
+@Scope("prototype")
 public class FileController
 {
 

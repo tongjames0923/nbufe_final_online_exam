@@ -1,6 +1,7 @@
 package tbs.api_server.backend.serviceImp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import tbs.api_server.backend.mappers.ExamPermissionMapper;
 import tbs.api_server.backend.mappers.UserMapper;
@@ -15,6 +16,7 @@ import java.util.List;
 import static tbs.api_server.utility.Error.*;
 
 @Service
+@Scope("prototype")
 public class ExamPermissionImp implements ExamPermissionService
 {
 

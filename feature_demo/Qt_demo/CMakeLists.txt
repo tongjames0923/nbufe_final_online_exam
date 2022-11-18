@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.19)
 project(Qt_demo)
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_PREFIX_PATH "/opt/homebrew/Cellar/qt@5/5.15.6")
+set(CMAKE_PREFIX_PATH "/opt/homebrew/Cellar/qt@5/5.15.7")
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOUIC ON)

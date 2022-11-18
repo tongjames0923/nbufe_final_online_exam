@@ -1,6 +1,7 @@
 package tbs.api_server.publicAPI;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,6 +18,7 @@ import static tbs.api_server.utility.Error.*;
 
 @RestController
 @RequestMapping("/question/*")
+@Scope("prototype")
 public class QuestionController {
     @Autowired
     QuestionService service;

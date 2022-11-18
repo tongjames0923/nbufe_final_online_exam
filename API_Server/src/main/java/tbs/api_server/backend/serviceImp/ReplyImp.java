@@ -1,6 +1,7 @@
 package tbs.api_server.backend.serviceImp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tbs.api_server.backend.mappers.ExamPermissionMapper;
@@ -23,6 +24,7 @@ import java.util.List;
 import static tbs.api_server.utility.Error.*;
 
 @Service
+@Scope("prototype")
 public class ReplyImp implements ReplyService
 {
     public static class Help

@@ -9,33 +9,33 @@ import java.util.List;
 @Mapper
 public interface ExamMapper {
     @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status` from " +
-            "`exam` where `status`=#{status} limit #{from},#{num}")
+            "`exam` where `status`=#{status} limit #{from},#{num} FOR UPDATE")
     List<ExamInfo> getExamsByStatus(int status, int from, int num);
 
     @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status` from " +
-            "`exam` where `exam_id`=#{id}")
+            "`exam` where `exam_id`=#{id} FOR UPDATE")
     ExamInfo getExamByid(int id);
 
     @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status` from " +
-            "`exam` WHERE `exam_note` LIKE %${note}% limit #{from},#{num}")
+            "`exam` WHERE `exam_note` LIKE %${note}% limit #{from},#{num} FOR UPDATE")
     List<ExamInfo> findByNote(String note,int from,int num);
 
 
     @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status` from " +
-            "`exam` WHERE `exam_begin`<#{before} limit #{from},#{num}")
+            "`exam` WHERE `exam_begin`<#{before} limit #{from},#{num} FOR UPDATE")
     List<ExamInfo> findByTime(Date before,int from,int num);
 
 
 
     @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status` from " +
-            "`exam` limit #{from},#{num}")
+            "`exam` limit #{from},#{num} FOR UPDATE")
     List<ExamInfo> list(int from, int num);
 
-    @Select("SELECT `exam_file` FROM `exam` where `exam_id`=#{exam_id}")
+    @Select("SELECT `exam_file` FROM `exam` where `exam_id`=#{exam_id} FOR UPDATE")
     byte[] getExamFile(int exam_id);
 
     @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status` from" +
-            " `exam` where `exam_name`=#{name} ")
+            " `exam` where `exam_name`=#{name} FOR UPDATE")
     ExamInfo getExamIDByExamName(String name);
 
     @Insert("INSERT INTO `exam`(`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_file`) VALUES (" +

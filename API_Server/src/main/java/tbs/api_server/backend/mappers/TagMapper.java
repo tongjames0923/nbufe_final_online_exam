@@ -8,13 +8,13 @@ import java.util.List;
 @Mapper
 public interface TagMapper
 {
-    @Select("select * from tag")
+    @Select("select * from tag FOR UPDATE")
     List<Tag> getAllTags();
 
-    @Select("select * from `tag` where `tag_name`=#{name}")
+    @Select("select * from `tag` where `tag_name`=#{name} FOR UPDATE")
     Tag getTagByName(String name);
 
-    @Select("select * from `tag` where `id`=#{id}")
+    @Select("select * from `tag` where `id`=#{id} FOR UPDATE")
     Tag getTagById(int id);
 
     @Delete("delete from `tag` where `tag_name`=#{name}")
@@ -29,7 +29,7 @@ public interface TagMapper
     int insertTag(String tag);
 
 
-    @Select("SELECT * FROM `tag` WHERE `ques_id`=#{ques_id}")
+    @Select("SELECT * FROM `tag` WHERE `ques_id`=#{ques_id} FOR UPDATE")
     List<Tag> findTagsByQuestion(int ques);
 
 

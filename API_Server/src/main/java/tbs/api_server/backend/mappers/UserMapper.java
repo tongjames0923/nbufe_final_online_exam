@@ -10,16 +10,16 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
-    @Select("select * from `user_sec` where `id`=#{id}")
+    @Select("select * from `user_sec` where `id`=#{id} FOR UPDATE")
     UserSecurityInfo getUserSecurityInfo(int id);
-    @Select("select * from `user_sec` where `name`=#{name}")
+    @Select("select * from `user_sec` where `name`=#{name} FOR UPDATE")
     UserSecurityInfo getUserSecurityInfoByName( @NonNull String name);
 
-    @Select("select * from `user_info` limit #{from},#{num}")
+    @Select("select * from `user_info` limit #{from},#{num} FOR UPDATE")
     List<UserDetailInfo> getUserDetailInfos(int from,int num);
 
 
-    @Select("select * from `user_info` where `id`=#{id}")
+    @Select("select * from `user_info` where `id`=#{id} FOR UPDATE")
     UserDetailInfo getUserDetailInfoByID(int id);
 
     @Insert("INSERT INTO `user_sec` (`name`, `password`, `sec_ques`, `sec_ans`)" +

@@ -16,13 +16,13 @@ public interface ExamReplyMapper
             "#{param1},#{param2},#{param3},#{param4})")
     int insertReply(int exam_id, @NonNull String examnumber,@NonNull String person_id,@NonNull String reply_file);
 
-    @Select("SELECT * FROM `exam_reply` WHERE `exam_id`=#{param1}")
+    @Select("SELECT * FROM `exam_reply` WHERE `exam_id`=#{param1} FOR UPDATE")
     List<ExamReply> getReplys(int examid);
 
     @Update("UPDATE `exam_reply` SET `status`=#{status} where `exam_number`=#{examnumber}")
     int updateReplysStatus(String examnumber,int status);
 
-    @Select("SELECT * FROM `exam_reply` WHERE `exam_number`=#{number}")
+    @Select("SELECT * FROM `exam_reply` WHERE `exam_number`=#{number} FOR UPDATE")
     ExamReply getExamReply(String number);
 
     @Update("UPDATE `exam_reply` SET `status`=#{status},`check_file`=#{check_file} where `exam_number`=#{examnumber}")

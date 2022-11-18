@@ -1,6 +1,7 @@
 package tbs.api_server.backend.serviceImp;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import tbs.api_server.backend.mappers.TagMapper;
 import tbs.api_server.objects.ServiceResult;
@@ -14,6 +15,7 @@ import java.util.Optional;
 import static tbs.api_server.utility.Error.*;
 
 @Service
+@Scope("prototype")
 public class TagImp implements TagService
 {
     @Autowired

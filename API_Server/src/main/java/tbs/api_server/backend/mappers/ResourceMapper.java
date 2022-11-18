@@ -12,19 +12,19 @@ public interface ResourceMapper
     @Insert("INSERT INTO `ques_resource` ( `resource`, `note`, `resource_type`) VALUES (#{param2}, #{param3}, #{param1});\n")
     int uploadResource(int res_type, String res, String note);
 
-    @Select("SELECT * FROM `ques_resource` WHERE `resource_type` = #{t} limit #{from},#{num}")
+    @Select("SELECT * FROM `ques_resource` WHERE `resource_type` = #{t} limit #{from},#{num} FOR UPDATE")
     List<QuestionResource> getResourcesByType(int t, int from, int num);
 
-    @Select("SELECT * FROM `ques_resource` WHERE `note` LIKE '%${note}%' LIMIT #{from},#{num}")
+    @Select("SELECT * FROM `ques_resource` WHERE `note` LIKE '%${note}%' LIMIT #{from},#{num} FOR UPDATE")
     List<QuestionResource> findResourcesByNote(String note, int from, int num);
 
-    @Select("SELECT * FROM `ques_resource` WHERE `id` = #{id}")
+    @Select("SELECT * FROM `ques_resource` WHERE `id` = #{id} FOR UPDATE")
     QuestionResource getResourceById(int id);
 
 
 
 
-    @Select("SELECT COUNT(*) FROM `ques_resource` WHERE `resource` = #{res} ")
+    @Select("SELECT COUNT(*) FROM `ques_resource` WHERE `resource` = #{res} FOR UPDATE")
     int containsResource(String res);
 
     @Delete("DELETE FROM `ques_resource` WHERE `id`= #{id}")
@@ -40,7 +40,7 @@ public interface ResourceMapper
     @Delete("DELETE FROM `resource_link` WHERE `resource_id`=#{param2} and `ques_id` = #{param1}")
     int unlinkResource(int ques_id, int resource_id);
 
-    @Select("SELECT `resource_id` FROM `resource_link` WHERE `ques_id`=#{ques}")
+    @Select("SELECT `resource_id` FROM `resource_link` WHERE `ques_id`=#{ques} FOR UPDATE")
     List<Integer> getQuestionLink(int ques);
 
 

@@ -1,0 +1,11 @@
+spring:
+    datasource:
+        druid:
+            default-auto-commit: false
+            initial-size: 20
+            max-active: 100
+            min-idle: 10
+        password: tongyi0923
+        type: com.alibaba.druid.pool.DruidDataSource
+        url: jdbc:mysql://localhost:3310/exam_db?serverTimezone=Asia/Shanghai
+        username: root
