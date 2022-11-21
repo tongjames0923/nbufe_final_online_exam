@@ -1,14 +1,12 @@
 package tbs.api_server.services;
 
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.utility.Error;
 
 public interface QuestionService
 {
 
-    ServiceResult uploadQuestion(int que_type,String title, int creator_id, byte[] que_file, Integer isopen, Integer tagid) throws Error.BackendError;
+    ServiceResult uploadQuestion(int que_type,String title, int creator_id, byte[] que_file, Integer isopen,String ans) throws Error.BackendError;
 
 
     ServiceResult deleteQuestion(int quesid,int userid) throws Error.BackendError;

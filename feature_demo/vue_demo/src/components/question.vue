@@ -15,11 +15,10 @@
         <div style="height:15px"></div>
         <el-input v-model=title placeholder="题目标题"></el-input>
         <div style="height:15px"></div>
-        <el-button>选择标签</el-button>
-        <el-button @click="showTagadd()">新增Tag</el-button>
-        <tag-add ref="addtag"></tag-add>
-        <div style="height:15px"></div>
         <el-collapse>
+            <el-collapse-item title="标签选择">
+                <tag-list ref="tags"></tag-list>
+            </el-collapse-item>
             <el-collapse-item title="题面编辑器" name="1">
                 <v-md-editor v-model="text" height="400px" @save=saveFile></v-md-editor>
             </el-collapse-item>
@@ -83,7 +82,8 @@
                     </el-dialog>
                 </div>
                 <div v-else-if="this.type == 2">
-                    <el-input @input="oninput" type="textarea" placeholder="请输入简答题答案内容" v-model="temp" maxlength="1024" show-word-limit>
+                    <el-input @input="oninput" type="textarea" placeholder="请输入简答题答案内容" v-model="temp" maxlength="1024"
+                        show-word-limit>
                     </el-input>
                 </div>
                 <div v-else>
@@ -91,8 +91,8 @@
                 </div>
             </el-collapse-item>
         </el-collapse>
-
-
+        <div style="height:15px"></div>
+        <el-button @click="upload()">提交</el-button>
     </div>
 </template>
 
@@ -100,8 +100,9 @@
 /* eslint-disable */
 import axios from 'axios';
 import TagAdd from "@/components/TagAdd.vue"
+import TagList from './TagList.vue';
 export default {
-  components: { TagAdd },
+    components: { TagAdd, TagList },
     data() {
         return {
             text: '',
@@ -111,24 +112,58 @@ export default {
             temp: {},
             select_item_visibility: false,
             fill_blank_visibility: false,
-            isopen:1,
-            title:"",
-            addtag:false
+            isopen: 1,
+            title: "",
+            addtag: false
         };
     },
-    comments:{
+    comments: {
         TagAdd
     },
     methods:
     {
-        showTagadd()
-        {
-            console.log(this.$refs["addtag"]);
-            this.$refs["addtag"].show();
+        upload() {
+            let arr = this.$refs.tags.getSelects();
+            let files = new File([new Blob([this.text], { type: 'text/plain;chartset=UTF-8' })],
+             "quesfile.md")
+             let data=new FormData();
+             data.append("type",this.type);
+             data.append("creator",1);
+             data.append("title",this.title)
+             data.append("md",files)
+             data.append("isopen",this.isopen)
+             data.append("tags",arr),
+             console.log(JSON.stringify(this.ques))
+             data.append("answer",JSON.stringify(this.ques))
+            axios({
+                url: this.$baseUrl + "question/create",
+                method: "post",
+                data: data
+                
+            }).then(res => {
+                if (res.data.code == this.$code_success) {
+                    this.$message({
+                        message: '新增题目成功',
+                        type: 'success'
+                    });
+                }
+                else
+                {
+                    this.$message({
+                        message: '增加失败 '+res.data.message,
+                        type: 'error'
+                    });
+                }
+
+            }).catch(error => {
+                this.$message({
+                        message: error,
+                        type: 'error'
+                    });
+            });
         },
-        oninput()
-        {
-            this.ques[0]=this.temp;
+        oninput() {
+            this.ques[0] = this.temp;
         },
         newFillBlank() {
             this.fill_blank_visibility = true;
@@ -145,32 +180,12 @@ export default {
             this.select_item_visibility = false;
         },
         change() {
-            ques= []
-            if(type==2)
-            this.temp=""
+            ques = []
+            if (type == 2)
+                this.temp = ""
         },
         newSelect() {
             this.select_item_visibility = true;
-        },
-        stringToBytes(str) {
-
-            var ch, st, re = [];
-            for (var i = 0; i < str.length; i++) {
-                ch = str.charCodeAt(i);  // get char  
-                st = [];                 // set up "stack"  
-
-                do {
-                    st.push(ch & 0xFF);  // push byte to stack  
-                    ch = ch >> 8;          // shift value down by 1 byte  
-                }
-
-                while (ch);
-                // add stack contents to result  
-                // done because chars have "wrong" endianness  
-                re = re.concat(st.reverse());
-            }
-            // return an array of bytes  
-            return re;
         },
 
         saveFile(text, html) {

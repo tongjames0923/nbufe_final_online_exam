@@ -1,22 +1,24 @@
 /*
-Navicat MySQL Data Transfer
+ Navicat Premium Data Transfer
 
-Source Server         : localhost_3306
-Source Server Version : 80030
-Source Host           : localhost:3306
-Source Database       : exam_db
+ Source Server         : docker
+ Source Server Type    : MySQL
+ Source Server Version : 80031 (8.0.31)
+ Source Host           : localhost:3310
+ Source Schema         : exam_db
 
-Target Server Type    : MYSQL
-Target Server Version : 80030
-File Encoding         : 65001
+ Target Server Type    : MySQL
+ Target Server Version : 80031 (8.0.31)
+ File Encoding         : 65001
 
-Date: 2022-10-31 11:42:35
+ Date: 22/11/2022 16:43:14
 */
 
-SET FOREIGN_KEY_CHECKS=0;
+SET NAMES utf8mb4;
+SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
--- Table structure for `answer`
+-- Table structure for answer
 -- ----------------------------
 DROP TABLE IF EXISTS `answer`;
 CREATE TABLE `answer` (
@@ -30,11 +32,7 @@ CREATE TABLE `answer` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
--- Records of answer
--- ----------------------------
-
--- ----------------------------
--- Table structure for `exam`
+-- Table structure for exam
 -- ----------------------------
 DROP TABLE IF EXISTS `exam`;
 CREATE TABLE `exam` (
@@ -50,11 +48,7 @@ CREATE TABLE `exam` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
--- Records of exam
--- ----------------------------
-
--- ----------------------------
--- Table structure for `exam_ reply`
+-- Table structure for exam_ reply
 -- ----------------------------
 DROP TABLE IF EXISTS `exam_ reply`;
 CREATE TABLE `exam_ reply` (
@@ -73,11 +67,7 @@ CREATE TABLE `exam_ reply` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
--- Records of exam_ reply
--- ----------------------------
-
--- ----------------------------
--- Table structure for `per_exam`
+-- Table structure for per_exam
 -- ----------------------------
 DROP TABLE IF EXISTS `per_exam`;
 CREATE TABLE `per_exam` (
@@ -95,11 +85,21 @@ CREATE TABLE `per_exam` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
--- Records of per_exam
+-- Table structure for ques_resource
 -- ----------------------------
+DROP TABLE IF EXISTS `ques_resource`;
+CREATE TABLE `ques_resource` (
+  `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
+  `resource` varchar(96) NOT NULL,
+  `note` text,
+  `altertime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `resource_type` smallint(3) unsigned zerofill NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `resource` (`resource`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
--- Table structure for `question`
+-- Table structure for question
 -- ----------------------------
 DROP TABLE IF EXISTS `question`;
 CREATE TABLE `question` (
@@ -112,36 +112,15 @@ CREATE TABLE `question` (
   `use_time` int NOT NULL DEFAULT '0' COMMENT '题目使用次数',
   `answerd` int NOT NULL DEFAULT '0' COMMENT '题目回答次数',
   `answerd_right` float NOT NULL DEFAULT '0' COMMENT '题目回答正确情况，一次最多为1',
-  `title` varchar(32) NOT NULL,
+  `title` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '题目标题',
+  `answer_data` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '答案文件',
   PRIMARY KEY (`que_id`),
   KEY `que_creator` (`que_creator`),
   CONSTRAINT `question_ibfk_1` FOREIGN KEY (`que_creator`) REFERENCES `user_sec` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
--- Records of question
--- ----------------------------
-
--- ----------------------------
--- Table structure for `ques_resource`
--- ----------------------------
-DROP TABLE IF EXISTS `ques_resource`;
-CREATE TABLE `ques_resource` (
-  `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT,
-  `resource` varchar(96) NOT NULL,
-  `note` text,
-  `altertime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `resource_type` smallint(3) unsigned zerofill NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `resource` (`resource`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- ----------------------------
--- Records of ques_resource
--- ----------------------------
-
--- ----------------------------
--- Table structure for `resource_link`
+-- Table structure for resource_link
 -- ----------------------------
 DROP TABLE IF EXISTS `resource_link`;
 CREATE TABLE `resource_link` (
@@ -156,11 +135,7 @@ CREATE TABLE `resource_link` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
--- Records of resource_link
--- ----------------------------
-
--- ----------------------------
--- Table structure for `tag`
+-- Table structure for tag
 -- ----------------------------
 DROP TABLE IF EXISTS `tag`;
 CREATE TABLE `tag` (
@@ -169,14 +144,10 @@ CREATE TABLE `tag` (
   `tag_used` int unsigned NOT NULL DEFAULT '0' COMMENT '标签使用次数',
   PRIMARY KEY (`tag_id`),
   UNIQUE KEY `tag_name` (`tag_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
--- Records of tag
--- ----------------------------
-
--- ----------------------------
--- Table structure for `tag_link`
+-- Table structure for tag_link
 -- ----------------------------
 DROP TABLE IF EXISTS `tag_link`;
 CREATE TABLE `tag_link` (
@@ -188,14 +159,10 @@ CREATE TABLE `tag_link` (
   KEY `tag_id` (`tag_id`),
   CONSTRAINT `tag_link_ibfk_1` FOREIGN KEY (`ques_id`) REFERENCES `question` (`que_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `tag_link_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`tag_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
--- Records of tag_link
--- ----------------------------
-
--- ----------------------------
--- Table structure for `user_info`
+-- Table structure for user_info
 -- ----------------------------
 DROP TABLE IF EXISTS `user_info`;
 CREATE TABLE `user_info` (
@@ -210,11 +177,7 @@ CREATE TABLE `user_info` (
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
--- Records of user_info
--- ----------------------------
-
--- ----------------------------
--- Table structure for `user_sec`
+-- Table structure for user_sec
 -- ----------------------------
 DROP TABLE IF EXISTS `user_sec`;
 CREATE TABLE `user_sec` (
@@ -225,8 +188,6 @@ CREATE TABLE `user_sec` (
   `sec_ans` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '安全问题答案',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
--- ----------------------------
--- Records of user_sec
--- ----------------------------
+SET FOREIGN_KEY_CHECKS = 1;

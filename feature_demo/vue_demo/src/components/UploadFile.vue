@@ -90,7 +90,7 @@ export default {
       var that = this;
       this.isloading = true;
       console.log(fileobject.file);
-      var formDataInfo = new FormData();
+      let formDataInfo = new FormData();
       formDataInfo.append("file", fileobject.file);
       formDataInfo.append("type", this.ruleForm.type);
       formDataInfo.append("note", this.ruleForm.note);

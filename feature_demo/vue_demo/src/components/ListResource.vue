@@ -22,6 +22,7 @@
         >搜索</el-button
       >
     </el-header>
+    <div style="height:30px"></div>
     <el-table :data="resList" border>
       <el-table-column label="预览" width="120" fixed>
         <template slot-scope="scope">
