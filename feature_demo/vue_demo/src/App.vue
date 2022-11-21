@@ -19,6 +19,9 @@
       <el-tab-pane label="MarkDown">
         <Question></Question>
       </el-tab-pane>
+      <el-tab-pane label="Tabs">
+        <TagListVue></TagListVue>
+      </el-tab-pane>
     </el-tabs>
 
 
@@ -33,6 +36,7 @@ import Login from "./components/Login.vue";
 import Register from "./components/Register.vue";
 import ListResourceVue from "./components/ListResource.vue";
 import Question from './components/question.vue';
+import TagListVue from "./components/TagList.vue";
 export default {
   name: "App",
   components: {
@@ -40,7 +44,8 @@ export default {
     Login,
     Register,
     ListResourceVue,
-    Question
+    Question,
+    TagListVue
   },
 };
 </script>

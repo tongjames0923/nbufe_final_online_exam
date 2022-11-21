@@ -59,7 +59,7 @@ public class TagImp implements TagService
     public ServiceResult listTags() throws BackendError {
         List<Tag> tgs= tg.getAllTags();
         if(tgs.size()>0)
-            return ServiceResult.makeResult(SUCCESS);
+            return ServiceResult.makeResult(SUCCESS,tgs);
         else
             throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"标签列表为空");
     }

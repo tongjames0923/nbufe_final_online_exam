@@ -1,4 +1,5 @@
 <!-- eslint-disable vue/multi-word-component-names -->
+/* eslint-disable */
 <template>
     <div>
         <el-radio-group v-model="type" size="small" @change="change">
@@ -6,6 +7,17 @@
             <el-radio-button label=1>{{ typename[1] }}</el-radio-button>
             <el-radio-button label=2>{{ typename[2] }}</el-radio-button>
         </el-radio-group>
+        <div style="height:15px"></div>
+        <el-radio-group v-model="isopen" size="small" @change="change">
+            <el-radio-button label=0>私有</el-radio-button>
+            <el-radio-button label=1>公开</el-radio-button>
+        </el-radio-group>
+        <div style="height:15px"></div>
+        <el-input v-model=title placeholder="题目标题"></el-input>
+        <div style="height:15px"></div>
+        <el-button>选择标签</el-button>
+        <el-button @click="showTagadd()">新增Tag</el-button>
+        <tag-add ref="addtag"></tag-add>
         <div style="height:15px"></div>
         <el-collapse>
             <el-collapse-item title="题面编辑器" name="1">
@@ -87,7 +99,9 @@
 <script>
 /* eslint-disable */
 import axios from 'axios';
+import TagAdd from "@/components/TagAdd.vue"
 export default {
+  components: { TagAdd },
     data() {
         return {
             text: '',
@@ -97,10 +111,21 @@ export default {
             temp: {},
             select_item_visibility: false,
             fill_blank_visibility: false,
+            isopen:1,
+            title:"",
+            addtag:false
         };
+    },
+    comments:{
+        TagAdd
     },
     methods:
     {
+        showTagadd()
+        {
+            console.log(this.$refs["addtag"]);
+            this.$refs["addtag"].show();
+        },
         oninput()
         {
             this.ques[0]=this.temp;

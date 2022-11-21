@@ -1,4 +1,4 @@
-/* eslint-disable no-unused-vars */
+/* eslint-disable */
 const { defineConfig } = require('@vue/cli-service')
 const fs= require('fs')
 module.exports = defineConfig({
