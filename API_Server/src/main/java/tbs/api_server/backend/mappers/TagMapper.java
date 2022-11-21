@@ -29,8 +29,7 @@ public interface TagMapper
     int insertTag(String tag);
 
 
-    @Select("SELECT * FROM `tag` WHERE `ques_id`=#{ques_id} FOR UPDATE")
-    List<Tag> findTagsByQuestion(int ques);
+
 
 
     @Insert("INSERT INTO `tag_link`(`tag_id`,`ques_id`) VALUES\n" +
@@ -40,4 +39,10 @@ public interface TagMapper
     @Delete("delete from `tag_link` where `tag_id`=#{tagid} and `ques_id`=#{ques_id}")
     int unLinkTag(int ques_id,int tagid);
 
+
+    @Select("SELECT `ques_id` from `tag_link` where `tag_id`=#{id}")
+    List<Integer> listQuestionIdByTagId(int id);
+
+    @Select("SELECT * from `tag_link` where `ques_id`=#{ques_id}")
+    List<Tag> findTagsByQuestion(int ques_id);
 }

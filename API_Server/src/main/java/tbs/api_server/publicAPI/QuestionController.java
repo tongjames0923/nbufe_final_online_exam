@@ -8,11 +8,15 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import tbs.api_server.backend.mappers.SystemMapper;
 import tbs.api_server.config.constant.const_Question;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.services.QuestionService;
+import tbs.api_server.services.TagService;
 import tbs.api_server.utility.Error;
+
+import java.util.List;
 
 import static tbs.api_server.utility.Error.*;
 
@@ -22,11 +26,25 @@ import static tbs.api_server.utility.Error.*;
 public class QuestionController {
     @Autowired
     QuestionService service;
+    @Autowired
+    SystemMapper systemMapper;
+    @Autowired
+    TagService tagService;
     @RequestMapping(value = "create", method = RequestMethod.POST)
     @Transactional
-    public NetResult uploadQuestion(@RequestParam int type, @RequestParam int creator, @RequestParam String title, @RequestParam MultipartFile file, @RequestParam(required = false) Integer isopen, @RequestParam(required = false) Integer tag) {
+    public NetResult uploadQuestion(@RequestParam int type, @RequestParam int creator, @RequestParam String title, @RequestParam MultipartFile file, @RequestParam(required = false) Integer isopen, List<String>  tags) {
         try {
-            ServiceResult result = service.uploadQuestion(type, title, creator, file.getBytes(), isopen, tag);
+            ServiceResult result = service.uploadQuestion(type, title, creator, file.getBytes(), isopen);
+            Integer id=systemMapper.getLastId();
+            for (String ch:tags)
+            {
+                try {
+                    tagService.linkTag(id,ch);
+                }catch (Exception ex)
+                {
+
+                }
+            }
             return NetResult.makeResult(result, null);
         } catch (Error.BackendError e) {
             _ERROR.rollback();

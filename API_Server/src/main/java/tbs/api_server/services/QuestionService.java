@@ -8,7 +8,7 @@ import tbs.api_server.utility.Error;
 public interface QuestionService
 {
 
-    ServiceResult uploadQuestion(int que_type,String title, int creator_id, byte[] que_file, Integer isopen, Integer tagid) throws Error.BackendError;
+    ServiceResult uploadQuestion(int que_type,String title, int creator_id, byte[] que_file, Integer isopen) throws Error.BackendError;
 
 
     ServiceResult deleteQuestion(int quesid,int userid) throws Error.BackendError;

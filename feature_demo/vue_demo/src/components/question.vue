@@ -15,11 +15,10 @@
         <div style="height:15px"></div>
         <el-input v-model=title placeholder="题目标题"></el-input>
         <div style="height:15px"></div>
-        <el-button>选择标签</el-button>
-        <el-button @click="showTagadd()">新增Tag</el-button>
-        <tag-add ref="addtag"></tag-add>
-        <div style="height:15px"></div>
         <el-collapse>
+            <el-collapse-item title="标签选择">
+                <tag-list ref="tags"></tag-list>
+            </el-collapse-item>
             <el-collapse-item title="题面编辑器" name="1">
                 <v-md-editor v-model="text" height="400px" @save=saveFile></v-md-editor>
             </el-collapse-item>
@@ -91,8 +90,7 @@
                 </div>
             </el-collapse-item>
         </el-collapse>
-
-
+        <el-button @click="upload()">提交</el-button>
     </div>
 </template>
 
@@ -100,8 +98,9 @@
 /* eslint-disable */
 import axios from 'axios';
 import TagAdd from "@/components/TagAdd.vue"
+import TagList from './TagList.vue';
 export default {
-  components: { TagAdd },
+  components: { TagAdd, TagList },
     data() {
         return {
             text: '',
@@ -121,10 +120,10 @@ export default {
     },
     methods:
     {
-        showTagadd()
+        upload()
         {
-            console.log(this.$refs["addtag"]);
-            this.$refs["addtag"].show();
+          let arr= this.$refs.tags.getSelects();
+          console.log(arr);
         },
         oninput()
         {

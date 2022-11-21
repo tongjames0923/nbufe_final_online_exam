@@ -1,30 +1,52 @@
 <template>
-    <el-table :data="tags" style="width: 100%">
-        <el-table-column prop="tag_name" label="标签名称" width="180">
-        </el-table-column>
-        <el-table-column prop="tag_used" label="标签使用次数"></el-table-column>
-        <el-table-column label="功能" width="180">
-            <template slot-scope="scope">
-                <el-button type="danger" round @click="deleteThat(scope.$index)">删除</el-button>
-            </template>
+    <div>
+        <el-table :data="tags" style="width: 100%" highlight-current-row @selection-change="handleSelectionChange">
+            <el-table-column type="selection" width="55">
+            </el-table-column>
+            <el-table-column prop="tag_name" label="标签名称" width="180">
+            </el-table-column>
+            <el-table-column prop="tag_used" label="标签使用次数"></el-table-column>
+            <el-table-column label="功能" width="180">
+                <template slot-scope="scope">
+                    <el-button type="danger" round @click="deleteThat(scope.$index)">删除</el-button>
+                </template>
+            </el-table-column>
+        </el-table>
+        <tag-add ref="addTag"></tag-add>
+        <div style="height:15px"></div>
+        <el-button @click="tagAdd()">新增标签</el-button>
+    </div>
 
-        </el-table-column>
-    </el-table>
 </template>
   
 <script>
 /* eslint-disable */
 import axios from 'axios';
+import TagAdd from './TagAdd.vue';
 export default {
+    components: { TagAdd },
     name: "TagList",
 
     data() {
         return {
-            tags: []
+            tags: [],
+            cur_tag: [],
         }
     },
     methods: {
+        getSelects() {
+            let arr=[];
+            for(let i=0;i<this.cur_tag.length;i++)
+            arr.push(this.cur_tag[i].tag_name);
+            return arr;
+        },
 
+        handleSelectionChange(val) {
+            this.cur_tag = val
+        },
+        tagAdd() {
+            this.$refs.addTag.show();
+        },
         updateData() {
             axios({
                 url: this.$baseUrl + "tag/list",
