@@ -138,37 +138,6 @@ public class ResourceController {
         }
         return result;
     }
-
-    @Transactional
-    @RequestMapping("/link")
-    public NetResult linkResource(int ques_id, int resource_id) {
-
-        try {
-
-            return NetResult.makeResult(service.linkResource(resource_id, ques_id), null);
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
-    }
-
-    @Transactional
-    @RequestMapping("/unlink")
-    public NetResult unLinkResource(int ques_id, int resource_id) {
-        try {
-            return NetResult.makeResult(service.unlinkResource(resource_id, ques_id).getCode(), null);
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
-    }
-
     @Transactional
     @RequestMapping("/getByNote")
     public NetResult getResourcesByNote(String note, int from, int num) {
@@ -179,22 +148,6 @@ public class ResourceController {
         } catch (Error.BackendError e) {
             _ERROR.rollback();
             return NetResult.makeResult(e.getCode(), e.getDetail());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
-    }
-
-    @Transactional
-    @RequestMapping("/getByQues")
-    public NetResult getResourcesByQuestion(int ques) {
-        try {
-            ServiceResult rs = service.getResourceByQuestion(ques);
-            resourcesLinkApply((List<QuestionResource>) rs.getObj());
-            return NetResult.makeResult(SUCCESS, null, rs.getObj());
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
         } catch (Exception ex) {
             _ERROR.rollback();
             return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());

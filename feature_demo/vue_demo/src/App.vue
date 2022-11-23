@@ -19,9 +19,10 @@
       <el-tab-pane label="MarkDown">
         <Question></Question>
       </el-tab-pane>
-      <!-- <el-tab-pane label="Tabs">
-        <TagListVue></TagListVue>
-      </el-tab-pane> -->
+      <el-tab-pane label="Tabs">
+        <question-main ref="ques" ></question-main>
+        <el-button @click="change()"></el-button>
+      </el-tab-pane>
     </el-tabs>
 
 
@@ -36,6 +37,7 @@ import Login from "./components/Login.vue";
 import Register from "./components/Register.vue";
 import ListResourceVue from "./components/ListResource.vue";
 import Question from './components/question.vue';
+import QuestionMain from './components/QuestionMain.vue';
 export default {
   name: "App",
   components: {
@@ -44,7 +46,20 @@ export default {
     Register,
     ListResourceVue,
     Question,
+    QuestionMain,
   },
+  data(){
+    return{
+      id:3
+    };
+  },
+  methods:{
+    change()
+    {
+      this.$refs.ques.updateText(this.id);
+      this.id++;
+    }
+  }
 };
 </script>
 

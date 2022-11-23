@@ -25,7 +25,7 @@ public interface QuestionMapper
     List<Question> findQuestionByTitle(String title,int from,int num);
 
     @Select("SELECT `que_file` FROM `question` WHERE `que_id`=#{quesid} FOR UPDATE")
-    byte[] getQuestionFile(int quesid);
+    Question getQuestionFile(int quesid);
 
     @Update("UPDATE `question` SET `${field}`=#{value} WHERE `que_id`=#{id}")
     int updateQuestionValue(int que_id,String field,Object value);
@@ -43,5 +43,4 @@ public interface QuestionMapper
     @Select("SELECT `que_id`,`que_type`,`answer_data`, `que_creator`, `que_alter_time`, `publicable`, `use_time`, `answerd`, `answerd_right`,`title` " +
             "FROM `question` WHERE `que_id`=#{que_id} and `que_creator`=#{user} FOR UPDATE")
     Question OwnQuestion(int que_id, int user);
-
 }

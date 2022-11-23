@@ -8,14 +8,17 @@ import org.springframework.web.bind.annotation.RestController;
 import tbs.api_server.backend.mappers.*;
 import tbs.api_server.backend.serviceImp.ReplyImp;
 import tbs.api_server.config.constant.const_Resource_Type;
+import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.simple.ExamPermission;
 import tbs.api_server.objects.simple.ExamReply;
+import tbs.api_server.objects.simple.Question;
 import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.ResourceService;
 import tbs.api_server.utility.FileUtility;
 import tbs.api_server.utility.UserUtility;
 
 import static tbs.api_server.publicAPI.ResourceController.Help.getFile;
+import static tbs.api_server.utility.Error.SUCCESS;
 
 @RestController
 @RequestMapping("/file/*")
@@ -63,9 +66,11 @@ public class FileController
     QuestionMapper qmp;
 
     @RequestMapping(value = "question")
-    public byte[] downloadQuestion(int id)
+    public NetResult downloadQuestion(int id)
     {
-        return qmp.getQuestionFile(id);
+        Question q=qmp.getQuestionFile(id);
+        String s=new String(q.getQue_file());
+        return NetResult.makeResult(SUCCESS,null,s);
     }
 
 
