@@ -28,7 +28,7 @@ public interface QuestionMapper
     Question getQuestionFile(int quesid);
 
     @Update("UPDATE `question` SET `${field}`=#{value} WHERE `que_id`=#{id}")
-    int updateQuestionValue(int que_id,String field,Object value);
+    int updateQuestionValue(int id,String field,Object value);
 
     @Select("select count(*) from `question` FOR UPDATE")
     int countQuestions();

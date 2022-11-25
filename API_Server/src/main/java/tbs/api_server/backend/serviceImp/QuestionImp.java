@@ -60,7 +60,7 @@ public class QuestionImp implements QuestionService
     public ServiceResult deleteQuestion(int quesid, int userid) throws Error.BackendError {
         if(ownsQuestion(quesid, userid))
         {
-           return ServiceResult.makeResult(mp.deleteQuestion(quesid),null);
+           return ServiceResult.makeResult(SUCCESS,mp.deleteQuestion(quesid));
         }
         throw   _ERROR.throwError(EC_LOW_PERMISSIONS,"用户权限不足，无法删除此问题");
     }
@@ -78,7 +78,7 @@ public class QuestionImp implements QuestionService
             }
             List<Question> result=new ArrayList<>(res);
             if(result.size()>0)
-            return ServiceResult.makeResult(result.size(), result);
+            return ServiceResult.makeResult(SUCCESS, result);
             else
                 throw   _ERROR.throwError(EC_DB_SELECT_NOTHING,"不存在此标签的问题");
 
@@ -95,7 +95,7 @@ public class QuestionImp implements QuestionService
             }
             List<Question> result=new ArrayList<>(res);
             if(result.size()>0)
-                return ServiceResult.makeResult(result.size(), result);
+                return ServiceResult.makeResult(SUCCESS, result);
             else
                 throw   _ERROR.throwError(EC_DB_SELECT_NOTHING,"不存在此类型的问题");
 
@@ -105,7 +105,7 @@ public class QuestionImp implements QuestionService
     public ServiceResult findQuestionsByTitle(String title, int from, int num) throws BackendError {
             List<Question> ls=mp.findQuestionByTitle(title, from, num);
             if(ls.size()>0)
-            return ServiceResult.makeResult(ls.size(),ls);
+            return ServiceResult.makeResult(SUCCESS,ls);
             else
                 throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"不存在相关标题的问题");
 
@@ -116,7 +116,7 @@ public class QuestionImp implements QuestionService
 
             List<Question> obj=mp.getQuestions(from, num);
             if(obj.size()>0)
-            return ServiceResult.makeResult(obj.size(), obj);
+            return ServiceResult.makeResult(SUCCESS, obj);
             else
                 throw  _ERROR.throwError(EC_DB_SELECT_NOTHING,"问题列表为空");
 
@@ -133,7 +133,7 @@ public class QuestionImp implements QuestionService
             }
             int m= mp.updateQuestionValue(ques_id,field,value);
             if(m>0)
-            return ServiceResult.makeResult(m,null);
+            return ServiceResult.makeResult(SUCCESS,m);
             else
                 throw  _ERROR.throwError(EC_DB_UPDATE_FAIL,"更新问题失败");
 
@@ -142,6 +142,6 @@ public class QuestionImp implements QuestionService
 
     @Override
     public ServiceResult questionsLength() throws BackendError {
-            return ServiceResult.makeResult(mp.countQuestions(), null);
+            return ServiceResult.makeResult(SUCCESS, mp.countQuestions());
     }
 }

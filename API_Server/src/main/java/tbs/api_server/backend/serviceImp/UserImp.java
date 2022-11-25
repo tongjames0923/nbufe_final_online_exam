@@ -77,7 +77,7 @@ public class UserImp implements UserService
     @Override
     public ServiceResult getUserInfo(int userid)
     {
-        return new ServiceResult<>(1, mp.getUserDetailInfoByID(userid));
+        return new ServiceResult<>(SUCCESS, mp.getUserDetailInfoByID(userid));
     }
 
     @Override

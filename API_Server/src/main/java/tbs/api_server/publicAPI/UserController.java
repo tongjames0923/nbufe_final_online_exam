@@ -13,6 +13,7 @@ import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.UserService;
+import tbs.api_server.utility.ApiMethod;
 import tbs.api_server.utility.Error;
 import tbs.api_server.utility.UserUtility;
 
@@ -243,6 +244,20 @@ public class UserController {
             _ERROR.rollback();
             return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
         }
+    }
+
+
+    @Transactional
+    @RequestMapping("getUser")
+    public NetResult getUserInfo(int id)
+    {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws BackendError, Exception {
+
+                return NetResult.makeResult( service.getUserInfo(id),null);
+            }
+        }).method();
     }
 
 

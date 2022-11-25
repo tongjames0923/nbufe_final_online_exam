@@ -23,6 +23,7 @@
 /* eslint-disable */
 import axios from 'axios';
 import TagAdd from './TagAdd.vue';
+import tagapi from '@/api/tags'
 export default {
     components: { TagAdd },
     name: "TagList",
@@ -35,9 +36,9 @@ export default {
     },
     methods: {
         getSelects() {
-            let arr=[];
-            for(let i=0;i<this.cur_tag.length;i++)
-            arr.push(this.cur_tag[i].tag_name);
+            let arr = [];
+            for (let i = 0; i < this.cur_tag.length; i++)
+                arr.push(this.cur_tag[i].tag_name);
             return arr;
         },
 
@@ -46,16 +47,19 @@ export default {
         },
         tagAdd() {
             this.$refs.addTag.show();
+            this.getAlltag();
+            this.$forceUpdate();
         },
-        updateData() {
-            axios({
-                url: this.$baseUrl + "tag/list",
-                method: "get"
-            }).then(res => {
-                if (res.data.code == this.$code_success) {
-                    this.tags = res.data.data
-                }
-            });
+        updateData(tags) {
+            this.tags = tags;
+            this.$forceUpdate();
+        },
+        getAlltag() {
+            tagapi.getAllTags().then(res => {
+                const data = res.data;
+                this.tags=data;
+                this.$forceUpdate();
+            })
         },
         deleteThat(index) {
             axios({
@@ -68,7 +72,7 @@ export default {
                         message: "删除成功",
                         type: "success"
                     });
-                    this.updateData();
+                    this.getAlltag();
                 }
                 else {
                     this.$message({
@@ -78,9 +82,6 @@ export default {
                 }
             });
         }
-    },
-    mounted() {
-        this.updateData();
     }
 };
 </script>

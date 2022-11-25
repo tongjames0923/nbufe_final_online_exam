@@ -15,11 +15,11 @@ public interface UserMapper {
     @Select("select * from `user_sec` where `name`=#{name} FOR UPDATE")
     UserSecurityInfo getUserSecurityInfoByName( @NonNull String name);
 
-    @Select("select * from `user_info` limit #{from},#{num} FOR UPDATE")
+    @Select("select a.*,b.`name` from `user_info` a INNER JOIN user_sec b ON b.id=a.id limit #{from},#{num} FOR UPDATE")
     List<UserDetailInfo> getUserDetailInfos(int from,int num);
 
 
-    @Select("select * from `user_info` where `id`=#{id} FOR UPDATE")
+    @Select("select a.*,b.`name` from `user_info` a INNER JOIN user_sec b ON b.id=a.id where a.`id`=#{id} FOR UPDATE")
     UserDetailInfo getUserDetailInfoByID(int id);
 
     @Insert("INSERT INTO `user_sec` (`name`, `password`, `sec_ques`, `sec_ans`)" +

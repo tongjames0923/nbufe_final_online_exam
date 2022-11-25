@@ -1,5 +1,8 @@
 package tbs.api_server.objects.simple;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import java.util.Date;
 
 public class Question {
@@ -18,6 +21,8 @@ public class Question {
 
     private String answer_data;
     private int que_creator;
+    @DateTimeFormat(pattern="yyyy年MM月dd日 hh:mm:ss")
+    @JsonFormat(pattern="yyyy年MM月dd日 hh:mm:ss",timezone="GMT+8")
     private Date que_alter_time;
     private byte[] que_file;
     private int publicable;

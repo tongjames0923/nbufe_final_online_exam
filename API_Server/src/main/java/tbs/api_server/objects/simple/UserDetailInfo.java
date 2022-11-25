@@ -4,6 +4,16 @@ public class UserDetailInfo {
     private int id;
     private String address;
     private String phone;
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    private String name;
     private String email;
     private String note;
     private int level;

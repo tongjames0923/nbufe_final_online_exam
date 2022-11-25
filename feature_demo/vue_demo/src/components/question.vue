@@ -101,6 +101,7 @@
 import axios from 'axios';
 import TagAdd from "@/components/TagAdd.vue"
 import TagList from './TagList.vue';
+import tagapi from '@/api/tags'
 export default {
     components: { TagAdd, TagList },
     data() {
@@ -198,7 +199,11 @@ export default {
         }
     },
     mounted() {
-
+        tagapi.getAllTags().then(res=>{
+            const data=res.data;
+            this.$refs.tags.updateData(data);
+            this.$forceUpdate();
+        })
     }
 }
 </script>

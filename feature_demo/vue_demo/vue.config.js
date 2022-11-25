@@ -2,6 +2,10 @@
 const { defineConfig } = require('@vue/cli-service')
 module.exports = defineConfig({
   transpileDependencies: true,
+
+  devServer:{
+    port:8081,
+  }
   // resolve: {
   //   // https://github.com/babel/babel/issues/8462
   //   // https://blog.csdn.net/qq_39807732/article/details/110089893

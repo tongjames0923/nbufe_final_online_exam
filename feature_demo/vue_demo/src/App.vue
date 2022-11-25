@@ -23,6 +23,9 @@
         <question-main ref="ques" ></question-main>
         <el-button @click="change()"></el-button>
       </el-tab-pane>
+      <el-tab-pane label="QuestionList">
+        <question-list></question-list>
+      </el-tab-pane>
     </el-tabs>
 
 
@@ -38,6 +41,7 @@ import Register from "./components/Register.vue";
 import ListResourceVue from "./components/ListResource.vue";
 import Question from './components/question.vue';
 import QuestionMain from './components/QuestionMain.vue';
+import QuestionList from './components/QuestionList.vue';
 export default {
   name: "App",
   components: {
@@ -47,6 +51,7 @@ export default {
     ListResourceVue,
     Question,
     QuestionMain,
+    QuestionList,
   },
   data(){
     return{
