@@ -43,7 +43,7 @@ void ImageProc::process(FFmpegDecoder &decoder)
 
 int main()
 {
-	FFmpegDecoder decoder("rtsp://localhost:80/live/STREAMNAME");
+	FFmpegDecoder decoder("rtsp://localhost:80/live/jack");
 
 	decoder.connect();
 	if(decoder.isConncected())
