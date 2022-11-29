@@ -19,7 +19,7 @@
       <el-tab-pane label="MarkDown">
         <Question></Question>
       </el-tab-pane>
-      <el-tab-pane label="Tabs">
+      <el-tab-pane label="题目内容">
         <question-main ref="ques" ></question-main>
         <el-button @click="change()"></el-button>
       </el-tab-pane>
@@ -55,7 +55,7 @@ export default {
   },
   data(){
     return{
-      id:3
+      id:5
     };
   },
   methods:{

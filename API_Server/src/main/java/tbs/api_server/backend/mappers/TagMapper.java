@@ -43,6 +43,6 @@ public interface TagMapper
     @Select("SELECT `ques_id` from `tag_link` where `tag_id`=#{id}")
     List<Integer> listQuestionIdByTagId(int id);
 
-    @Select("SELECT * from `tag_link` where `ques_id`=#{ques_id}")
+    @Select("SELECT * FROM tag WHERE tag.tag_id IN (SELECT tag_link.tag_id FROM tag_link WHERE tag_link.ques_id=#{ques_id}) FOR UPDATE;")
     List<Tag> findTagsByQuestion(int ques_id);
 }

@@ -29,24 +29,25 @@
                     <el-button type="info" @click="pul(scope.row.que_creator)">用户:{{scope.row.que_creator}}</el-button>
                 </template>
             </el-table-column>
-            <el-table-column label="正确率" width="300">
+            <el-table-column label="正确率">
                 <template slot-scope="scope">
                     <el-tag v-if="scope.row.answerd == 0" type="warning">信息不全</el-tag>
                     <el-progress v-else :percentage="Math.round(scope.row.answerd_right / scope.row.answerd * 100)"
                         :format="format"></el-progress>
                 </template>
             </el-table-column>
-            <el-table-column prop="use_time" label="使用次数" width="120">
+            <el-table-column prop="use_time" label="使用次数">
             </el-table-column>
-            <el-table-column label="公开性" width="120" fixed>
+            <el-table-column label="公开性" fixed>
                 <template slot-scope="scope">
                     <el-button icon="el-icon-unlock"  v-if="scope.row.publicable == 1" @click="changePublic(scope.$index, 0)">公开</el-button>
                     <el-button icon="el-icon-lock"  v-else @click="changePublic(scope.$index, 1)">私有</el-button>
                 </template>
             </el-table-column>
-            <el-table-column label="操作" width="100">
+            <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" @click="findTag(scope.$index)">查看Tag</el-button>
+                    <el-button type="text" size="small" @click="findAnswer(scope.$index)">查看答案</el-button>
                 </template>
             </el-table-column>
         </el-table>
@@ -54,6 +55,12 @@
         :with-header="false" :visible.sync="drawer" :direction="direction" size="50%" style="padding:20px">
             <user-info ref="user"></user-info>
         </el-drawer>
+        <el-dialog title="标签" :visible.sync="showtag">
+            <tag-list ref="ques_tag"></tag-list>
+        </el-dialog>
+        <el-dialog title="答案" :visible.sync="showAns">
+            <answer-main ref="ans"></answer-main>
+        </el-dialog>
 
         <el-pagination @current-change="handleCurrentChange" :current-page.sync="cur" :page-size="per"
             layout="total, prev, pager, next" :total=total>
@@ -65,9 +72,12 @@
 import req from '@/util/request'
 import userapi from "@/api/user"
 import UserInfo from './UserInfo.vue';
+import TagList from './TagList.vue';
+import tags from '@/api/tags';
+import AnswerMain from './AnswerMain.vue';
 export default
     {
-        components: { UserInfo },
+        components: { UserInfo, TagList, AnswerMain },
         name: "QuestionList",
         data() {
             return {
@@ -79,6 +89,8 @@ export default
                 per: 2,
                 drawer: false,
                 direction: 'rtl',
+                showtag:false,
+                showAns:false
             };
         }
         ,
@@ -89,6 +101,10 @@ export default
         },
         methods:
         {
+            findAnswer(idx){
+                this.showAns=true
+                this.$refs.ans.updateUI(this.tableData[idx].que_type,this.tableData[idx].answer_data);
+            },
             pul(ix) {
                 this.drawer=true
                 userapi.getUser(ix).then(data=>{
@@ -97,7 +113,10 @@ export default
                 });
             },
             findTag(idx) {
-
+                this.showtag=true
+                tags.getTagByQues(this.tableData[idx].que_id).then(res=>{
+                    this.$refs.ques_tag.updateData(res.data);
+                })
             },
             format(percentage) {
                 return percentage === 100 ? '满' : `${percentage}%`;

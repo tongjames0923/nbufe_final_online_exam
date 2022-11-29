@@ -96,7 +96,7 @@ public class TagImp implements TagService
     public ServiceResult findTagsByQuestion(int ques_id) throws BackendError {
         List<Tag> tags= tg.findTagsByQuestion(ques_id);
         if(tags.size()>0)
-            return ServiceResult.makeResult(SUCCESS);
+            return ServiceResult.makeResult(SUCCESS,tags);
         else
             throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"这个问题没有资源");
     }

@@ -53,6 +53,7 @@ export default {
         updateData(tags) {
             this.tags = tags;
             this.$forceUpdate();
+
         },
         getAlltag() {
             tagapi.getAllTags().then(res => {

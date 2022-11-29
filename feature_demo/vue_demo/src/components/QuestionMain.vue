@@ -17,9 +17,11 @@ export default
         , methods:
         {
             updateText(id) {
-                req({ url: "file/question", method: "get", params: { "id": id } }).then(res => {
+                req.get({ url: "file/question", params: { "id": id } }).then(res => {
                     this.text = res.data;
+
                 }).catch(err => {
+                    debugger
                     console.log(err);
                 });
             }
