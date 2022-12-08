@@ -28,3 +28,7 @@ feature_demo/maven_demo_sqlite/database.db
 .DS_Store
 feature_demo/maven_demo_sqlite/.idea/vcs.xml
 feature_demo/Qt_demo/build/
+front_admin/.vscode
+front_admin/build
+front_admin/node_modules
+front_admin/tests
