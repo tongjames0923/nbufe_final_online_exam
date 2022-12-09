@@ -1,4 +1,8 @@
 spring:
+    servlet:
+        multipart:
+            max-file-size: 512MB
+            max-request-size: 1000MB
     datasource:
         druid:
             default-auto-commit: false

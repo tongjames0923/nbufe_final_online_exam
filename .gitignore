@@ -32,3 +32,4 @@ front_admin/.vscode
 front_admin/build
 front_admin/node_modules
 front_admin/tests
+API_Server/resources

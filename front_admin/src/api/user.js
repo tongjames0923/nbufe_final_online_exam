@@ -14,11 +14,11 @@ export function register(data) {
     data: data
   })
 }
-export function getInfo(token) {
+export function getUser(i) {
   return request({
-    url: '/vue-admin-template/user/info',
-    method: 'get',
-    params: { token }
+    url:"user/getUser",
+    method:'get',
+    params:{id:i}
   })
 }
 

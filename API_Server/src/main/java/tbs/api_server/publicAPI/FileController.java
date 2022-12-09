@@ -41,7 +41,7 @@ public class FileController
         return getFile(service, id, const_Resource_Type.Text);
     }
 
-    @RequestMapping(value = "/res/video", produces = "video/*")
+    @RequestMapping(value = "/res/video", produces = "video/mp4")
     public byte[] downloadvideo(int id)
     {
         return getFile(service, id, const_Resource_Type.Video);
