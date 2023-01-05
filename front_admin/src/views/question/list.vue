@@ -1,14 +1,13 @@
 <template>
     <div>
         <el-input placeholder="请输入内容" v-model="text" class="input-with-select">
-            <el-select v-model="searchtype" slot="prepend" placeholder="请选择">
+            <el-select v-model="searchtype" slot="prepend" placeholder="请选择" style="width:200px">
+                <el-option label="全部" value="3"></el-option>
                 <el-option label="根据考题标题" value="1"></el-option>
                 <el-option label="根据考试ID" value="2"></el-option>
-                <el-option label="全部" value="3"></el-option>
-                <el-option label="根据Tags" value="3"></el-option>
-
+                <el-option label="根据Tags" value="4"></el-option>
             </el-select>
-            <el-button icon="el-icon-search"></el-button>
+            <el-button icon="el-icon-search" @click="search()" type="primary" >搜索</el-button>
         </el-input>
 
         <el-table :data="tableData" border style="width: 100%">
@@ -78,7 +77,7 @@ import UserInfo from '@/views/dashboard/index.vue';
 import TagList from '@/views/tag/list.vue';
 import { getTagByQues } from '@/api/tag';
 import { getUser } from '@/api/user'
-import { list, CountQues,questionBody } from '@/api/question';
+import { list, CountQues,questionBody,api_changePublic } from '@/api/question';
 import Answer from './answer.vue';
 export default
     {
@@ -90,11 +89,11 @@ export default
         data() {
             return {
                 text: "",
-                searchtype: 3,
+                searchtype: "3",
                 tableData: [],
                 total: -1,
                 cur: 0,
-                per: 5,
+                per: 30,
                 drawer: false,
                 direction: 'rtl',
                 showtag: false,
@@ -143,7 +142,7 @@ export default
             },
             changePublic(idx, pb) {
                 let ids = this.tableData[idx].que_id;
-                this.changePublic(ids, pb).then(res => {
+                api_changePublic(ids, pb).then(res => {
                     this.tableData[idx].publicable = pb;
                 });
             },

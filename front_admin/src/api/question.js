@@ -17,7 +17,7 @@ export function list(from,num)
         'num':num
     }})
 }
-export function changePublic(id,pb)
+export function api_changePublic(id,pb)
 {
     return request({url:'question/updatePublic',params:{
         ques:id,publicable:pb
