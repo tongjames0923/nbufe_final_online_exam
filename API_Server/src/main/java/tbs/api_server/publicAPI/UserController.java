@@ -33,7 +33,7 @@ public class UserController {
      * 更新用户权限
      * @param id 修改人 需要EXAM_STAFF
      * @param target 修改目标人的id
-     * @param lv 权限等级 0-2
+     * @param lv 权限等级 -1~2
      * @return 成功为修改数量int，否则为空
      */
     @Transactional
@@ -256,6 +256,16 @@ public class UserController {
             public NetResult action() throws BackendError, Exception {
 
                 return NetResult.makeResult( service.getUserInfo(id),null);
+            }
+        }).method();
+    }
+    @RequestMapping("count")
+    public  NetResult count()
+    {
+        return  ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws BackendError, Exception {
+                return NetResult.makeResult(service.total(),null);
             }
         }).method();
     }

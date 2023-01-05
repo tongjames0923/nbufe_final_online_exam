@@ -100,7 +100,7 @@ export const constantRoutes = [
   {
     path: '/question',
     component: Layout,
-    name: 'Nested',
+    name: 'Question',
     meta: {
       title: '题库',
       icon: 'nested'
@@ -122,12 +122,20 @@ export const constantRoutes = [
   },
 
   {
-    path: 'external-link',
+    path: '/userlist',
     component: Layout,
+    meta:{
+      title:'用户管理',
+      icon:'el-icon-user-solid'
+    },
     children: [
       {
-        path: 'https://panjiachen.github.io/vue-element-admin-site/#/',
-        meta: { title: 'External Link', icon: 'link' }
+        path: 'mananger',
+        component:()=>import('@/views/userList/index.vue'),
+        meta:{
+          title:'用户管理',
+          icon:'el-icon-user-solid'
+        },
       }
     ]
   },

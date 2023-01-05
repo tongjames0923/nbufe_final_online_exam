@@ -6,9 +6,9 @@ public class const_User {
     public static final String uinfo_id="id",uinfo_address="address",uinfo_phone="phone",uinfo_email="email",uinfo_note="note";
 
     //标准只读访问题库,资源员工继承标准，可写资源库,考试员工全功能
-    public static final int LEVEL_STANDARD =0,LEVEL_RESOURCES_STAFF=1,LEVEL_EXAM_STAFF=2;
+    public static final int LEVEL_UnActive=-1,LEVEL_STANDARD =0,LEVEL_RESOURCES_STAFF=1,LEVEL_EXAM_STAFF=2;
 
 
-    public static int min_username_length=6;
-    public static int min_password_length=8;
+    public static final int min_username_length=6;
+    public static final int min_password_length=8;
 }

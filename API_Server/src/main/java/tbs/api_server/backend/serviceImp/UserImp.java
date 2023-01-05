@@ -94,6 +94,11 @@ public class UserImp implements UserService
         }
     }
 
+    @Override
+    public ServiceResult total() {
+        return ServiceResult.makeResult(SUCCESS,mp.userCount());
+    }
+
     @Autowired
     UserMapper mp;
 
@@ -149,8 +154,8 @@ public class UserImp implements UserService
     @Override
     public ServiceResult updateUserLevel(int userid,int target, int level) throws BackendError {
 
-        if(level<0||level>2)
-            throw _ERROR.throwError(EC_InvalidParameter,"权限有效值0-2");
+        if(level<-1||level>2)
+            throw _ERROR.throwError(EC_InvalidParameter,"权限有效值-1~2");
         int lv= mp.getUserDetailInfoByID(userid).getLevel();
 
         if(lv== LEVEL_EXAM_STAFF)

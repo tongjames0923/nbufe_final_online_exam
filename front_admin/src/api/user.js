@@ -21,6 +21,35 @@ export function getUser(i) {
     params:{id:i}
   })
 }
+export function pullUserList(id,from,num)
+{
+  return request({
+    url:'user/pullusers',
+    method:'get',
+    params:{
+      'id':id,
+      'from':from,
+      'num':num
+    }
+  })
+}
+export function allUserCount()
+{
+  return request({
+    url:'user/count',
+    method:'get'
+  });
+}
+export function updateLevel(id,target,level)
+{
+  return request({
+    url:'user/updatelevel',
+    method:'get',
+    params:{
+      'id':id,'target':target,'lv':level
+    }
+  })
+}
 
 export function logout() {
   return request({

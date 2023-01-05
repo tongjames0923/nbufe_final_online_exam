@@ -36,4 +36,6 @@ public interface UserService
 
    ServiceResult pullUserInfo(int id,int from,int num) throws Error.BackendError;
 
+   ServiceResult total();
+
 }

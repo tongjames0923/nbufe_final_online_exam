@@ -39,4 +39,6 @@ public interface UserMapper {
     int setValueForUserDetails(int id, String property, Object value);
     @Delete("DELETE FROM `user_sec` WHERE `id` = (#{id})")
     int deleteUser(int id);
+    @Select("SELECT COUNT(*) FROM user_sec;")
+    int userCount();
 }

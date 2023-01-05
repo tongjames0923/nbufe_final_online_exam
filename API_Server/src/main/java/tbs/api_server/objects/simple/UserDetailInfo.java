@@ -1,5 +1,7 @@
 package tbs.api_server.objects.simple;
 
+import java.util.Objects;
+
 public class UserDetailInfo {
     private int id;
     private String address;
@@ -78,4 +80,17 @@ public class UserDetailInfo {
         this.note = note;
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UserDetailInfo that = (UserDetailInfo) o;
+        return id == that.id && level == that.level && Objects.equals(address, that.address) && Objects.equals(phone, that.phone) && Objects.equals(name, that.name) && Objects.equals(email, that.email) && Objects.equals(note, that.note);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, address, phone, name, email, note, level);
+    }
 }
