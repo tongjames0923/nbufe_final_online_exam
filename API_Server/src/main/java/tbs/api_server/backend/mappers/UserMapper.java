@@ -41,4 +41,12 @@ public interface UserMapper {
     int deleteUser(int id);
     @Select("SELECT COUNT(*) FROM user_sec;")
     int userCount();
+
+    @Select("SELECT sec_ques FROM `user_sec` WHERE `name` = #{name}")
+    String getQues(String name);
+
+
+
+    @Select("SELECT COUNT(*) FROM user_sec WHERE sec_ans=#{ans} AND `name`=#{name};")
+    int answerSecQues(String name,String ans);
 }

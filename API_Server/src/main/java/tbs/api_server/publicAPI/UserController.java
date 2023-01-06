@@ -209,10 +209,10 @@ public class UserController {
      * @return 是否成功, data都为空，msg为服务结果代码
      */
     @Transactional
-    public NetResult updatePasswordByQues(int id, String password, String answer) {
+    public NetResult updatePasswordByQues(String name, String password, String answer) {
         ServiceResult result = null;
         try {
-            result = service.updateUserPasswordByQuestion(id, UserUtility.passwordEncode(password)
+            result = service.updateUserPasswordByQuestion(name, UserUtility.passwordEncode(password)
                     , answer);
             return NetResult.makeResult(result, null);
         } catch (Error.BackendError e) {
@@ -266,6 +266,29 @@ public class UserController {
             @Override
             public NetResult action() throws BackendError, Exception {
                 return NetResult.makeResult(service.total(),null);
+            }
+        }).method();
+    }
+
+
+
+    @RequestMapping("secQues")
+    public NetResult getQues(String name)
+    {
+        return  ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws BackendError, Exception {
+                return NetResult.makeResult(service.getUserSecQuestion(name),null);
+            }
+        }).method();
+    }
+    @RequestMapping("answerSec")
+    public  NetResult replySec(String name,String answer)
+    {
+        return  ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws BackendError, Exception {
+                return NetResult.makeResult(service.replySecQuestion(name,answer),null);
             }
         }).method();
     }

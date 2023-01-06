@@ -5,6 +5,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
+import { title } from "@/settings";
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -42,6 +43,11 @@ export const constantRoutes = [
     hidden: true
   },
   {
+    path: '/findPassword',
+    component: () => import('@/views/PasswordChange/UnLogined.vue'),
+    hidden: true
+  },
+  {
     path: '/404',
     component: () => import('@/views/404'),
     hidden: true
@@ -51,13 +57,22 @@ export const constantRoutes = [
     path: '/',
     component: Layout,
     redirect: '/dashboard',
-    name:'个人主页',
+    name: '个人主页',
+    meta: { title: '个人主页', icon: 'el-icon-user' },
     children: [{
       path: 'dashboard',
-      name: '个人主页',
+      name: '个人信息',
       component: () => import('@/views/dashboard/index'),
-      meta: { title: '个人主页', icon: 'dashboard' }
-    }]
+      meta: { title: '个人信息', icon: 'el-icon-edit' }
+    },
+    {
+      path: 'password',
+      name: '修改密码',
+      component: () => import('@/views/PasswordChange/Logined.vue'),
+      meta: { title: "修改密码", icon: 'el-icon-s-check' }
+    }
+
+    ]
   },
 
   {
@@ -84,8 +99,8 @@ export const constantRoutes = [
 
   {
     path: '/tag',
-    name:'标签管理',
-    meta:{title:'标签管理',icon:'el-icon-price-tag'},
+    name: '标签管理',
+    meta: { title: '标签管理', icon: 'el-icon-price-tag' },
     component: Layout,
     children: [
       {
@@ -110,13 +125,13 @@ export const constantRoutes = [
         path: 'edit',
         component: () => import('@/views/question/edit.vue'), // Parent router-view
         name: '新增题目',
-        meta: { title: '新增题目',icon:'el-icon-plus' }
+        meta: { title: '新增题目', icon: 'el-icon-plus' }
       },
       {
         path: 'list',
         component: () => import('@/views/question/list.vue'),
         name: '题库列表',
-        meta: { title: '题库列表',icon:'el-icon-document' }
+        meta: { title: '题库列表', icon: 'el-icon-document' }
       }
     ]
   },
@@ -124,17 +139,17 @@ export const constantRoutes = [
   {
     path: '/userlist',
     component: Layout,
-    meta:{
-      title:'用户管理',
-      icon:'el-icon-user-solid'
+    meta: {
+      title: '用户管理',
+      icon: 'el-icon-user-solid'
     },
     children: [
       {
         path: 'mananger',
-        component:()=>import('@/views/userList/index.vue'),
-        meta:{
-          title:'用户管理',
-          icon:'el-icon-user-solid'
+        component: () => import('@/views/userList/index.vue'),
+        meta: {
+          title: '用户管理',
+          icon: 'el-icon-user-solid'
         },
       }
     ]

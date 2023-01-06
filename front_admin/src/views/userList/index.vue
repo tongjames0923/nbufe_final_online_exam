@@ -32,7 +32,10 @@
         label="备注">
     </el-table-column>
     <el-table-column
-        label="级别">
+        label="级别"
+        width="500"
+        fixed
+        >
         <template slot-scope="data">
           <el-radio-group v-model="data.row.level" size="mini"
           @input="changeLevel(data.row)"
@@ -62,7 +65,6 @@ export default {
     return{
       tableData:[],
       authable:false,
-      levelText:["未激活","标准激活","资源管理员","高级管理员"],
       total: -1,
                 cur: 0,
                 per: 30,

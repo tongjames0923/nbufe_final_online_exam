@@ -17,15 +17,16 @@ import static tbs.api_server.utility.Error.*;
 public class UserImp implements UserService
 {
     @Override
-    public ServiceResult updateUserPasswordByQuestion(int userid, String password, String ans) throws BackendError {
-        UserSecurityInfo securityInfo = mp.getUserSecurityInfo(userid);
+    public ServiceResult updateUserPasswordByQuestion(String name, String password, String ans) throws BackendError {
+        UserSecurityInfo securityInfo = mp.getUserSecurityInfoByName(name);
         if (securityInfo != null)
         {
             if(securityInfo.getSec_ques()!=null&&securityInfo.getSec_ans()!=null)
             {
                 if (securityInfo.getSec_ans().equals(ans))
                 {
-                    return new ServiceResult(mp.setValueForUserSecurity(userid, usec_password, password), null);
+                    int cnt=mp.setValueForUserSecurity(securityInfo.getId(), usec_password, password);
+                    return new ServiceResult(cnt>0?SUCCESS:EC_DB_UPDATE_FAIL, null);
                 } else
                 {
                   throw  _ERROR.throwError(FC_WRONG_PASSTEXT,"验证答案错误");
@@ -45,13 +46,27 @@ public class UserImp implements UserService
     }
 
     @Override
+    public ServiceResult replySecQuestion(String name, String ans) throws BackendError {
+        int cnt=mp.answerSecQues(name, ans);
+        if (cnt==0)
+            throw _ERROR.throwError(FC_WRONG_PASSTEXT, "验证答案错误");
+        return ServiceResult.makeResult(SUCCESS);
+    }
+
+    @Override
+    public ServiceResult getUserSecQuestion(String  name) {
+        return ServiceResult.makeResult(SUCCESS,mp.getQues(name));
+    }
+
+    @Override
     public ServiceResult UpdateUserPassword(int userid, String password, String old) throws BackendError {
         UserSecurityInfo securityInfo = mp.getUserSecurityInfo(userid);
         if (securityInfo != null)
         {
             if (securityInfo.getPassword().equals(old))
             {
-                return new ServiceResult(mp.setValueForUserSecurity(userid, usec_password, password), null);
+                int cnt= mp.setValueForUserSecurity(userid, usec_password, password);
+                return ServiceResult.makeResult(cnt>0?SUCCESS:EC_DB_UPDATE_FAIL, null);
             } else
             {
                 throw _ERROR.throwError(FC_WRONG_PASSTEXT,"原密码错误");

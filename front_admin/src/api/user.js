@@ -57,3 +57,59 @@ export function logout() {
     method: 'post'
   })
 }
+export function setDetail(info)
+{
+  return request({
+    url:'user/updatedetails',
+    method:'get',
+    params:{
+      'id': info.id,
+      'email': info.email,
+      'phone': info.phone,
+      'address': info.address,
+      'note': info.note
+    }
+  })
+}
+export function changePasswordByOld(id,old,newone)
+{
+  return request({
+    url:'user/updatePassword',
+    method:'get',
+    params:{
+      'id': id,
+      'password': newone,
+      'oldpassword': old
+    }})
+}
+export function getQues(name)
+{
+  return request({
+    url:'user/secQues',
+    method:'get',
+    params:{
+      'name': name
+    }})
+}
+export function replyAns(name,ans)
+{
+  return request({
+    url:'user/answerSec',
+    method:'get',
+    params:{
+      'name': name,
+      'answer':ans
+    }});
+}
+export function changePasswordBySec(name,password,ans)
+{
+  return request({
+    url:'user/findpdbyques',
+    method:'get',
+    params:{
+      'name': name,
+      'password': password,
+      'answer':ans
+    }
+  })
+}

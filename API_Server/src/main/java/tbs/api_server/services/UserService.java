@@ -20,9 +20,12 @@ public interface UserService
     ServiceResult UpdateUserPassword(int userid,String password,String old) throws Error.BackendError;
 
 
-    ServiceResult updateUserPasswordByQuestion(int userid,String password,String ans) throws Error.BackendError;
+    ServiceResult updateUserPasswordByQuestion(String name,String password,String ans) throws Error.BackendError;
 
 
+    ServiceResult replySecQuestion(String name,String ans) throws Error.BackendError;
+
+    ServiceResult getUserSecQuestion(String name);
 
     ServiceResult UpdateUserSecQuestion(int userid,String question,String answer) throws Error.BackendError;
 
