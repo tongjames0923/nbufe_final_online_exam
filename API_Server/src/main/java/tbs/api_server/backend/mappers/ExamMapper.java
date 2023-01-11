@@ -32,7 +32,7 @@ public interface ExamMapper {
     List<ExamInfo> list(int from, int num);
 
     @Select("SELECT `exam_file` FROM `exam` where `exam_id`=#{exam_id} FOR UPDATE")
-    byte[] getExamFile(int exam_id);
+    Object getExamFile(int exam_id);
 
     @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status` from" +
             " `exam` where `exam_name`=#{name} FOR UPDATE")

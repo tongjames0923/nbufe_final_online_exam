@@ -13,3 +13,6 @@ spring:
         type: com.alibaba.druid.pool.DruidDataSource
         url: jdbc:mysql://localhost:3310/exam_db?serverTimezone=Asia/Shanghai
         username: root
+    jackson:
+        date-format: yyyy-MM-dd HH:mm
+        time-zone: GMT+8

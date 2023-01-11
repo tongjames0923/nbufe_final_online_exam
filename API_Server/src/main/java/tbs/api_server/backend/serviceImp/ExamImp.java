@@ -8,10 +8,14 @@ import tbs.api_server.backend.mappers.ExamMapper;
 import tbs.api_server.backend.mappers.ExamPermissionMapper;
 import tbs.api_server.config.constant.const_Exam;
 import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.objects.compound.exam.ExamPost;
+import tbs.api_server.objects.compound.exam.ExamQuestion;
 import tbs.api_server.objects.simple.ExamInfo;
 import tbs.api_server.objects.simple.ExamPermission;
 import tbs.api_server.services.ExamService;
 import tbs.api_server.utility.TimeUtil;
+import tbs.api_server.utility.XML.XMLMaker;
+import tbs.api_server.utility.XML.XmlParser;
 
 import java.util.Date;
 import java.util.List;
@@ -52,16 +56,24 @@ public class ExamImp implements ExamService
     }
 
     @Override
-    public ServiceResult uploadExam(int user, String name, Date beg, String note, Integer length, byte[] file)
+    public ServiceResult uploadExam(int user, ExamPost data)
             throws BackendError
     {
-        int c = mp.uploadExam(name, beg, note, file, length);
+        byte[] file=null;
+        try
+        {
+           file = XMLMaker.MakeXML(data);
+        }catch (Exception e)
+        {
+            throw _ERROR.throwError(EC_UNKNOWN,"数据文件转换失败");
+        }
+        int c = mp.uploadExam(data.getExam_name(), data.getExam_begin(), data.getExam_note(),file, data.getExam_len());
         if (c <= 0)
             throw _ERROR.throwError(EC_DB_INSERT_FAIL, "上传考试失败", null);
-        ExamInfo info = mp.getExamIDByExamName(name);
+        ExamInfo info = mp.getExamIDByExamName(data.getExam_name());
         c = permit.putPermission(user, info.getExam_id(), 1, 1, 1);
         if (c <= 0)
-            throw _ERROR.throwError(EC_DB_INSERT_FAIL, "考试权限除市场赋予失败");
+            throw _ERROR.throwError(EC_DB_INSERT_FAIL, "考试权限赋予失败");
         return ServiceResult.makeResult(SUCCESS, null);
     }
 

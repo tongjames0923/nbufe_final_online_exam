@@ -59,7 +59,8 @@ public class FileController
     @RequestMapping("exam")
     public byte[] downloadExam(int id)
     {
-        return examMapper.getExamFile(id);
+        Object obj=examMapper.getExamFile(id);
+        return (byte[])obj;
     }
 
     @Autowired

@@ -3,12 +3,11 @@ package tbs.api_server.publicAPI;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import tbs.api_server.config.constant.const_Exam;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.objects.compound.exam.ExamPost;
 import tbs.api_server.objects.simple.ExamInfo;
 import tbs.api_server.services.ExamService;
 import tbs.api_server.utility.ApiMethod;
@@ -128,13 +127,13 @@ public class ExamController {
             }
         }).method();
     }
-    @RequestMapping("upload")
+    @RequestMapping(value = "upload",method = RequestMethod.POST)
     @Transactional
-    public NetResult upload(int user, String name, Date beg, byte[] file, @RequestParam(required = false) String note, @RequestParam(required = false) Integer length) {
+    public NetResult upload(int user,@RequestBody ExamPost exam) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action() throws Exception {
-                return NetResult.makeResult(service.uploadExam(user, name, beg, note, length, file), null);
+                return NetResult.makeResult(service.uploadExam(user, exam),null);
             }
         }).method();
     }
