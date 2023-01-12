@@ -135,7 +135,23 @@ export const constantRoutes = [
       }
     ]
   },
-
+  {
+    path:'/exam',
+    component:Layout,
+    meta:{
+      title:"考试管理",
+      icon:'el-icon-document'
+    },
+    children:[
+      {
+        path:'upload',
+        component:()=>import('@/views/exam/upload.vue'),
+        meta:{
+          title:"考试上传",
+        }
+      }
+    ]
+  },
   {
     path: '/userlist',
     component: Layout,

@@ -1,6 +1,5 @@
 <template>
     <div style="padding:10px">
-        <excel-test></excel-test>
 
         <el-input style="margin-bottom: 6px;" v-model="info.name">
             <template slot="prepend"> 用 户 名 </template>
@@ -35,10 +34,8 @@
 <script>
 import { getToken, setToken } from '@/utils/auth';
 import { setDetail } from '@/api/user';
-import excelTest from '../exam/excelTest.vue';
 /* eslint-disable */
 export default {
-  components: { excelTest },
     name: 'UserInfo',
     data() {
         return {
