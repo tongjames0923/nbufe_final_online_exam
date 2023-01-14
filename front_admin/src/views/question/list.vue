@@ -1,5 +1,6 @@
 <template>
     <div>
+
         <el-input placeholder="请输入内容" v-model="text" class="input-with-select">
             <template slot="append">
                 <el-button icon="el-icon-search" @click.prevent.native="search()" type="primary">搜索</el-button>
@@ -13,10 +14,12 @@
 
         </el-input>
 
-        <el-table :data="tableData" border style="width: 100%">
+        <el-table max-height="750" :data="tableData"
+        
+        border style="width: 100%">
             <el-table-column fixed prop="que_id" label="ID" width="50">
             </el-table-column>
-            <el-table-column label="题型" prop="que_type" width="120" fixed :filters="tableFilter"
+            <el-table-column label="题型" prop="que_type" width="90" fixed :filters="tableFilter"
                 :filter-method="filterHandler">
                 <template slot-scope="data">
                     <el-tag v-if="data.row.que_type == 0" type="warning">选择题</el-tag>
@@ -25,7 +28,7 @@
                     <el-tag v-else type="danger">错误</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column prop="title" label="标题" width="120" fixed>
+            <el-table-column prop="title" label="标题" width="480" fixed>
             </el-table-column>
             <el-table-column label="创建者信息" width="120">
                 <template slot-scope="scope">
@@ -41,9 +44,9 @@
                         :format="format"></el-progress>
                 </template>
             </el-table-column>
-            <el-table-column prop="use_time" label="使用次数" sortable>
+            <el-table-column prop="use_time" label="使用次数" width="105" sortable>
             </el-table-column>
-            <el-table-column label="公开性" :filters='pbFilter' :filter-method="pbfilterHandler" fixed>
+            <el-table-column label="公开性" :filters='pbFilter' width="125" :filter-method="pbfilterHandler" fixed>
                 <template slot-scope="scope">
                     <el-button icon="el-icon-unlock" v-if="scope.row.publicable == 1"
                         @click="changePublic(scope.$index, 0)">公开</el-button>
@@ -52,10 +55,13 @@
             </el-table-column>
             <el-table-column label="操作">
                 <template slot-scope="scope">
+                    <el-button type="text" size="small" v-if="selectable" @click="select(scope.row)">选择本题</el-button>
                     <el-button type="text" size="small" @click="findTag(scope.$index)">查看Tag</el-button>
                     <el-button type="text" size="small" @click="findAnswer(scope.$index)">查看答案</el-button>
                     <el-button type="text" size="small" @click="showBody(scope.row.que_id)">查看题目</el-button>
                     <el-button type="text" size="small" @click="deleteQues(scope.row.que_id)">删除题目</el-button>
+
+                
                 </template>
             </el-table-column>
         </el-table>
@@ -81,11 +87,12 @@
 /* eslint-disable */
 import UserInfo from '@/views/dashboard/index.vue';
 import TagList from '@/views/tag/list.vue';
-import { getAllTags, getTagByQues } from '@/api/tag';
+import { getTagByQues } from '@/api/tag';
 import { getUser } from '@/api/user'
 import { list, CountQues, questionBody, api_changePublic, searchByTitle, searchByID, searchByTag, deleteQues } from '@/api/question';
 import Answer from './answer.vue';
 import { getToken } from '@/utils/auth';
+const SelectCallback=function(item){}
 export default
     {
         components: {
@@ -93,6 +100,19 @@ export default
             Answer,
         },
         name: "QuestionList",
+        props:{
+            
+            selectable:{
+                type:Boolean,
+            default:false
+            },
+            cb:{
+                type:SelectCallback,
+                default:(item)=>{
+                    console.log(item)
+                }
+            }
+        },
         data() {
             return {
                 text: "",
@@ -183,9 +203,14 @@ export default
                 // })
 
             },
-            handleCurrentChange(val) {
-                this.cur = val;
-                this.load();
+            select(val) {
+                // if(val!==this.cur&&this.cb!=undefined)
+                // {
+                //     this.cb(val);
+                // }
+                // this.cur = val
+
+                this.cb(val);
             },
             filterHandler(value, row, column) {
                 const property = column['property'];

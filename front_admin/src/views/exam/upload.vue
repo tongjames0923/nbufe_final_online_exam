@@ -11,20 +11,24 @@
 <div v-else-if="active===1">
     <student-input ref="st" :action="inputDone"></student-input>
 </div>
-
+<div v-else-if="active===2">
+<select-question></select-question>
+</div>
 
   </div>
 </template>
 
 <script>
 import Config from './config.vue'
+import SelectQuestion from './SelectQuestion.vue'
 import StudentInput from './StudentInput.vue'
+
 export default {
-  components: { StudentInput, Config },
+  components: { StudentInput, Config, SelectQuestion },
     name:'ExamMain',
     data(){
         return {
-            active:0,
+            active:2,
             students:[],
             examconfig:undefined
         }
