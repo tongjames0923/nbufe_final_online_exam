@@ -35,11 +35,13 @@ public class QuestionImp implements QuestionService
 
     private boolean ownsQuestion(int queid,int userid)
     {
+        UserDetailInfo ud= userMapper.getUserDetailInfoByID(userid);
+        if(ud.getLevel()== const_User.LEVEL_EXAM_STAFF)
+            return true;
         Question question= mp.OwnQuestion(queid,userid);
         if(question==null)
         {
-            UserDetailInfo ud= userMapper.getUserDetailInfoByID(userid);
-            return ud!=null&&ud.getLevel()== const_User.LEVEL_EXAM_STAFF;
+            return false;
         }
         else
             return true;
@@ -109,6 +111,21 @@ public class QuestionImp implements QuestionService
             else
                 throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"不存在相关标题的问题");
 
+    }
+
+    @Override
+    public ServiceResult findQuestionsByID(int id) throws BackendError {
+        Question q=mp.getQuestionByID(id);
+        if(q==null)
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"不存在指定ID的题目");
+        ArrayList<Question> ls=new ArrayList<>();
+        ls.add(q);
+        return ServiceResult.makeResult(SUCCESS,ls);
+    }
+
+    @Override
+    public ServiceResult findQuestionsByTag(String tagname) throws BackendError {
+        return ServiceResult.makeResult(SUCCESS, mp.getQuestionByTag(tagname));
     }
 
     @Override

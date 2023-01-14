@@ -21,7 +21,7 @@ public interface QuestionMapper
     List<Question> getQuestionsByType(int type, int from, int num);
 
     @Select("SELECT `que_id`,`que_type`, `que_creator`,`answer_data`, `que_alter_time`, `publicable`,`use_time`, `answerd`, `answerd_right`,`title` " +
-            "FROM `question` WHERE `title` LIKE %${title}% LIMIT #{from},#{num} FOR UPDATE")
+            "FROM `question` WHERE `title` LIKE '%${title}%' LIMIT #{from},#{num} FOR UPDATE")
     List<Question> findQuestionByTitle(String title,int from,int num);
 
     @Select("SELECT `que_file` FROM `question` WHERE `que_id`=#{quesid} FOR UPDATE")
@@ -33,7 +33,7 @@ public interface QuestionMapper
     @Select("select count(*) from `question` FOR UPDATE")
     int countQuestions();
 
-    @Delete("DELETE FROM `question` WHERE `id`=#{que_id}")
+    @Delete("DELETE FROM `question` WHERE `que_id`=#{id}")
     int deleteQuestion(int id);
 
     @Select("SELECT `que_id`,`que_type`,`answer_data`, `que_creator`, `que_alter_time`, `publicable`, `use_time`, `answerd`, `answerd_right`,`title` " +
@@ -43,4 +43,7 @@ public interface QuestionMapper
     @Select("SELECT `que_id`,`que_type`,`answer_data`, `que_creator`, `que_alter_time`, `publicable`, `use_time`, `answerd`, `answerd_right`,`title` " +
             "FROM `question` WHERE `que_id`=#{que_id} and `que_creator`=#{user} FOR UPDATE")
     Question OwnQuestion(int que_id, int user);
+
+    @Select("SELECT q.* FROM question q JOIN tag_link l ON l.ques_id=q.que_id JOIN tag t ON t.tag_id=l.tag_id WHERE t.tag_name LIKE '%${tag}%'")
+    List<Question> getQuestionByTag(@Param(value = "tag") String tag);
 }

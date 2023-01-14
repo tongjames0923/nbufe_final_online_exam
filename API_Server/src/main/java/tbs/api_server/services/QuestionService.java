@@ -15,6 +15,10 @@ public interface QuestionService
     ServiceResult findQuestionsByType(int[] types,int from,int num) throws Error.BackendError;
     ServiceResult findQuestionsByTitle(String title,int from,int num) throws Error.BackendError;
 
+    ServiceResult findQuestionsByID(int id) throws Error.BackendError;
+
+    ServiceResult findQuestionsByTag(String tagname) throws  Error.BackendError;
+
     ServiceResult listQuestions(int from,int num) throws Error.BackendError;
 
     ServiceResult updateQuestionValue(int ques_id,String field,Object value) throws Error.BackendError;

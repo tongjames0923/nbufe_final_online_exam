@@ -96,7 +96,7 @@ public class QuestionController {
     }
 
     @Transactional
-    @RequestMapping(value = "search", method = RequestMethod.POST)
+    @RequestMapping(value = "search")
     public NetResult serach(String title, int from, int num) {
         try {
             ServiceResult serviceResult = service.findQuestionsByTitle(title, from, num);
@@ -125,21 +125,44 @@ public class QuestionController {
         }
     }
 
-    @Transactional
-    @RequestMapping(value = "updateFile", method = RequestMethod.POST)
-    public NetResult updateFile(int id, MultipartFile file) {
-        try {
-            ServiceResult result = service.updateQuestionValue(id, const_Question.col_file, file.getBytes());
-            return NetResult.makeResult(result, null);
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
 
+    @RequestMapping("findByid")
+    @Transactional
+    public  NetResult findById(int id)
+    {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws BackendError, Exception {
+                return NetResult.makeResult(service.findQuestionsByID(id),null);
+            }
+        }).method();
     }
+    @RequestMapping("findByTag")
+    @Transactional
+    public NetResult findByTag(String tag)  {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws BackendError, Exception {
+                return NetResult.makeResult(service.findQuestionsByTag(tag),null);
+            }
+        }).method();
+    }
+
+
+//    @Transactional
+//    @RequestMapping(value = "updateFile", method = RequestMethod.POST)
+//    public NetResult updateFile(int id, MultipartFile file) {
+//        try {
+//            ServiceResult result = service.updateQuestionValue(id, const_Question.col_file, file.getBytes());
+//            return NetResult.makeResult(result, null);
+//        } catch (Error.BackendError e) {
+//            _ERROR.rollback();
+//            return NetResult.makeResult(e.getCode(), e.getMessage());
+//        } catch (Exception ex) {
+//            _ERROR.rollback();
+//            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
+//        }
+//    }
 
     @Transactional
     @RequestMapping("updatePublic")
