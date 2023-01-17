@@ -24,7 +24,7 @@
         </el-input-number>
       </el-form-item>
       <el-form-item label="考试备注">
-        <el-input v-model="config.note"></el-input>
+        <el-input v-model="config.exam_note"></el-input>
       </el-form-item>
     </el-form>
     <el-button @click="done" >提交考试配置</el-button>

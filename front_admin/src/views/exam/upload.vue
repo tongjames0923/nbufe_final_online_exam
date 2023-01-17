@@ -12,7 +12,8 @@
     <student-input ref="st" :action="inputDone"></student-input>
 </div>
 <div v-else-if="active===2">
-<select-question></select-question>
+<select-question :cb="selectedQues"></select-question>
+<el-button @click="uploadExam">上传试卷</el-button>
 </div>
 
   </div>
@@ -22,24 +23,28 @@
 import Config from './config.vue'
 import SelectQuestion from './SelectQuestion.vue'
 import StudentInput from './StudentInput.vue'
-
+import {api_uploadExam} from '@/api/exam'
+import { getToken } from '@/utils/auth'
 export default {
   components: { StudentInput, Config, SelectQuestion },
     name:'ExamMain',
     data(){
         return {
-            active:2,
+            active:0,
             students:[],
-            examconfig:undefined
+            examconfig:undefined,
+            questions:[]
         }
     },
     methods:{
         inputDone(data)
         {
+            
             if(data&&data.length>0)
             {
                 this.students=data
                 this.active++
+                
             }
             else
             {
@@ -48,7 +53,22 @@ export default {
                     type:'error'
                 })
             }
-
+        },
+        uploadExam()
+        {
+            let user= JSON.parse(getToken())
+            api_uploadExam(user.id,this.examconfig,this.students,this.questions).then(res=>{
+                this.$message({
+                    message:"上传考试成功",
+                    type:'success'
+                })
+                this.active=0;
+            })
+        },
+        selectedQues(data)
+        {
+            this.questions=data
+            debugger
         },
         configed(data)
         {
@@ -64,8 +84,8 @@ export default {
                     type:'error'
                 })
             }
-
         }
+
     }
 
 }

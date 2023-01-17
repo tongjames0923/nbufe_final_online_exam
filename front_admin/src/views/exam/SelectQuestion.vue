@@ -40,9 +40,14 @@
 <script>
 import { CountQues, typeOf } from "@/api/question";
 import quesList from "@/views/question/list.vue";
+const action=(data)=>{}
 export default {
   components: {
     quesList,
+  },
+  props:
+  {
+    cb:action
   },
   data() {
     return {
@@ -67,8 +72,23 @@ export default {
         }
       }
       this.selected.push({score:5,que:val});
+      if(this.cb)
+      {
+        let cbd=[]
+        for(let i=0;i<this.selected.length;i++)
+        {
+          cbd.push({score:this.selected[i].score,ques_id:this.selected[i].que.que_id})
+        }
+        debugger
+        this.cb(cbd);
+      }
     }
     ,
+    remove(index)
+    {
+
+       this.selected.splice(index,1)
+    },
     filterHandler(value, row, column) {
       const v=row.que.que_type
                 return v === value;
