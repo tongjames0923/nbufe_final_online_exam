@@ -17,3 +17,15 @@ export function api_uploadExam(u,c,s,q)
         }
     })
 }
+export function api_count(user)
+{
+    return req({url:'exam/count',method:'get',params:{'user':user}})
+}
+export function api_list(from,num)
+{
+    return req({url:'exam/list',method:'get',params:{'from':from,'num':num}})
+}
+export function api_updateNote(v,u,e)
+{
+return req({url:'exam/updateNote',method:'get',params:{'note':v,'user':u,'examid':e}});
+}

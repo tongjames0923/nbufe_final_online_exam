@@ -56,6 +56,20 @@ public class ExamController {
             }
         }).method();
     }
+
+
+    @RequestMapping("count")
+    public NetResult count(int user)
+    {
+        return  ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws Error.BackendError, Exception {
+                return NetResult.makeResult(service.countExams(user),null);
+            }
+        })
+                .method();
+    }
+
     @RequestMapping("byStatus")
     @Transactional
     public NetResult listStatus(int status, int from, int num) {

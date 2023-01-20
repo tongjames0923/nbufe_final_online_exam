@@ -8,7 +8,9 @@ import java.util.Date;
 
 public interface ExamService
 {
-    ServiceResult getExamByStatus(int status,int from,int num) throws Error.BackendError;
+    ServiceResult countExams(int user);
+
+    ServiceResult getExamByStatus(int status, int from, int num) throws Error.BackendError;
     ServiceResult getExamByName(String name) throws Error.BackendError;
     ServiceResult uploadExam(int user, ExamPost data) throws Error.BackendError;
     ServiceResult deleteExam(int id,int userid) throws Error.BackendError;

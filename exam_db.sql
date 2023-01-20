@@ -11,7 +11,7 @@
  Target Server Version : 80031 (8.0.31)
  File Encoding         : 65001
 
- Date: 29/11/2022 10:16:31
+ Date: 20/01/2023 10:51:26
 */
 
 SET NAMES utf8mb4;
@@ -32,12 +32,6 @@ CREATE TABLE `answer` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
--- Records of answer
--- ----------------------------
-BEGIN;
-COMMIT;
-
--- ----------------------------
 -- Table structure for exam
 -- ----------------------------
 DROP TABLE IF EXISTS `exam`;
@@ -51,13 +45,7 @@ CREATE TABLE `exam` (
   `exam_status` tinyint NOT NULL DEFAULT '0' COMMENT '考试状态',
   PRIMARY KEY (`exam_id`),
   UNIQUE KEY `exam_name` (`exam_name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- ----------------------------
--- Records of exam
--- ----------------------------
-BEGIN;
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for exam_ reply
@@ -79,12 +67,6 @@ CREATE TABLE `exam_ reply` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
--- Records of exam_ reply
--- ----------------------------
-BEGIN;
-COMMIT;
-
--- ----------------------------
 -- Table structure for per_exam
 -- ----------------------------
 DROP TABLE IF EXISTS `per_exam`;
@@ -93,20 +75,14 @@ CREATE TABLE `per_exam` (
   `readable` tinyint(1) NOT NULL DEFAULT '1' COMMENT '可查看',
   `exam_id` bigint(16) unsigned zerofill NOT NULL COMMENT '对应的考试id',
   `checkable` tinyint(1) NOT NULL DEFAULT '0' COMMENT '可批改',
-  `writealbe` tinyint(1) NOT NULL DEFAULT '0' COMMENT '可修改试卷',
+  `writeable` tinyint(1) NOT NULL DEFAULT '0' COMMENT '可修改试卷',
   `user` int(7) unsigned zerofill NOT NULL COMMENT '权限所有人',
   PRIMARY KEY (`id`),
   KEY `exam_id` (`exam_id`),
   KEY `user` (`user`),
   CONSTRAINT `per_exam_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`exam_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `per_exam_ibfk_2` FOREIGN KEY (`user`) REFERENCES `user_sec` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- ----------------------------
--- Records of per_exam
--- ----------------------------
-BEGIN;
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for ques_resource
@@ -120,14 +96,7 @@ CREATE TABLE `ques_resource` (
   `resource_type` smallint(3) unsigned zerofill NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `resource` (`resource`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- ----------------------------
--- Records of ques_resource
--- ----------------------------
-BEGIN;
-INSERT INTO `ques_resource` (`id`, `resource`, `note`, `altertime`, `resource_type`) VALUES (0000000001, 'c0a775077a8822480a2cf4b8fc6f557e.png', '性格截图', '2022-11-22 07:21:45', 2000);
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for question
@@ -148,17 +117,7 @@ CREATE TABLE `question` (
   PRIMARY KEY (`que_id`),
   KEY `que_creator` (`que_creator`),
   CONSTRAINT `question_ibfk_1` FOREIGN KEY (`que_creator`) REFERENCES `user_sec` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- ----------------------------
--- Records of question
--- ----------------------------
-BEGIN;
-INSERT INTO `question` (`que_id`, `que_type`, `que_creator`, `que_alter_time`, `que_file`, `publicable`, `use_time`, `answerd`, `answerd_right`, `title`, `answer_data`) VALUES (0000000003, 0, 0000001, '2022-11-25 10:36:01', 0x7468697320697320612073656C656374, 0, 0, 3, 2, 'Select', '[{\"text\":\"NO\",\"right\":\"0\"},{\"text\":\"YES\",\"right\":\"1\"}]');
-INSERT INTO `question` (`que_id`, `que_type`, `que_creator`, `que_alter_time`, `que_file`, `publicable`, `use_time`, `answerd`, `answerd_right`, `title`, `answer_data`) VALUES (0000000004, 1, 0000001, '2022-11-25 10:25:04', 0x7468697320697320612046696C6C426C616E6B, 1, 0, 0, 0, 'FillBlank', '[{\"text\":\"YES\",\"equal\":\"1\"}]');
-INSERT INTO `question` (`que_id`, `que_type`, `que_creator`, `que_alter_time`, `que_file`, `publicable`, `use_time`, `answerd`, `answerd_right`, `title`, `answer_data`) VALUES (0000000005, 2, 0000001, '2022-11-22 08:41:59', 0x74686973206973206120416E73776572, 1, 0, 0, 0, 'AnswerQuestion', '[\"Hello world\"]');
-INSERT INTO `question` (`que_id`, `que_type`, `que_creator`, `que_alter_time`, `que_file`, `publicable`, `use_time`, `answerd`, `answerd_right`, `title`, `answer_data`) VALUES (0000000006, 0, 0000002, '2022-11-25 09:44:10', 0xE4BDBFE794A82A2AE6B890E8BF91E680A72A2AE69DA5E8A1A8E7A4BAE7AE97E6B395E5A48DE69D82E5BAA6E79A84E58E9FE59BA0E698AFEFBC8820EFBC89E38082215B746869732069732061207069635D28687474703A2F2F6C6F63616C686F73743A383038302F66696C652F7265732F696D6167653F69643D3129, 1, 0, 0, 0, '计算机Test', '[{\"text\":\"A. 可以精确表示算法的复杂度\",\"right\":\"0\"},{\"text\":\"B. 算法的复杂度无法使用时间单位来表示\",\"right\":\"0\"},{\"text\":\"C. 研究者更关心算法的增长趋势\",\"right\":\"1\"},{\"text\":\"D. 我们只研究小规模问题\",\"right\":\"0\"}]');
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for resource_link
@@ -176,12 +135,6 @@ CREATE TABLE `resource_link` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
--- Records of resource_link
--- ----------------------------
-BEGIN;
-COMMIT;
-
--- ----------------------------
 -- Table structure for tag
 -- ----------------------------
 DROP TABLE IF EXISTS `tag`;
@@ -191,16 +144,7 @@ CREATE TABLE `tag` (
   `tag_used` int unsigned NOT NULL DEFAULT '0' COMMENT '标签使用次数',
   PRIMARY KEY (`tag_id`),
   UNIQUE KEY `tag_name` (`tag_name`)
-) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- ----------------------------
--- Records of tag
--- ----------------------------
-BEGIN;
-INSERT INTO `tag` (`tag_id`, `tag_name`, `tag_used`) VALUES (00003, 'Test', 3);
-INSERT INTO `tag` (`tag_id`, `tag_name`, `tag_used`) VALUES (00008, 'Hello', 3);
-INSERT INTO `tag` (`tag_id`, `tag_name`, `tag_used`) VALUES (00011, 'okkk', 0);
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for tag_link
@@ -215,18 +159,7 @@ CREATE TABLE `tag_link` (
   KEY `tag_id` (`tag_id`),
   CONSTRAINT `tag_link_ibfk_1` FOREIGN KEY (`ques_id`) REFERENCES `question` (`que_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `tag_link_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`tag_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- ----------------------------
--- Records of tag_link
--- ----------------------------
-BEGIN;
-INSERT INTO `tag_link` (`id`, `tag_id`, `ques_id`) VALUES (4, 00008, 0000000003);
-INSERT INTO `tag_link` (`id`, `tag_id`, `ques_id`) VALUES (5, 00003, 0000000004);
-INSERT INTO `tag_link` (`id`, `tag_id`, `ques_id`) VALUES (6, 00003, 0000000005);
-INSERT INTO `tag_link` (`id`, `tag_id`, `ques_id`) VALUES (7, 00008, 0000000005);
-INSERT INTO `tag_link` (`id`, `tag_id`, `ques_id`) VALUES (8, 00003, 0000000006);
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for user_info
@@ -241,15 +174,7 @@ CREATE TABLE `user_info` (
   `level` tinyint NOT NULL DEFAULT '0' COMMENT '用户权限等级',
   PRIMARY KEY (`id`),
   CONSTRAINT `user_info_ibfk_1` FOREIGN KEY (`id`) REFERENCES `user_sec` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- ----------------------------
--- Records of user_info
--- ----------------------------
-BEGIN;
-INSERT INTO `user_info` (`id`, `address`, `phone`, `email`, `note`, `level`) VALUES (0000001, '', NULL, 'tongjames@live.com', '', 0);
-INSERT INTO `user_info` (`id`, `address`, `phone`, `email`, `note`, `level`) VALUES (0000002, 'fdfs', 'fsdf', 'fsdf', 'sdfs', 0);
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Table structure for user_sec
@@ -263,14 +188,6 @@ CREATE TABLE `user_sec` (
   `sec_ans` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '安全问题答案',
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
--- ----------------------------
--- Records of user_sec
--- ----------------------------
-BEGIN;
-INSERT INTO `user_sec` (`id`, `name`, `password`, `sec_ques`, `sec_ans`) VALUES (0000001, 'abstergo', '09aaaf8a54f3f5547043b3a5b56f1dd0', 'i am a good man?', 'Yes');
-INSERT INTO `user_sec` (`id`, `name`, `password`, `sec_ques`, `sec_ans`) VALUES (0000002, 'test', 'okkkkk', NULL, NULL);
-COMMIT;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 SET FOREIGN_KEY_CHECKS = 1;

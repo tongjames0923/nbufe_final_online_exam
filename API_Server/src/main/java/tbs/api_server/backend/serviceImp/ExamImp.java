@@ -6,16 +6,17 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import tbs.api_server.backend.mappers.ExamMapper;
 import tbs.api_server.backend.mappers.ExamPermissionMapper;
+import tbs.api_server.backend.mappers.UserMapper;
 import tbs.api_server.config.constant.const_Exam;
+import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.compound.exam.ExamPost;
-import tbs.api_server.objects.compound.exam.ExamQuestion;
 import tbs.api_server.objects.simple.ExamInfo;
 import tbs.api_server.objects.simple.ExamPermission;
+import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.services.ExamService;
 import tbs.api_server.utility.TimeUtil;
 import tbs.api_server.utility.XML.XMLMaker;
-import tbs.api_server.utility.XML.XmlParser;
 
 import java.util.Date;
 import java.util.List;
@@ -32,6 +33,17 @@ public class ExamImp implements ExamService
 
     @Autowired
     ExamPermissionMapper permit;
+
+
+    @Autowired
+    UserMapper userMapper;
+
+
+    @Override
+    public ServiceResult countExams(int user) {
+
+            return ServiceResult.makeResult(SUCCESS,mp.countStaff());
+    }
 
     @Override
     public ServiceResult getExamByStatus(int status, int from, int num) throws BackendError
@@ -112,6 +124,16 @@ public class ExamImp implements ExamService
 
     private boolean needWrite(int user, int examid)
     {
+
+        UserDetailInfo userDetailInfo= userMapper.getUserDetailInfoByID(user);
+        if(userDetailInfo==null)
+        {
+            return  false;
+        }
+        if(userDetailInfo.getLevel()==const_User.LEVEL_EXAM_STAFF)
+        {
+            return true;
+        }
         ExamPermission permission = permit.getPermission(user, examid);
         if (permission == null)
             return false;
@@ -151,7 +173,7 @@ public class ExamImp implements ExamService
     @Override
     public ServiceResult updateNote(String note, int user, int examid) throws BackendError
     {
-        if(needWrite(examid,user))
+        if(needWrite(user,examid))
         {
             int c = mp.updateExam(examid, const_Exam.col_notes, note);
             if (c > 0)

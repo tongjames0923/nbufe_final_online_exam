@@ -144,6 +144,11 @@ export const constantRoutes = [
     },
     children:[
       {
+        path: 'list',
+        component:() => import('@/views/exam/list.vue'),
+        meta:{ title:'考试列表',}
+      },
+      {
         path:'upload',
         component:()=>import('@/views/exam/upload.vue'),
         meta:{

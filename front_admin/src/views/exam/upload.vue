@@ -20,9 +20,9 @@
 </template>
 
 <script>
-import Config from './config.vue'
-import SelectQuestion from './SelectQuestion.vue'
-import StudentInput from './StudentInput.vue'
+import Config from './components/config.vue'
+import SelectQuestion from './components/SelectQuestion.vue'
+import StudentInput from './components/StudentInput.vue'
 import {api_uploadExam} from '@/api/exam'
 import { getToken } from '@/utils/auth'
 export default {

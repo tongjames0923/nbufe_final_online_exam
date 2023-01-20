@@ -45,7 +45,10 @@ public interface ExamMapper {
     @Delete("DELETE FROM `exam` WHERE `exam_id`=#{exam_id}")
     int deleteExam(int exam_id);
 
-    @Update("UPDATE `exam` SET `#{field}`=#{value} WHERE `exam_id`=#{exam_id}")
+    @Update("UPDATE `exam` SET `${field}`=#{value} WHERE `exam_id`=#{exam_id}")
     int updateExam(int exam_id, String field, Object value);
 
+
+    @Select("SELECT COUNT(*) FROM exam;")
+    int countStaff();
 }
