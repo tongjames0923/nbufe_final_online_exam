@@ -27,17 +27,22 @@ public class ExamController {
     @Autowired
     ExamService service;
 
-    private void update(List<ExamInfo> list) {
+    private void update(List<ExamInfo> list) throws Error.BackendError {
+
+
         for (ExamInfo info : list) {
-            try {
-                if (TimeUtil.isClosed(info) && (info.getExam_status() == const_Exam.EXAM_STATUS_WAIT || info.getExam_status() == const_Exam.EXAM_STATUS_START)) {
-                    service.updateStatus(const_Exam.EXAM_STATUS_CLOSED, info.getExam_id());
-                    info.setExam_status(const_Exam.EXAM_STATUS_CLOSED);
-                } else if (TimeUtil.isStart(info) && info.getExam_status() == const_Exam.EXAM_STATUS_WAIT) {
-                    service.updateStatus(const_Exam.EXAM_STATUS_START, info.getExam_id());
-                    info.setExam_status(const_Exam.EXAM_STATUS_START);
-                }
-            } catch (Exception e) {
+            if(info.getExam_status()>const_Exam.EXAM_STATUS_CLOSED)
+                continue;
+            if(info.getExam_status()<const_Exam.EXAM_STATUS_CLOSED&&TimeUtil.isClosed(info))
+            {
+                service.updateStatus(const_Exam.EXAM_STATUS_CLOSED, info.getExam_id());
+                info.setExam_status(const_Exam.EXAM_STATUS_CLOSED);
+                continue;
+            }
+            if(info.getExam_status()==const_Exam.EXAM_STATUS_WAIT&&TimeUtil.isStart(info))
+            {
+                service.updateStatus(const_Exam.EXAM_STATUS_START, info.getExam_id());
+                info.setExam_status(const_Exam.EXAM_STATUS_START);
             }
         }
     }

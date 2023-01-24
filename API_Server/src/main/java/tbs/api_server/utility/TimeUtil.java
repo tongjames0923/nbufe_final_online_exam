@@ -18,13 +18,15 @@ public class TimeUtil {
     public static boolean isStart(ExamInfo info)
     {
         Date date=new Date();
-        return info.getExam_begin().before(date);
+        boolean r=info.getExam_begin().before(date);;
+        return r;
     }
     public static boolean isClosed(ExamInfo info)
     {
         Date now=new Date();
       Date d=  appendMin(info.getExam_begin(),info.getExam_len());
-      return now.after(d);
+      boolean r=now.after(d);
+      return r;
     }
 
 
