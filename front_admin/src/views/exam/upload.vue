@@ -68,7 +68,6 @@ export default {
         selectedQues(data)
         {
             this.questions=data
-            debugger
         },
         configed(data)
         {

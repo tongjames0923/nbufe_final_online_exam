@@ -190,10 +190,15 @@ public class UserImp implements UserService
         try
         {
             des = mp.getUserSecurityInfoByName(username);
+
             if (des == null)
                 throw _ERROR.throwError(FC_NOTFOUND,"用户名不存在");
             else
             {
+                if(mp.getUserDetailInfoByID(des.getId()).getLevel()==LEVEL_UnActive)
+                {
+                    throw  _ERROR.throwError(FC_UNAVALIABLE,"您的账户尚未激活");
+                }
                 if (des.getPassword().equals(password))
                 {
                     return new ServiceResult<>(SUCCESS, des);

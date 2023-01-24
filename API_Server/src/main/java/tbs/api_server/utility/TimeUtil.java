@@ -18,7 +18,7 @@ public class TimeUtil {
     public static boolean isStart(ExamInfo info)
     {
         Date date=new Date();
-        return info.getExam_begin().after(date);
+        return info.getExam_begin().before(date);
     }
     public static boolean isClosed(ExamInfo info)
     {

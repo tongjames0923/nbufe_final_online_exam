@@ -12,6 +12,7 @@
           format="yyyy年MM月dd日 HH:mm"
           value-format="yyyy-MM-dd HH:mm"
           :picker-options="pickerOptions"
+          @change="dateChange"
         >
         </el-date-picker>
       </el-form-item>
@@ -38,6 +39,18 @@ export default {
         done()
         {
             this.action(this.config)
+        },
+        dateChange()
+        {
+          let d=new Date( this.config.exam_begin)
+          if(d<=Date.now()+1000*60*20)
+          {
+            this.config.exam_begin=undefined
+            this.$message({
+              message:"请选择最少20分钟后的时间点",
+              type:'error'
+            })
+          }
         }
     },
   data() {
@@ -45,7 +58,8 @@ export default {
     return {
         pickerOptions: {
           disabledDate(time) {
-            return time.getTime() <= Date.now();
+            const td=time.getTime();
+            return  td< Date.now()- 3600 * 1000 * 24;
           },
           shortcuts: [{
             text: '明天',

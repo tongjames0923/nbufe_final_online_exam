@@ -29,3 +29,36 @@ export function api_updateNote(v,u,e)
 {
 return req({url:'exam/updateNote',method:'get',params:{'note':v,'user':u,'examid':e}});
 }
+export function api_updateName(v,u,e)
+{
+    return req({url:'exam/updateName',
+    method:'get',
+    params:{
+        'name':v,
+        'user':u,
+        'examid':e
+    }
+})
+}
+export function api_updateLen(v,u,e)
+{
+    return req({url:'exam/updateLen',
+    method:'get',
+    params:{
+        'len':v,
+        'user':u,
+        'examid':e
+    }
+})
+}
+export function api_updateBegin(v,u,e)
+{
+    return req({url:'exam/updateBegin',
+    method:'get',
+    params:{
+        'time':v,
+        'user':u,
+        'examid':e
+    }
+})
+}

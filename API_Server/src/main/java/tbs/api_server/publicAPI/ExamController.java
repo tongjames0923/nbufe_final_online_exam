@@ -14,6 +14,7 @@ import tbs.api_server.utility.ApiMethod;
 import tbs.api_server.utility.Error;
 import tbs.api_server.utility.TimeUtil;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -121,12 +122,12 @@ public class ExamController {
     }
     @RequestMapping("updateBegin")
     @Transactional
-    public NetResult updateBegin(Date time, int user, int examid) {
+    public NetResult updateBegin(String time, int user, int examid) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action() throws Exception {
-
-                return NetResult.makeResult(service.updateBegin(time, user, examid), null);
+                Date d=new Date(new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(time).getTime());
+                return NetResult.makeResult(service.updateBegin(d, user, examid), null);
             }
         }).method();
     }

@@ -60,24 +60,22 @@ public class UserController {
      */
     @Transactional
     public NetResult login(String username, String password) {
-        try {
-            UserDetailInfo info = null;
-            if (UserUtility.isValidForUsername(username) && UserUtility.isValidForPassword(password)) {
-                password = UserUtility.passwordEncode(password);
-                ServiceResult<UserSecurityInfo> sc = service.loginUser(username, password);
-                info = (UserDetailInfo) service.getUserInfo(sc.getObj().getId()).getObj();
-                sc.getObj().setSec_ans(null);
-                return NetResult.makeResult(sc.getCode(), null, info);
-            } else {
-                return NetResult.makeResult(EC_InvalidParameter, "用户名和密码的强度不足", null);
+
+        return  ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws BackendError, Exception {
+                UserDetailInfo info = null;
+                if (UserUtility.isValidForUsername(username) && UserUtility.isValidForPassword(password)) {
+                    String passwords = UserUtility.passwordEncode(password);
+                    ServiceResult<UserSecurityInfo> sc = service.loginUser(username, passwords);
+                    info = (UserDetailInfo) service.getUserInfo(sc.getObj().getId()).getObj();
+                    sc.getObj().setSec_ans(null);
+                    return NetResult.makeResult(sc.getCode(), null, info);
+                } else {
+                    return NetResult.makeResult(EC_InvalidParameter, "用户名和密码的强度不足", null);
+                }
             }
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getDetail());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
+        }).method();
     }
 
     @RequestMapping("updateSecQues")

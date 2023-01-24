@@ -88,7 +88,7 @@ public class Error
 
     public BackendError throwError(int error, String detail, Object data) throws BackendError
     {
-        return BackendError.newError(error, detail, ERROR_TEXT(error), data);
+        return BackendError.newError(error, ERROR_TEXT(error),detail, data);
     }
 
     public BackendError throwError(int error, String detail) throws BackendError
