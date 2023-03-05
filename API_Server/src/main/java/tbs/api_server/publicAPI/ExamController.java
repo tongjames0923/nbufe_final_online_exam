@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import sun.nio.ch.Net;
 import tbs.api_server.config.constant.const_Exam;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
@@ -149,6 +150,18 @@ public class ExamController {
             @Override
             public NetResult action() throws Exception {
                 return NetResult.makeResult(service.uploadExam(user, exam),null);
+            }
+        }).method();
+    }
+
+
+    @RequestMapping("getFull")
+    public NetResult getfull(int id)
+    {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws Error.BackendError, Exception {
+                return  NetResult.makeResult(service.getFullExamInfoById(id),null);
             }
         }).method();
     }

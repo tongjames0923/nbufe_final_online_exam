@@ -79,7 +79,6 @@ export default {
         {
           cbd.push({score:this.selected[i].score,ques_id:this.selected[i].que.que_id})
         }
-        debugger
         this.cb(cbd);
       }
     }

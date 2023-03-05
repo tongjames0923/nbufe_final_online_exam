@@ -1,11 +1,13 @@
 package tbs.api_server.backend.serviceImp;
 
+import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import tbs.api_server.backend.mappers.ExamMapper;
 import tbs.api_server.backend.mappers.ExamPermissionMapper;
+import tbs.api_server.backend.mappers.QuestionMapper;
 import tbs.api_server.backend.mappers.UserMapper;
 import tbs.api_server.config.constant.const_Exam;
 import tbs.api_server.config.constant.const_User;
@@ -13,11 +15,12 @@ import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.compound.exam.ExamPost;
 import tbs.api_server.objects.simple.ExamInfo;
 import tbs.api_server.objects.simple.ExamPermission;
+import tbs.api_server.objects.simple.Question;
 import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.services.ExamService;
 import tbs.api_server.utility.TimeUtil;
-import tbs.api_server.utility.XML.XMLMaker;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +41,8 @@ public class ExamImp implements ExamService
     @Autowired
     UserMapper userMapper;
 
+    @Autowired
+    QuestionMapper questionMapper;
 
     @Override
     public ServiceResult countExams(int user) {
@@ -74,7 +79,7 @@ public class ExamImp implements ExamService
         byte[] file=null;
         try
         {
-           file = XMLMaker.MakeXML(data);
+           file = JSON.toJSONString(data).getBytes(StandardCharsets.UTF_8);
         }catch (Exception e)
         {
             throw _ERROR.throwError(EC_UNKNOWN,"数据文件转换失败");
@@ -247,6 +252,23 @@ public class ExamImp implements ExamService
         if(ls.size()>0)
             return ServiceResult.makeResult(SUCCESS,ls);
         throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"查找不到早于该时间的考试",d);
+    }
+
+    @Override
+    public ServiceResult getFullExamInfoById(int exam_id) throws BackendError {
+        ExamInfo info= mp.getExamByid(exam_id);
+        if(info==null)
+        {
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"考试不存在");
+        }
+        ExamPost obj=JSON.parseObject(mp.getExamFile(exam_id),ExamPost.class);
+
+        for(int i=0;i<obj.getQuestions().size();i++)
+        {
+            Question q=questionMapper.getQuestionByID(obj.getQuestions().get(i).getQues_id());
+            obj.getQuestions().get(i).setDetail(q);
+        }
+        return ServiceResult.makeResult(SUCCESS,obj);
     }
 
 }
