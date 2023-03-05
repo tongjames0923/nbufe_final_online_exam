@@ -42,6 +42,11 @@
           ></el-input>
         </template>
       </el-table-column>
+      <el-table-column label="考试状态">
+                <template slot-scope="data">
+                    <el-tag>{{ ex_status[data.row.exam_status] }}</el-tag>
+                </template>
+            </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="data">
           <el-button
@@ -49,6 +54,12 @@
             size="small"
             @click="examDetail(data.row.exam_id)"
             >详情</el-button
+          >
+          <el-button
+            type="text"
+            size="small"
+            @click="del(data.row.exam_id)"
+            >删除考试</el-button
           >
         </template>
       </el-table-column>
@@ -141,10 +152,21 @@ export default {
       questions: [],
       ques_title:"考题",
       students:[],
-      student_title:"考生"
+      student_title:"考生",
+      ex_status: ['未开始', '正在考试', '考试结束', '考试预批阅完成', '考试批阅完成']
     };
   },
   methods: {
+    del(examID) {
+            let u = JSON.parse(getToken());
+            api_delete(examID, u.id).then(res => {
+                this.$message({
+                    showClose: true,
+                    message: '删除成功'
+                });
+                this.updatelist()
+            })
+        },
     examDetail(id) {
       api_fullExam(id).then((res) => {
         this.questions = res.questions;
