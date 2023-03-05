@@ -2,6 +2,7 @@ package tbs.api_server.backend.serviceImp;
 
 import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,7 @@ import tbs.api_server.config.constant.const_Exam;
 import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.compound.exam.ExamPost;
+import tbs.api_server.objects.compound.exam.ExamUser;
 import tbs.api_server.objects.simple.ExamInfo;
 import tbs.api_server.objects.simple.ExamPermission;
 import tbs.api_server.objects.simple.Question;
@@ -269,6 +271,17 @@ public class ExamImp implements ExamService
             obj.getQuestions().get(i).setDetail(q);
         }
         return ServiceResult.makeResult(SUCCESS,obj);
+    }
+
+    @Override
+    public ServiceResult StudentLogin(String name, String id, String number, int exam) throws BackendError {
+         ExamPost data= (ExamPost) getFullExamInfoById(exam).getObj();
+         for(ExamUser u:data.getStudents())
+         {
+             if(u.getId().equals(id)&&u.getName().equals(name)&&u.getNumber().equals(number))
+                 return ServiceResult.makeResult(SUCCESS,data);
+         }
+         throw _ERROR.throwError(FC_NOTFOUND,"该考试不存在相关考生数据");
     }
 
 }

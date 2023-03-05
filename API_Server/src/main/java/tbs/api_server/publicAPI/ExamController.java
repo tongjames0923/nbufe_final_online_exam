@@ -170,6 +170,19 @@ public class ExamController {
             }
         }).method();
     }
+
+    @RequestMapping("studentLogin")
+    public NetResult studentLogin(String name,String number,String id,int examID)
+    {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action() throws Error.BackendError, Exception {
+                return NetResult.makeResult(service.StudentLogin(name,id,number,examID),null);
+            }
+        }).method();
+    }
+
+
     @RequestMapping("delete")
     @Transactional
     public NetResult delete(int id, int user) {
