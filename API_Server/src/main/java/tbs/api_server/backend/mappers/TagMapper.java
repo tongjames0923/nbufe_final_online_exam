@@ -1,6 +1,8 @@
 package tbs.api_server.backend.mappers;
 
 import org.apache.ibatis.annotations.*;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import tbs.api_server.objects.simple.Tag;
 
 import java.util.List;
@@ -34,9 +36,11 @@ public interface TagMapper
 
     @Insert("INSERT INTO `tag_link`(`tag_id`,`ques_id`) VALUES\n" +
     "(#{tagid},#{ques_id})\n" )
+    @CacheEvict(value = "quesTags",key = "#ques_id")
     int linkTag(int ques_id,int tagid);
 
     @Delete("delete from `tag_link` where `tag_id`=#{tagid} and `ques_id`=#{ques_id}")
+    @CacheEvict(value = "quesTags",key = "#ques_id")
     int unLinkTag(int ques_id,int tagid);
 
 
@@ -44,5 +48,6 @@ public interface TagMapper
     List<Integer> listQuestionIdByTagId(int id);
 
     @Select("SELECT * FROM tag WHERE tag.tag_id IN (SELECT tag_link.tag_id FROM tag_link WHERE tag_link.ques_id=#{ques_id}) FOR UPDATE;")
+    @Cacheable(value = "quesTags",key = "#ques_id")
     List<Tag> findTagsByQuestion(int ques_id);
 }

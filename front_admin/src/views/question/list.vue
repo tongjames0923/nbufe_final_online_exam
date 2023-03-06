@@ -172,6 +172,8 @@ export default
                 this.showtag = true
                 getTagByQues(this.tableData[idx].que_id).then(res => {
                     this.$refs.ques_tag.updateData(res);
+                },err=>{
+                    this.$refs.ques_tag.updateData([]);
                 })
             },
             format(percentage) {

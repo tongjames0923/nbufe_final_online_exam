@@ -1,6 +1,9 @@
 package tbs.api_server.backend.mappers;
 
 import org.apache.ibatis.annotations.*;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import tbs.api_server.objects.simple.Question;
 
 import java.util.List;
@@ -25,19 +28,29 @@ public interface QuestionMapper
     List<Question> findQuestionByTitle(String title,int from,int num);
 
     @Select("SELECT `que_file` FROM `question` WHERE `que_id`=#{quesid} FOR UPDATE")
+    @Cacheable(value = "queFile",key = "#quesid")
     Question getQuestionFile(int quesid);
 
     @Update("UPDATE `question` SET `${field}`=#{value} WHERE `que_id`=#{id}")
+@Caching(evict = {
+        @CacheEvict(value = "queFile",key = "#id"),
+        @CacheEvict(value = "que",key = "#id")
+})
     int updateQuestionValue(int id,String field,Object value);
 
     @Select("select count(*) from `question` FOR UPDATE")
     int countQuestions();
 
     @Delete("DELETE FROM `question` WHERE `que_id`=#{id}")
+    @Caching(evict = {
+            @CacheEvict(value = "queFile",key = "#id"),
+            @CacheEvict(value = "que",key = "#id")
+    })
     int deleteQuestion(int id);
 
     @Select("SELECT `que_id`,`que_type`,`answer_data`, `que_creator`, `que_alter_time`, `publicable`, `use_time`, `answerd`, `answerd_right`,`title` " +
             "FROM `question` WHERE `que_id`=#{que_id} FOR UPDATE")
+    @Cacheable(value = "que",key = "#id")
     Question getQuestionByID(int id);
 
     @Select("SELECT `que_id`,`que_type`,`answer_data`, `que_creator`, `que_alter_time`, `publicable`, `use_time`, `answerd`, `answerd_right`,`title` " +

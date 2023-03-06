@@ -62,7 +62,15 @@ export function api_updateBegin(v,u,e)
     }
 })
 }
-
+export function api_fullExam(id)
+{
+    return req({url:'exam/getFull',
+method:"get",
+params:{
+    'id':id
+}
+})
+}
 export function api_delete(e,u)
 {
     return req({url:'exam/delete',method:'get',params:{'id':e, 'user':u}})

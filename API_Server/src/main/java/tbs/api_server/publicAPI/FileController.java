@@ -57,10 +57,9 @@ public class FileController
     ExamMapper examMapper;
 
     @RequestMapping("exam")
-    public byte[] downloadExam(int id)
+    public String downloadExam(int id)
     {
-        Object obj=examMapper.getExamFile(id);
-        return (byte[])obj;
+        return examMapper.getExamFile(id);
     }
 
     @Autowired

@@ -1,6 +1,9 @@
 package tbs.api_server.backend.mappers;
 
 import org.apache.ibatis.annotations.*;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import tbs.api_server.objects.simple.ExamInfo;
 
 import java.util.Date;
@@ -14,6 +17,7 @@ public interface ExamMapper {
 
     @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status` from " +
             "`exam` where `exam_id`=#{id} FOR UPDATE")
+    @Cacheable(value = "examinfo",key = "#id")
     ExamInfo getExamByid(int id);
 
     @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status` from " +
@@ -32,7 +36,8 @@ public interface ExamMapper {
     List<ExamInfo> list(int from, int num);
 
     @Select("SELECT `exam_file` FROM `exam` where `exam_id`=#{exam_id} FOR UPDATE")
-    Object getExamFile(int exam_id);
+    @Cacheable(value = "examFile",key = "#exam_id")
+    String getExamFile(int exam_id);
 
     @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status` from" +
             " `exam` where `exam_name`=#{name} FOR UPDATE")
@@ -43,8 +48,16 @@ public interface ExamMapper {
     int uploadExam(String name, Date beg, String note, byte[] file, Integer len);
 
     @Delete("DELETE FROM `exam` WHERE `exam_id`=#{exam_id}")
+    @Caching(evict = {
+            @CacheEvict(value = "examFile",key = "#exam_id"),
+            @CacheEvict(value = "examinfo",key = "#exam_id")
+    })
     int deleteExam(int exam_id);
 
+    @Caching(evict = {
+            @CacheEvict(value = "examFile",key = "#exam_id"),
+            @CacheEvict(value = "examinfo",key = "#exam_id")
+    })
     @Update("UPDATE `exam` SET `${field}`=#{value} WHERE `exam_id`=#{exam_id}")
     int updateExam(int exam_id, String field, Object value);
 

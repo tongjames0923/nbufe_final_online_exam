@@ -1,9 +1,6 @@
 package tbs.api_server.objects.compound.exam;
 
 import tbs.api_server.objects.simple.ExamInfo;
-import tbs.api_server.utility.XML.ObjectParser.DateParser;
-import tbs.api_server.utility.XML.xml_getter;
-
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -16,7 +13,6 @@ public class ExamPost {
     private List<ExamUser> students = new ArrayList<ExamUser>();
     private List<ExamQuestion> questions = new ArrayList<ExamQuestion>();
 
-    @xml_getter(name = "exam_name")
     public String getExam_name() {
         return exam_name;
     }
@@ -25,7 +21,7 @@ public class ExamPost {
         this.exam_name = exam_name;
     }
 
-    @xml_getter(name = "begin",parser = DateParser.class)
+
     public Date getExam_begin() {
         return exam_begin;
     }
@@ -34,7 +30,7 @@ public class ExamPost {
         this.exam_begin = exam_begin;
     }
 
-    @xml_getter(name = "len")
+
     public int getExam_len() {
         return exam_len;
     }
@@ -43,7 +39,7 @@ public class ExamPost {
         this.exam_len = exam_len;
     }
 
-    @xml_getter(name = "exam_note")
+
     public String getExam_note() {
         return exam_note;
     }

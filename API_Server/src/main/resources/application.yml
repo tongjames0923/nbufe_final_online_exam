@@ -16,3 +16,9 @@ spring:
     jackson:
         date-format: yyyy-MM-dd HH:mm
         time-zone: GMT+8
+    redis:
+        host: 127.0.0.1
+        password: redispw
+        port: 32768
+        database: 0
+        timeout: 1000
