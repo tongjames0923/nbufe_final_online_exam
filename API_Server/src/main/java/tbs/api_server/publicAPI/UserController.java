@@ -73,8 +73,7 @@ public class UserController {
                     ServiceResult<UserVo> sc = service.loginUser(username, passwords);
                     info = (UserDetailInfo) service.getUserInfo(sc.getObj().getId()).getObj();
                     sc.getObj().setSec_ans(null);
-                    info.setUid(sc.getObj().getUid());
-                    return NetResult.makeResult(sc.getCode(), null, info);
+                    return NetResult.makeResult(sc.getCode(), null,new Object[]{sc.getObj().getUid(),info});
                 } else {
                     return NetResult.makeResult(EC_InvalidParameter, "用户名和密码的强度不足", null);
                 }
