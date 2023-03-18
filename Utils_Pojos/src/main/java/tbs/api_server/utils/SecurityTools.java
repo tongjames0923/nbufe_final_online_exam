@@ -1,4 +1,4 @@
-package tbs.api_server.utility;
+package tbs.api_server.utils;
 
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;

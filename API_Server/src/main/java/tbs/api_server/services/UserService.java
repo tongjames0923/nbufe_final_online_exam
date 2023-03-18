@@ -1,8 +1,6 @@
 package tbs.api_server.services;
 
 import org.springframework.lang.NonNull;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.utility.Error;
 

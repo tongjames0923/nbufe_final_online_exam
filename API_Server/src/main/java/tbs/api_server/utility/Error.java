@@ -81,7 +81,7 @@ public class Error
             TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
         } catch (Exception ex)
         {
-            ex.printStackTrace();
+            System.out.println("回滚不存在");
         }
 
     }

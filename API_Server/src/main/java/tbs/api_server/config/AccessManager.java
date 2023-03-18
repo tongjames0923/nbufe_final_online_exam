@@ -1,6 +1,7 @@
 package tbs.api_server.config;
 
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
@@ -13,6 +14,9 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class AccessManager {
 
+
+    @Value("${tbs.login.timeout}")
+    int login_timeout;
     @Resource
     RedisTemplate<String,UserSecurityInfo> redis;
     public String putLogined(UserSecurityInfo info)
@@ -22,7 +26,7 @@ public class AccessManager {
         while (ops.get(uid)!=null)
         {
         }
-        ops.set("loginKey-"+uid,info,30, TimeUnit.MINUTES);
+        ops.set("loginKey-"+uid,info,login_timeout, TimeUnit.MINUTES);
         return uid;
     }
 

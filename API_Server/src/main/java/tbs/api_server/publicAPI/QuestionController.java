@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import tbs.api_server.backend.mappers.SystemMapper;
 import tbs.api_server.config.constant.const_Question;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
@@ -15,6 +14,7 @@ import tbs.api_server.utility.ApiMethod;
 import tbs.api_server.utility.Error;
 
 import java.util.List;
+import java.util.UUID;
 
 import static tbs.api_server.utility.Error.*;
 
@@ -25,8 +25,6 @@ public class QuestionController {
     @Autowired
     QuestionService service;
     @Autowired
-    SystemMapper systemMapper;
-    @Autowired
     TagService tagService;
     @RequestMapping(value = "create", method = RequestMethod.POST)
     @Transactional
@@ -35,7 +33,7 @@ public class QuestionController {
             , @RequestParam List<String>  tags,@RequestParam String answer) {
         try {
             ServiceResult result = service.uploadQuestion(type, title, creator, md.getBytes(), isopen,answer);
-            Integer id=systemMapper.getLastId();
+            int id= (int) result.getObj();
             for (String ch:tags)
             {
                 try {

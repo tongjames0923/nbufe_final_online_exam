@@ -136,6 +136,7 @@ import {
   api_updateLen,
   api_updateName,
   api_updateNote,
+  api_delete
 } from "@/api/exam";
 import { getToken } from "@/utils/auth";
 

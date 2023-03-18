@@ -1,0 +1,40 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 512MB
+      max-request-size: 1000MB
+  datasource:
+    druid:
+      default-auto-commit: false
+      initial-size: 20
+      max-active: 100
+      min-idle: 10
+    password: tongyi0923
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/exam_db?serverTimezone=Asia/Shanghai
+    username: root
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss:SSSS
+    time-zone: GMT+8
+  redis:
+    host: 127.0.0.1
+    password: redispw
+    port: 32768
+    database: 0
+    timeout: 1000
+  rabbitmq:
+    host: 127.0.0.1
+    port: 19889
+    username: root
+    password: tongyi0923
+    listener:
+      simple:
+        acknowledge-mode: manual
+        retry:
+          enabled: true # 是否支持重试
+tbs:
+  queue:
+    log: log_queue
+server:
+  port: 8088
+

@@ -1,4 +1,4 @@
-package tbs.api_server.utility;
+package tbs.api_server.utils;
 
 import tbs.api_server.objects.simple.ExamInfo;
 

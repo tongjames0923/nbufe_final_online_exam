@@ -1,6 +1,5 @@
 package tbs.api_server.objects.compound.exam;
 
-import tbs.api_server.objects.simple.ExamInfo;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;

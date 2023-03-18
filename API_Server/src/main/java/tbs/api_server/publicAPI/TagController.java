@@ -11,9 +11,6 @@ import tbs.api_server.services.TagService;
 import tbs.api_server.utility.ApiMethod;
 import tbs.api_server.utility.Error;
 
-import static tbs.api_server.utility.Error.EC_UNKNOWN;
-import static tbs.api_server.utility.Error._ERROR;
-
 @RestController
 @RequestMapping("tag/*")
 @Scope("prototype")

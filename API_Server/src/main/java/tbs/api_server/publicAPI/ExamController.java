@@ -12,7 +12,7 @@ import tbs.api_server.objects.simple.ExamInfo;
 import tbs.api_server.services.ExamService;
 import tbs.api_server.utility.ApiMethod;
 import tbs.api_server.utility.Error;
-import tbs.api_server.utility.TimeUtil;
+import tbs.api_server.utils.TimeUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

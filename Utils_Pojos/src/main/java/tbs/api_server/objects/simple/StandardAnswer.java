@@ -1,7 +1,5 @@
 package tbs.api_server.objects.simple;
 
-import java.io.InputStream;
-
 public class StandardAnswer {
     private int id;
     private int ques_id;

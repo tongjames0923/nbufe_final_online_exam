@@ -44,6 +44,10 @@ public interface TagMapper
     int unLinkTag(int ques_id,int tagid);
 
 
+    @Delete("delete from `tag_link` where `ques_id`=#{ques_id}")
+    @CacheEvict(value = "quesTags",key = "#ques_id")
+    int unLinkTagByQuestion(int ques_id);
+
     @Select("SELECT `ques_id` from `tag_link` where `tag_id`=#{id}")
     List<Integer> listQuestionIdByTagId(int id);
 

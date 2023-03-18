@@ -67,7 +67,7 @@ public class TagImp implements TagService
     @Override
     public ServiceResult linkTag(int ques_id, String tagname) throws BackendError {
         final int[] res={0};
-        Optional.of(tg.getTagByName(tagname)).ifPresent(tag -> {
+        Optional.ofNullable(tg.getTagByName(tagname)).ifPresent(tag -> {
             res[0]= tg.linkTag(ques_id,tag.getTag_id());
             if(res[0]>0)
             res[0]+= tg.setUsed(tag.getTag_id(), tag.getTag_used()+1);
@@ -90,6 +90,17 @@ public class TagImp implements TagService
             return ServiceResult.makeResult(SUCCESS);
         else
            throw  _ERROR.throwError(EC_DB_DELETE_FAIL,"解除标签失败");
+    }
+
+    @Override
+    public ServiceResult unLinkTag(int ques_id) throws BackendError {
+        int eff= tg.unLinkTagByQuestion(ques_id);
+        if(eff>0)
+            return ServiceResult.makeResult(SUCCESS);
+        else
+        {
+            throw  _ERROR.throwError(EC_DB_DELETE_FAIL,"解除标签失败");
+        }
     }
 
     @Override

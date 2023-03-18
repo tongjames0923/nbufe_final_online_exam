@@ -15,7 +15,7 @@ import tbs.api_server.objects.simple.ExamReply;
 import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.ReplyService;
 import tbs.api_server.utility.FileUtility;
-import tbs.api_server.utility.SecurityTools;
+import tbs.api_server.utils.SecurityTools;
 import tbs.api_server.utility.UserUtility;
 
 import java.io.InputStream;

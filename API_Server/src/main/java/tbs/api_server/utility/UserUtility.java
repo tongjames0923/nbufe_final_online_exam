@@ -1,9 +1,10 @@
 package tbs.api_server.utility;
 
 
+import tbs.api_server.utils.SecurityTools;
+
 import static tbs.api_server.config.constant.const_User.min_password_length;
 import static tbs.api_server.config.constant.const_User.min_username_length;
-import static tbs.api_server.utility.Error._ERROR;
 
 public final class UserUtility {
     public static String passwordEncode(String password) throws Exception {

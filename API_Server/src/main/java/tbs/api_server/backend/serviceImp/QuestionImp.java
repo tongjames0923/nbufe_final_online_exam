@@ -17,6 +17,7 @@ import tbs.api_server.utility.Error;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 import static tbs.api_server.utility.Error.*;
 
@@ -47,12 +48,21 @@ public class QuestionImp implements QuestionService
             return true;
     }
 
+    Integer getID()
+    {
+        Integer uuid=UUID.randomUUID().toString().replaceAll("-","").hashCode();
+        uuid = uuid < 0 ? -uuid : uuid;//String.hashCode() 值会为空
+        return uuid;
+    }
+
+
     @Override
     public ServiceResult uploadQuestion(int que_type, String title, int creator_id, byte[] que_file, Integer isopen, String ans) throws BackendError {
-        int c= mp.insertQuestion(que_type, creator_id, que_file,title, isopen,ans);
+        int id= getID();
+        int c= mp.insertQuestion(id,que_type, creator_id, que_file,title, isopen,ans);
         if(c>0)
         {
-            return ServiceResult.makeResult(SUCCESS);
+            return ServiceResult.makeResult(SUCCESS,id);
         }
         else
           throw   _ERROR.throwError(EC_DB_INSERT_FAIL,"上传问题失败");

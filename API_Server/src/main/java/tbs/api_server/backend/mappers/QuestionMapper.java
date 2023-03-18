@@ -14,8 +14,8 @@ public interface QuestionMapper
     //问题
 
 
-    @Insert("INSERT INTO `question` (`que_type`, `que_creator`, `que_alter_time`, `que_file`, `publicable`,  `use_time`, `answerd`, `answerd_right`,`title`,`answer_data`) VALUES (#{que_type},#{creator_id}, CURRENT_TIMESTAMP, #{que_file}, #{isopen}, '0', '0', '0',#{title},#{ans})")
-    int insertQuestion(int que_type, int creator_id, byte[] que_file,String title, Integer isopen,String ans);
+    @Insert("INSERT INTO `question` (`que_id`,`que_type`, `que_creator`, `que_alter_time`, `que_file`, `publicable`,  `use_time`, `answerd`, `answerd_right`,`title`,`answer_data`) VALUES (#{id},#{que_type},#{creator_id}, CURRENT_TIMESTAMP, #{que_file}, #{isopen}, '0', '0', '0',#{title},#{ans})")
+    int insertQuestion(long id,int que_type, int creator_id, byte[] que_file,String title, Integer isopen,String ans);
 
     @Select("SELECT `que_id`,`que_type`, `que_creator`,`answer_data`, `que_alter_time`, `publicable`,`use_time`, `answerd`, `answerd_right`,`title` FROM `question` LIMIT #{from},#{num} FOR UPDATE")
     List<Question> getQuestions(int from, int num);

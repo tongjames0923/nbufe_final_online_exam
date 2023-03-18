@@ -3,8 +3,6 @@ package tbs.api_server.backend.serviceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Service;
 import tbs.api_server.backend.mappers.UserMapper;
 import tbs.api_server.config.AccessManager;
@@ -14,8 +12,6 @@ import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.UserService;
 
 import javax.annotation.Resource;
-
-import java.util.UUID;
 
 import static tbs.api_server.config.constant.const_User.*;
 import static tbs.api_server.utility.Error.*;

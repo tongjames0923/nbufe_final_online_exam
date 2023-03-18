@@ -1,6 +1,7 @@
 package tbs.api_server;
 
 import cn.hutool.extra.spring.EnableSpringUtil;
+import org.springframework.amqp.rabbit.annotation.EnableRabbit;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
@@ -16,6 +17,7 @@ import tbs.api_server.utility.FileUtility;
 @EnableAsync
 @EnableAspectJAutoProxy
 @EnableSpringUtil
+@EnableRabbit
 public class ApiServerApplication {
 
     public static void Starter()

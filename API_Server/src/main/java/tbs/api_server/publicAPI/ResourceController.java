@@ -19,7 +19,7 @@ import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.services.ResourceService;
 import tbs.api_server.utility.Error;
 import tbs.api_server.utility.FileUtility;
-import tbs.api_server.utility.SecurityTools;
+import tbs.api_server.utils.SecurityTools;
 
 import java.io.File;
 import java.util.Date;

@@ -5,7 +5,16 @@ public class NetResult <T>{
     private T data;
     private String message;
 
-    public static NetResult makeResult(int code,String msg)
+    @Override
+    public String toString() {
+        return "NetResult{" +
+                "code=" + code +
+                ", data=" + data +
+                ", message='" + message + '\'' +
+                '}';
+    }
+
+    public static NetResult makeResult(int code, String msg)
     {
         return new NetResult(code,null,msg);
     }
