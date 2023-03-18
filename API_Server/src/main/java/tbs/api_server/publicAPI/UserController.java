@@ -8,8 +8,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tbs.api_server.config.NoNeedAccess;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.objects.compound.exam.UserVo;
 import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.UserService;
@@ -59,6 +61,7 @@ public class UserController {
      * @return 成功为用户信息，否则为空或错误消息
      */
     @Transactional
+    @NoNeedAccess
     public NetResult login(String username, String password) {
 
         return  ApiMethod.make(new ApiMethod.IAction() {
@@ -67,9 +70,10 @@ public class UserController {
                 UserDetailInfo info = null;
                 if (UserUtility.isValidForUsername(username) && UserUtility.isValidForPassword(password)) {
                     String passwords = UserUtility.passwordEncode(password);
-                    ServiceResult<UserSecurityInfo> sc = service.loginUser(username, passwords);
+                    ServiceResult<UserVo> sc = service.loginUser(username, passwords);
                     info = (UserDetailInfo) service.getUserInfo(sc.getObj().getId()).getObj();
                     sc.getObj().setSec_ans(null);
+                    info.setUid(sc.getObj().getUid());
                     return NetResult.makeResult(sc.getCode(), null, info);
                 } else {
                     return NetResult.makeResult(EC_InvalidParameter, "用户名和密码的强度不足", null);
@@ -142,6 +146,7 @@ public class UserController {
      * @return 仅在出NET_UNKNOWN错误时候为错误消息，否则为空
      */
     @Transactional
+    @NoNeedAccess
     public NetResult register(String username, String password, @RequestParam(required = false) String question, @RequestParam(required = false) String answer,
                               @RequestParam(required = false) String address, @RequestParam(required = false) String phone, @RequestParam(required = false) String email,
                               @RequestParam(required = false) String note) {

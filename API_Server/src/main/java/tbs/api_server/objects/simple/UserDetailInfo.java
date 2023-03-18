@@ -6,6 +6,21 @@ public class UserDetailInfo {
     private int id;
     private String address;
     private String phone;
+    private String name;
+    private String email;
+    private String note;
+    private int level;
+
+    public String getUid() {
+        return uid;
+    }
+
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    private String uid;
+
 
     public String getName() {
         return name;
@@ -15,10 +30,7 @@ public class UserDetailInfo {
         this.name = name;
     }
 
-    private String name;
-    private String email;
-    private String note;
-    private int level;
+
     public int getLevel()
     {
         return level;

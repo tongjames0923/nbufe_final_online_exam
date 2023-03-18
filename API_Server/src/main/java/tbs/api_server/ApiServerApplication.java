@@ -1,8 +1,11 @@
 package tbs.api_server;
 
+import cn.hutool.extra.spring.EnableSpringUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import tbs.api_server.config.ApplicationConfig;
 import tbs.api_server.utility.FileUtility;
@@ -10,6 +13,9 @@ import tbs.api_server.utility.FileUtility;
 @SpringBootApplication
 @EnableTransactionManagement
 @EnableCaching
+@EnableAsync
+@EnableAspectJAutoProxy
+@EnableSpringUtil
 public class ApiServerApplication {
 
     public static void Starter()

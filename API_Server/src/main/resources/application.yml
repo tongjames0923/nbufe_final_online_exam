@@ -22,3 +22,8 @@ spring:
         port: 32768
         database: 0
         timeout: 1000
+server:
+    servlet:
+        session:
+            cookie:
+                http-only: false
