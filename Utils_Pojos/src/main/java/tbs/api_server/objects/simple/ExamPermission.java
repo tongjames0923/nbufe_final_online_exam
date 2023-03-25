@@ -55,4 +55,16 @@ public class ExamPermission {
     public void setUser(int user) {
         this.user = user;
     }
+
+    @Override
+    public String toString() {
+        return "ExamPermission{" +
+                "id=" + id +
+                ", readable=" + readable +
+                ", exam_id=" + exam_id +
+                ", checkable=" + checkable +
+                ", writealbe=" + writealbe +
+                ", user=" + user +
+                '}';
+    }
 }

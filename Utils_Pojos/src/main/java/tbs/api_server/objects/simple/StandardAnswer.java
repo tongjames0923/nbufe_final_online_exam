@@ -1,5 +1,7 @@
 package tbs.api_server.objects.simple;
 
+import java.util.Arrays;
+
 public class StandardAnswer {
     private int id;
     private int ques_id;
@@ -36,5 +38,13 @@ public class StandardAnswer {
 
     public void setAnswer_analysis(byte[] answer_analysis) {
         this.answer_analysis = answer_analysis;
+    }
+
+    @Override
+    public String toString() {
+        return "StandardAnswer{" +
+                "id=" + id +
+                ", ques_id=" + ques_id +
+                '}';
     }
 }

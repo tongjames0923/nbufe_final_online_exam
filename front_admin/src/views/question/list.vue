@@ -67,7 +67,7 @@
         </el-table>
         <el-drawer title="用户信息" :with-header="false" :visible.sync="drawer" :direction="direction" size="50%"
             style="padding:20px">
-            <UserInfo ref="user"></UserInfo>
+            <UserInfo ref="user" :editable="false"></UserInfo>
         </el-drawer>
         <el-dialog title="标签" :visible.sync="showtag">
             <tag-list ref="ques_tag" :editable="false"></tag-list>
@@ -85,7 +85,7 @@
 </template>
 <script>
 /* eslint-disable */
-import UserInfo from '@/views/dashboard/index.vue';
+import UserInfo from '@/views/dashboard/components/userinfo.vue';
 import TagList from '@/views/tag/list.vue';
 import { getTagByQues } from '@/api/tag';
 import { getUser } from '@/api/user'
@@ -139,6 +139,7 @@ export default
         },
         methods:
         {
+            
             deleteQues(que_id) {
                 const usr = JSON.parse(getToken());
                 deleteQues(que_id, usr.id).then(res => {
@@ -164,8 +165,8 @@ export default
             pul(ix) {
                 this.drawer = true
                 getUser(ix).then(data => {
+                    debugger
                     this.$refs.user.put(data);
-                    this.$forceUpdate();
                 });
             },
             findTag(idx) {
@@ -192,6 +193,12 @@ export default
                 }).catch(error => {
                     console.log(error);
                 });
+            },
+            handleCurrentChange(val)
+            {
+                list((val) * this.per, this.per).then(res => {
+                    this.tableData = res
+                })
             },
             load() {
                 list((this.cur - 1) * this.per, this.per).then(res => {

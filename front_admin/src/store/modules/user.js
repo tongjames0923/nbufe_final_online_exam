@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, getInfo, api_log_out } from '@/api/user'
 import { getToken, setToken, removeToken, removeAccess, setAccess } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -53,10 +53,13 @@ const actions = {
 
   // user logout
   logout({ commit, state }) {
-    removeAccess()
     removeToken() // must remove  token  first
-    resetRouter()
-    commit('RESET_STATE')
+    api_log_out().then(res=>{
+      removeAccess()
+      resetRouter()
+      commit('RESET_STATE')
+    })
+
   },
 
   // remove token

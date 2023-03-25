@@ -30,6 +30,18 @@ public class UserController {
     UserService service;
 
 
+    @RequestMapping("logout")
+    public NetResult logOut()
+    {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                return NetResult.makeResult(service.logOut(),null);
+            }
+        }).method();
+    }
+
+
     @RequestMapping("updatelevel")
     /***
      * 更新用户权限
@@ -66,7 +78,7 @@ public class UserController {
 
         return  ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 UserDetailInfo info = null;
                 if (UserUtility.isValidForUsername(username) && UserUtility.isValidForPassword(password)) {
                     String passwords = UserUtility.passwordEncode(password);
@@ -117,12 +129,20 @@ public class UserController {
      * @return 成功为用户详细信息，否则为空
      */
     @Transactional
-    public NetResult updatedetails(int id, String email, String phone, String address, String note) {
+    public NetResult updatedetails(int id,
+                                   @RequestParam(required = false)
+                                   String email,
+                                   @RequestParam(required = false)
+                                   String phone,
+                                   @RequestParam(required = false)
+                                               String address,
+                                   @RequestParam(required = false)
+                                   String note) {
         try {
-            ServiceResult<UserDetailInfo> dt = service.UpdateUserDetails(id, address.length() > 0 ? address : null,
-                    phone.length() > 0 ? phone : null,
-                    email.length() > 0 ? email : null,
-                    note.length() > 0 ? note : null);
+            ServiceResult<UserDetailInfo> dt = service.UpdateUserDetails(id, address,
+                    phone,
+                    email,
+                    note);
             return NetResult.makeResult(dt.getCode(), null, dt.getObj());
         } catch (Error.BackendError e) {
             _ERROR.rollback();
@@ -255,7 +275,7 @@ public class UserController {
     {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
 
                 return NetResult.makeResult( service.getUserInfo(id),null);
             }
@@ -266,7 +286,7 @@ public class UserController {
     {
         return  ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 return NetResult.makeResult(service.total(),null);
             }
         }).method();
@@ -279,7 +299,7 @@ public class UserController {
     {
         return  ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 return NetResult.makeResult(service.getUserSecQuestion(name),null);
             }
         }).method();
@@ -289,7 +309,7 @@ public class UserController {
     {
         return  ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 return NetResult.makeResult(service.replySecQuestion(name,answer),null);
             }
         }).method();

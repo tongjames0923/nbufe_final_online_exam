@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.simple.ExamPermission;
 import tbs.api_server.objects.simple.UserDetailInfo;
+import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.ExamPermissionService;
 import tbs.api_server.utility.ApiMethod;
 
@@ -32,7 +33,7 @@ public class ExamPermissionController
        return ApiMethod.make(new ApiMethod.IAction()
         {
             @Override
-            public NetResult action() throws BackendError, Exception
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception
             {
                 ArrayList<UserDetailInfo>[] arrayList=new ArrayList[3];
                 try
@@ -79,7 +80,7 @@ public class ExamPermissionController
         return ApiMethod.make(new ApiMethod.IAction()
         {
             @Override
-            public NetResult action() throws BackendError, Exception
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception
             {
                 ExamPermission permission= (ExamPermission) service.getPermission(examid, userid).getObj();
                 if(permission.getWritealbe()==1)
@@ -104,7 +105,7 @@ public class ExamPermissionController
         return ApiMethod.make(new ApiMethod.IAction()
         {
             @Override
-            public NetResult action() throws BackendError, Exception
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception
             {
                 ArrayList<ExamPermission>[] arrayList=new ArrayList[3];
                 try

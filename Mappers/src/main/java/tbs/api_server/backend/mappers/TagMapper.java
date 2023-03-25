@@ -1,6 +1,10 @@
 package tbs.api_server.backend.mappers;
 
-import org.apache.ibatis.annotations.*;
+
+import org.apache.ibatis.annotations.Delete;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Select;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import tbs.api_server.objects.simple.Tag;
@@ -10,20 +14,18 @@ import java.util.List;
 @Mapper
 public interface TagMapper
 {
-    @Select("select * from tag FOR UPDATE")
+    @Select("select t.tag_id,t.tag_name,(select count(1) from tag_link tg where tg.tag_id=t.tag_id) as tag_used from tag t FOR UPDATE")
     List<Tag> getAllTags();
 
-    @Select("select * from `tag` where `tag_name`=#{name} FOR UPDATE")
+    @Select("select t.tag_id,t.tag_name,(select count(1) from tag_link tg where tg.tag_id=t.tag_id) as tag_used from tag t where `tag_name`=#{name} FOR UPDATE")
     Tag getTagByName(String name);
 
-    @Select("select * from `tag` where `id`=#{id} FOR UPDATE")
+    @Select("select t.tag_id,t.tag_name,(select count(1) from tag_link tg where tg.tag_id=t.tag_id) as tag_used from tag t where `tag_id`=#{id} FOR UPDATE")
     Tag getTagById(int id);
 
     @Delete("delete from `tag` where `tag_name`=#{name}")
     int deleteTagByName(String name);
 
-    @Update("UPDATE `tag` SET `tag_used` = #{cnt} WHERE `tag_id` = #{id}")
-    int setUsed(int id, int cnt);
 
     @Insert("INSERT INTO `tag` ( `tag_name`)\n" +
             "VALUES\n" +
@@ -51,7 +53,7 @@ public interface TagMapper
     @Select("SELECT `ques_id` from `tag_link` where `tag_id`=#{id}")
     List<Integer> listQuestionIdByTagId(int id);
 
-    @Select("SELECT * FROM tag WHERE tag.tag_id IN (SELECT tag_link.tag_id FROM tag_link WHERE tag_link.ques_id=#{ques_id}) FOR UPDATE;")
+    @Select("select t.tag_id,t.tag_name,(select count(1) from tag_link tg where tg.tag_id=t.tag_id) as tag_used from tag t WHERE t.tag_id IN (SELECT tag_link.tag_id FROM tag_link WHERE tag_link.ques_id=#{ques_id}) FOR UPDATE;")
     @Cacheable(value = "quesTags",key = "#ques_id")
     List<Tag> findTagsByQuestion(int ques_id);
 }

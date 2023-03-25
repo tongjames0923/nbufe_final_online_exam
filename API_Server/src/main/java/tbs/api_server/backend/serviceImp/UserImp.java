@@ -122,6 +122,12 @@ public class UserImp implements UserService
     UserMapper mp;
 
     @Override
+    public ServiceResult logOut() {
+        AccessManager.ACCESS_MANAGER.logOutFromHttp();
+        return ServiceResult.makeResult(SUCCESS);
+    }
+
+    @Override
     public ServiceResult registerUser(String username, String password, String question,
                                       String answer) throws BackendError {
         try
@@ -154,7 +160,7 @@ public class UserImp implements UserService
             int a = 0;
             if (mp.getUserDetailInfoByID(userid) == null)
             {
-                a += mp.insertUserDetails(userid, address, phone, email, note);
+                a += mp.insertUserDetails(userid, address==null?"":address, phone==null?"":phone, email==null?"":email, note==null?"":note);
             } else
             {
                 if (address != null)

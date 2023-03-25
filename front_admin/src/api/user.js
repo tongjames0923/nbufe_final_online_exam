@@ -50,13 +50,6 @@ export function updateLevel(id,target,level)
     }
   })
 }
-
-export function logout() {
-  return request({
-    url: '/vue-admin-template/user/logout',
-    method: 'post'
-  })
-}
 export function setDetail(info)
 {
   return request({
@@ -110,6 +103,16 @@ export function changePasswordBySec(name,password,ans)
       'name': name,
       'password': password,
       'answer':ans
+    }
+  })
+}
+export function api_log_out()
+{
+  return request({
+    url:'user/logout',
+    method:'get',
+    params:{
+
     }
   })
 }

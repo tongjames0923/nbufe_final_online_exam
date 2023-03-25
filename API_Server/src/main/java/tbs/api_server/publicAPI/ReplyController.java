@@ -8,7 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
+import tbs.api_server.config.NoNeedAccess;
 import tbs.api_server.objects.NetResult;
+import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.ReplyService;
 import tbs.api_server.utility.ApiMethod;
 import tbs.api_server.utility.Error;
@@ -26,12 +28,13 @@ public class ReplyController
 
     @RequestMapping(value = "reply",method = RequestMethod.POST)
     @Transactional
+    @NoNeedAccess
     public NetResult upload(int examid, String number, String person, MultipartFile file)
     {
         return ApiMethod.make(new ApiMethod.IAction()
         {
             @Override
-            public NetResult action() throws Error.BackendError, Exception
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception
             {
                 return NetResult.makeResult(service.uploadReply(examid, number, person, file),null);
             }
@@ -45,7 +48,7 @@ public class ReplyController
         return ApiMethod.make(new ApiMethod.IAction()
         {
             @Override
-            public NetResult action() throws Error.BackendError, Exception
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception
             {
                return NetResult.makeResult(service.uploadCheck(number,status,checker,password,file),null);
             }
@@ -59,7 +62,7 @@ public class ReplyController
         return ApiMethod.make(new ApiMethod.IAction()
         {
             @Override
-            public NetResult action() throws Error.BackendError, Exception
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception
             {
                 return NetResult.makeResult(service.listall(examid),null);
             }

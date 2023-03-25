@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.TagService;
 import tbs.api_server.utility.ApiMethod;
 import tbs.api_server.utility.Error;
@@ -27,7 +28,7 @@ public class TagController {
 
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Error.BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
                 ServiceResult result = service.listTags();
                 return NetResult.makeResult(result, null);
             }
@@ -40,7 +41,7 @@ public class TagController {
 
         return  ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Error.BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
                 ServiceResult result = service.findTagsByQuestion(ques);
                 return NetResult.makeResult(result, null);
             }
@@ -52,7 +53,7 @@ public class TagController {
     public NetResult addTag(String tag) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Error.BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
                 ServiceResult result = service.newTag(tag);
                 return NetResult.makeResult(result, null);
             }
@@ -65,7 +66,7 @@ public class TagController {
 
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Error.BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
                 ServiceResult result = service.deleteTag(tag);
                 return NetResult.makeResult(result, null);
             }
@@ -78,7 +79,7 @@ public class TagController {
 
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Error.BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
                 ServiceResult result = service.linkTag(ques, tag);
                 return NetResult.makeResult(result, null);
             }
@@ -92,7 +93,7 @@ public class TagController {
 
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Error.BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
                 ServiceResult result = service.unLinkTag(ques, tag);
                 return NetResult.makeResult(result, null);
             }

@@ -1,5 +1,6 @@
 package tbs.api_server.objects.simple;
 
+import java.util.Arrays;
 import java.util.Date;
 
 public class ExamInfo {
@@ -66,5 +67,17 @@ public class ExamInfo {
 
     public void setExam_status(int exam_status) {
         this.exam_status = exam_status;
+    }
+
+    @Override
+    public String toString() {
+        return "ExamInfo{" +
+                "exam_id=" + exam_id +
+                ", exam_name='" + exam_name + '\'' +
+                ", exam_begin=" + exam_begin +
+                ", exam_len=" + exam_len +
+                ", exam_note='" + exam_note + '\'' +
+                ", exam_status=" + exam_status +
+                '}';
     }
 }

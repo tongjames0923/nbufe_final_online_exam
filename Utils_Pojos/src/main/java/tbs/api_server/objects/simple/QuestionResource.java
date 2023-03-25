@@ -28,7 +28,16 @@ public class QuestionResource {
     }
 
 
-
+    @Override
+    public String toString() {
+        return "QuestionResource{" +
+                "id=" + id +
+                ", resource='" + resource + '\'' +
+                ", note='" + note + '\'' +
+                ", resource_type=" + resource_type +
+                ", altertime=" + altertime +
+                '}';
+    }
 
     public int getId() {
         return id;

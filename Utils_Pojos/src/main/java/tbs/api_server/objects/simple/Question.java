@@ -3,6 +3,7 @@ package tbs.api_server.objects.simple;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.util.Arrays;
 import java.util.Date;
 
 public class Question {
@@ -126,5 +127,21 @@ public class Question {
     public void setAnswerd_right(float answerd_right)
     {
         this.answerd_right = answerd_right;
+    }
+
+    @Override
+    public String toString() {
+        return "Question{" +
+                "que_id=" + que_id +
+                ", que_type=" + que_type +
+                ", title='" + title + '\'' +
+                ", answer_data='" + answer_data + '\'' +
+                ", que_creator=" + que_creator +
+                ", que_alter_time=" + que_alter_time +
+                ", publicable=" + publicable +
+                ", use_time=" + use_time +
+                ", answerd=" + answerd +
+                ", answerd_right=" + answerd_right +
+                '}';
     }
 }

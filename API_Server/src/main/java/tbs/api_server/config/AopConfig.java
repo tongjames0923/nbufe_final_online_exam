@@ -58,7 +58,7 @@ public class AopConfig {
     {
         MethodSignature signature= (MethodSignature) proceedingJoinPoint.getSignature();
         LogPojo logPojo=new LogPojo();
-        logPojo.setLog_function(proceedingJoinPoint.getTarget().getClass().getName()+signature.getName());
+        logPojo.setLog_function(proceedingJoinPoint.getTarget().getClass().getName()+"."+signature.getName());
         Enumeration<String> em= request.getHeaders("X-TOKEN");
         String token=null;
         while (em.hasMoreElements())
@@ -90,7 +90,7 @@ public class AopConfig {
     LogQueueSender sender;
     void WriteLog(LogPojo pojo)
     {
-
+        System.out.println("invoke log:"+pojo);
         sender.send(log_q,pojo);
     }
 

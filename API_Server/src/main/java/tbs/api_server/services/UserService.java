@@ -7,6 +7,7 @@ import tbs.api_server.utility.Error;
 public interface UserService
 {
 
+    ServiceResult logOut();
     ServiceResult registerUser(@NonNull String username, @NonNull String password, String question, String answer) throws Error.BackendError;
 
 

@@ -22,6 +22,8 @@ import tbs.api_server.services.ExamService;
 import tbs.api_server.utils.TimeUtil;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -278,7 +280,17 @@ public class ExamImp implements ExamService
          for(ExamUser u:data.getStudents())
          {
              if(u.getId().equals(id)&&u.getName().equals(name)&&u.getNumber().equals(number))
-                 return ServiceResult.makeResult(SUCCESS,data);
+             {
+                 ExamPost post=new ExamPost();
+                 post.setStudents(new ArrayList<>(Arrays.asList(u)));
+                 post.setQuestions(data.getQuestions());
+                 post.setExam_begin(data.getExam_begin());
+                 post.setExam_len(data.getExam_len());
+                 post.setExam_note(data.getExam_note());
+                 post.setExam_name(data.getExam_name());
+                 return ServiceResult.makeResult(SUCCESS,post);
+             }
+
          }
          throw _ERROR.throwError(FC_NOTFOUND,"该考试不存在相关考生数据");
     }

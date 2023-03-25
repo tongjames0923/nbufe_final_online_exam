@@ -5,16 +5,20 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import tbs.api_server.backend.filters.QuestionFilter;
 import tbs.api_server.config.constant.const_Question;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.objects.simple.Question;
+import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.QuestionService;
 import tbs.api_server.services.TagService;
 import tbs.api_server.utility.ApiMethod;
 import tbs.api_server.utility.Error;
 
 import java.util.List;
-import java.util.UUID;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static tbs.api_server.utility.Error.*;
 
@@ -26,6 +30,11 @@ public class QuestionController {
     QuestionService service;
     @Autowired
     TagService tagService;
+
+
+
+
+
     @RequestMapping(value = "create", method = RequestMethod.POST)
     @Transactional
     public NetResult uploadQuestion(@RequestParam int type,@RequestParam int creator,@RequestParam String title,
@@ -69,6 +78,7 @@ public class QuestionController {
         }
     }
 
+
     @Transactional
     @RequestMapping(value = "find", method = RequestMethod.POST)
     public NetResult find(int type, int[] codes, int from, int num) {
@@ -82,7 +92,6 @@ public class QuestionController {
             } else {
                 return NetResult.makeResult(EC_InvalidParameter, "不存在此类型");
             }
-
             return NetResult.makeResult(result, null);
         } catch (Error.BackendError e) {
             _ERROR.rollback();
@@ -130,7 +139,7 @@ public class QuestionController {
     {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 return NetResult.makeResult(service.findQuestionsByID(id),null);
             }
         }).method();
@@ -140,7 +149,7 @@ public class QuestionController {
     public NetResult findByTag(String tag)  {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 return NetResult.makeResult(service.findQuestionsByTag(tag),null);
             }
         }).method();

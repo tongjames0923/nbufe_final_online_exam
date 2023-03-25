@@ -3,7 +3,7 @@ package tbs.api_server.objects.simple;
 public class Tag {
     private int tag_id;
     private String tag_name;
-    private int tag_used;
+    private transient int tag_used;
 
     public int getTag_id() {
         return tag_id;
@@ -23,6 +23,15 @@ public class Tag {
 
     public int getTag_used() {
         return tag_used;
+    }
+
+    @Override
+    public String toString() {
+        return "Tag{" +
+                "tag_id=" + tag_id +
+                ", tag_name='" + tag_name + '\'' +
+                ", tag_used=" + tag_used +
+                '}';
     }
 
     public void setTag_used(int tag_used) {

@@ -6,7 +6,6 @@ import tbs.api_server.utility.Error;
 public interface TagService
 {
 
-    ServiceResult changeUsed(String tagname, int altervalue) throws Error.BackendError;
 
 
     ServiceResult newTag(String tagname) throws Error.BackendError;

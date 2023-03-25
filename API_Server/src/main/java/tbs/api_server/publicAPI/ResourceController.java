@@ -16,7 +16,9 @@ import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.simple.QuestionResource;
 import tbs.api_server.objects.simple.UserDetailInfo;
+import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.ResourceService;
+import tbs.api_server.utility.ApiMethod;
 import tbs.api_server.utility.Error;
 import tbs.api_server.utility.FileUtility;
 import tbs.api_server.utils.SecurityTools;
@@ -40,54 +42,49 @@ public class ResourceController {
     @Transactional
     @RequestMapping("/getByType")
     public NetResult getResourcesByType(int type, int from, int num) {
-        try {
 
-            ServiceResult result = service.getResourcesByType(type, from, num);
-            resourcesLinkApply((List<QuestionResource>) result.getObj());
-            return NetResult.makeResult(result, null);
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                ServiceResult result = service.getResourcesByType(type, from, num);
+                resourcesLinkApply((List<QuestionResource>) result.getObj());
+                return NetResult.makeResult(result, null);
+            }
+        }).method();
     }
 
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @Transactional
     public NetResult upload(@RequestParam MultipartFile file, @RequestParam int type, @RequestParam String note) {
-        try {
-            MultipartFile bytes = file;
-            int tp = type;
-            String name = file.getOriginalFilename();
-            name = name.substring(name.lastIndexOf("."));
-            String filepath = makePath(name, note);
-            File file1 = new File(genPath(filepath));
-            int total = 0;
-            ServiceResult result = service.UploadResource(tp, filepath, note);
-            if (!bytes.isEmpty()) {
-                FileUtility.BaseThen then = new FileUtility.FileWriteThen(bytes.getInputStream(), true);
-                FileUtility.existFile(file1.getAbsolutePath(), then);
-                total = (int) then.result();
-            }
-            if (total == bytes.getSize()) {
-                return NetResult.makeResult(result, null);
-            } else {
-                Error._ERROR.rollback();
-                if (file1.exists()) {
-                    file1.delete();
+
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                MultipartFile bytes = file;
+                int tp = type;
+                String name = file.getOriginalFilename();
+                name = name.substring(name.lastIndexOf("."));
+                String filepath = makePath(name, note);
+                File file1 = new File(genPath(filepath));
+                int total = 0;
+                ServiceResult result = service.UploadResource(tp, filepath, note);
+                if (!bytes.isEmpty()) {
+                    FileUtility.BaseThen then = new FileUtility.FileWriteThen(bytes.getInputStream(), true);
+                    FileUtility.existFile(file1.getAbsolutePath(), then);
+                    total = (int) then.result();
                 }
-                return NetResult.makeResult(EC_FILESYSTEM_ERROR, "写入失败");
+                if (total == bytes.getSize()) {
+                    return NetResult.makeResult(result, null);
+                } else {
+                    Error._ERROR.rollback();
+                    if (file1.exists()) {
+                        file1.delete();
+                    }
+                    return NetResult.makeResult(EC_FILESYSTEM_ERROR, "写入失败");
+                }
             }
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
+        }).method();
     }
     @Autowired
     UserMapper userMapper;
@@ -96,62 +93,55 @@ public class ResourceController {
     @RequestMapping("/delete")
     public NetResult delete(int userid, int resource_id) {
         final NetResult result = new NetResult(SUCCESS, null, null);
-        try {
-            QuestionResource resource = (QuestionResource) service.getResourceById(resource_id).getObj();
-            Optional.ofNullable(resource).ifPresent(new Consumer<QuestionResource>() {
-                @Override
-                public void accept(QuestionResource questionResource) {
-                    UserDetailInfo info =userMapper.getUserDetailInfoByID(userid);
-                    if (info.getLevel() == const_User.LEVEL_EXAM_STAFF) {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                QuestionResource resource = (QuestionResource) service.getResourceById(resource_id).getObj();
+                Optional.ofNullable(resource).ifPresent(new Consumer<QuestionResource>() {
+                    @Override
+                    public void accept(QuestionResource questionResource) {
+                        UserDetailInfo info =userMapper.getUserDetailInfoByID(userid);
+                        if (info.getLevel() == const_User.LEVEL_EXAM_STAFF) {
 
-                        try {
+                            try {
 
-                            ServiceResult rs = service.DeleteResource(resource_id);
-                            FileUtility.BaseThen then = new FileUtility.FileDeleteThen();
-                            FileUtility.existFile(genPath(questionResource.getResource()), then);
-                            boolean deleted = (boolean) then.result();
-                            if (!deleted) {
-                                result.setCode(EC_FILESYSTEM_ERROR);
-                                result.setMessage("删除资源文件失败");
+                                ServiceResult rs = service.DeleteResource(resource_id);
+                                FileUtility.BaseThen then = new FileUtility.FileDeleteThen();
+                                FileUtility.existFile(genPath(questionResource.getResource()), then);
+                                boolean deleted = (boolean) then.result();
+                                if (!deleted) {
+                                    result.setCode(EC_FILESYSTEM_ERROR);
+                                    result.setMessage("删除资源文件失败");
+                                }
+                            } catch (BackendError backendError) {
+                                result.setCode(backendError.getCode());
+                                result.setMessage(backendError.getMessage());
+                                result.setData(backendError.getData());
+                            } catch (Exception e) {
+                                result.setCode(EC_UNKNOWN);
+                                result.setMessage(e.getMessage());
                             }
-                        } catch (BackendError backendError) {
-                            result.setCode(backendError.getCode());
-                            result.setMessage(backendError.getMessage());
-                            result.setData(backendError.getData());
-                        } catch (Exception e) {
-                            result.setCode(EC_UNKNOWN);
-                            result.setMessage(e.getMessage());
+                        } else {
+                            result.setCode(EC_LOW_PERMISSIONS);
+                            result.setMessage("权限不足,无法删除资源");
                         }
-                    } else {
-                        result.setCode(EC_LOW_PERMISSIONS);
-                        result.setMessage("权限不足,无法删除资源");
                     }
-                }
-            });
-
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
-        return result;
+                });
+                return result;
+            }
+        }).method();
     }
     @Transactional
     @RequestMapping("/getByNote")
     public NetResult getResourcesByNote(String note, int from, int num) {
-        try {
-            ServiceResult rs = service.getResourceByNote(note, from, num);
-            resourcesLinkApply((List<QuestionResource>) rs.getObj());
-            return NetResult.makeResult(SUCCESS, null, rs.getObj());
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getDetail());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                ServiceResult rs = service.getResourceByNote(note, from, num);
+                resourcesLinkApply((List<QuestionResource>) rs.getObj());
+                return NetResult.makeResult(SUCCESS, null, rs.getObj());
+            }
+        }).method();
     }
 
 

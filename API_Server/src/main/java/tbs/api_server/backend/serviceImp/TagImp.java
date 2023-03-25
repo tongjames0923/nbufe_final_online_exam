@@ -22,22 +22,6 @@ public class TagImp implements TagService
     TagMapper tg;
 
     @Override
-    public ServiceResult changeUsed(String tagname, int altervalue) throws BackendError {
-        final int[] res = {0, 0};
-        Optional.ofNullable(tg.getTagByName(tagname)).ifPresent(tag ->
-                                                        {
-                                                            res[0] = tg.setUsed(tag.getTag_id(),
-                                                                                tag.getTag_used() + altervalue);
-                                                            if (res[0] == 1)
-                                                                res[1] = tag.getTag_used() + altervalue;
-                                                        });
-        if(res[0]>0)
-            return ServiceResult.makeResult(SUCCESS);
-        else
-            throw _ERROR.throwError(EC_DB_UPDATE_FAIL,"更新使用问题次数失败");
-    }
-
-    @Override
     public ServiceResult newTag(String tagname) throws Error.BackendError {
         int t= tg.insertTag(tagname);
         if(t>0)
@@ -69,10 +53,8 @@ public class TagImp implements TagService
         final int[] res={0};
         Optional.ofNullable(tg.getTagByName(tagname)).ifPresent(tag -> {
             res[0]= tg.linkTag(ques_id,tag.getTag_id());
-            if(res[0]>0)
-            res[0]+= tg.setUsed(tag.getTag_id(), tag.getTag_used()+1);
         });
-        if(res[0]>1)
+        if(res[0]>0)
         return ServiceResult.makeResult(SUCCESS);
         else
             throw  _ERROR.throwError(EC_DB_INSERT_FAIL,"链接标签失败");
@@ -83,10 +65,8 @@ public class TagImp implements TagService
         final int[] res={0};
         Optional.ofNullable(tg.getTagByName(tagname)).ifPresent(tag -> {
             res[0]= tg.unLinkTag(ques_id,tag.getTag_id());
-            if(res[0]>0)
-            res[0]+= tg.setUsed(tag.getTag_id(), tag.getTag_used()-1);
         });
-        if(res[0]>1)
+        if(res[0]>0)
             return ServiceResult.makeResult(SUCCESS);
         else
            throw  _ERROR.throwError(EC_DB_DELETE_FAIL,"解除标签失败");

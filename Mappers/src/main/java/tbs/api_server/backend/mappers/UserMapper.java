@@ -1,5 +1,6 @@
 package tbs.api_server.backend.mappers;
 
+
 import org.apache.ibatis.annotations.*;
 import org.springframework.lang.NonNull;
 import tbs.api_server.objects.simple.UserDetailInfo;
@@ -10,9 +11,9 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
-    @Select("select * from `user_sec` where `id`=#{id} FOR UPDATE")
+    @Select("select *,ui.level from `user_sec` uc join `user_info` ui on ui.id=uc.id  where uc.`id`=#{id} FOR UPDATE")
     UserSecurityInfo getUserSecurityInfo(int id);
-    @Select("select * from `user_sec` where `name`=#{name} FOR UPDATE")
+    @Select("select *,ui.level from `user_sec` uc join `user_info` ui on ui.id=uc.id  where uc.`name`=#{name} FOR UPDATE")
     UserSecurityInfo getUserSecurityInfoByName( @NonNull String name);
 
     @Select("select a.*,b.`name` from `user_info` a INNER JOIN user_sec b ON b.id=a.id limit #{from},#{num} FOR UPDATE")

@@ -1,5 +1,7 @@
 package tbs.api_server.objects.simple;
 
+import java.util.Arrays;
+
 public class ExamReply {
     private int id;
     private int exam_id,status;
@@ -67,5 +69,17 @@ public class ExamReply {
 
     public void setReply_file(byte[] reply_file) {
         this.reply_file = reply_file;
+    }
+
+    @Override
+    public String toString() {
+        return "ExamReply{" +
+                "id=" + id +
+                ", exam_id=" + exam_id +
+                ", status=" + status +
+                ", exam_number='" + exam_number + '\'' +
+                ", check_file='" + check_file + '\'' +
+                ", person_id='" + person_id + '\'' +
+                '}';
     }
 }

@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import tbs.api_server.config.NoNeedAccess;
 import tbs.api_server.config.constant.const_Exam;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.compound.exam.ExamPost;
 import tbs.api_server.objects.simple.ExamInfo;
+import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.ExamService;
 import tbs.api_server.utility.ApiMethod;
 import tbs.api_server.utility.Error;
@@ -54,7 +56,7 @@ public class ExamController {
     public NetResult list(int from, int num) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Exception {
 
                 List<ExamInfo> list = (List<ExamInfo>) service.list(from, num).getObj();
                 update(list);
@@ -69,7 +71,7 @@ public class ExamController {
     {
         return  ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Error.BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
                 return NetResult.makeResult(service.countExams(user),null);
             }
         })
@@ -82,7 +84,7 @@ public class ExamController {
 
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Exception {
 
                 List<ExamInfo> list = (List<ExamInfo>) service.list(from, num).getObj();
                 update(list);
@@ -97,7 +99,7 @@ public class ExamController {
     public NetResult updateLen(int len, int user, int examid) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Exception {
 
                 return NetResult.makeResult(service.updateLen(len, user, examid), null);
             }
@@ -108,7 +110,7 @@ public class ExamController {
     public NetResult updateName(String name, int user, int examid) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Exception {
 
                 return NetResult.makeResult(service.updateName(name, user, examid), null);
             }
@@ -119,7 +121,7 @@ public class ExamController {
     public NetResult updateNote(String note, int user, int examid) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Exception {
 
                 return NetResult.makeResult(service.updateNote(note, user, examid), null);
             }
@@ -130,7 +132,7 @@ public class ExamController {
     public NetResult updateBegin(String time, int user, int examid) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Exception {
                 Date d=new Date(new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(time).getTime());
                 return NetResult.makeResult(service.updateBegin(d, user, examid), null);
             }
@@ -141,7 +143,7 @@ public class ExamController {
     public NetResult getExamByName(String name) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Exception {
 
                 return NetResult.makeResult(service.getExamByName(name), null);
             }
@@ -152,7 +154,7 @@ public class ExamController {
     public NetResult upload(int user,@RequestBody ExamPost exam) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Exception {
                 return NetResult.makeResult(service.uploadExam(user, exam),null);
             }
         }).method();
@@ -164,18 +166,19 @@ public class ExamController {
     {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Error.BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
                 return  NetResult.makeResult(service.getFullExamInfoById(id),null);
             }
         }).method();
     }
 
     @RequestMapping("studentLogin")
+    @NoNeedAccess
     public NetResult studentLogin(String name,String number,String id,int examID)
     {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Error.BackendError, Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
                 return NetResult.makeResult(service.StudentLogin(name,id,number,examID),null);
             }
         }).method();
@@ -187,7 +190,7 @@ public class ExamController {
     public NetResult delete(int id, int user) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Exception {
                 return NetResult.makeResult(service.deleteExam(id, user), null);
             }
         }).method();
@@ -198,7 +201,7 @@ public class ExamController {
     {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Exception {
                 List<ExamInfo> list = (List<ExamInfo>) service.getExamBeforeTime(date,from,num).getObj();
                 update(list);
                 return NetResult.makeResult(SUCCESS, null, list);
@@ -211,7 +214,7 @@ public class ExamController {
     {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
-            public NetResult action() throws Exception {
+            public NetResult action(UserSecurityInfo applyUser) throws Exception {
                 List<ExamInfo> list = (List<ExamInfo>) service.getExamByNote(note,from,num).getObj();
                 update(list);
                 return NetResult.makeResult(SUCCESS, null, list);

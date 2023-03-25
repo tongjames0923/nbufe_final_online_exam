@@ -1,15 +1,28 @@
 package tbs.api_server.utility;
 
+import cn.hutool.extra.spring.SpringUtil;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
+import tbs.api_server.config.AccessManager;
 import tbs.api_server.objects.NetResult;
+import tbs.api_server.objects.simple.UserSecurityInfo;
+
+import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+
+import java.util.Enumeration;
 
 import static tbs.api_server.utility.Error.EC_UNKNOWN;
 import static tbs.api_server.utility.Error._ERROR;
 
+@Component
+@Scope("prototype")
 public class ApiMethod
 {
-   public  static interface IAction
+
+    public  static interface IAction
     {
-        NetResult action() throws Error.BackendError, Exception;
+        NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception;
 
         default NetResult CatchBackendError(Error.BackendError error)
         {
@@ -26,7 +39,7 @@ public class ApiMethod
 
     public static ApiMethod make(IAction action)
     {
-        ApiMethod method=new ApiMethod();
+        ApiMethod method= SpringUtil.getBean(ApiMethod.class);
         method.action=action;
         return method;
     }
@@ -34,11 +47,19 @@ public class ApiMethod
     {
 
     }
+
+    @Resource
+    HttpServletRequest request;
+
+    @Resource
+    AccessManager manager;
+
     public NetResult method()
     {
         try
         {
-            return action.action();
+
+            return action.action(AccessManager.ACCESS_MANAGER.getLoginedFromHttp());
         }
         catch (Error.BackendError error)
         {

@@ -7,6 +7,15 @@ public class UserSecurityInfo {
     private String password;
     private String sec_ques;
     private String sec_ans;
+    private transient int level;
+
+    public int getLevel() {
+        return level;
+    }
+
+    public void setLevel(int level) {
+        this.level = level;
+    }
 
     @Override
     public String toString()

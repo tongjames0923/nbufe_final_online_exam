@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import tbs.api_server.objects.NetResult;
+import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.AnswerService;
 import tbs.api_server.utility.ApiMethod;
 import tbs.api_server.utility.Error;
@@ -23,7 +24,7 @@ public class AnswerController
         return ApiMethod.make(new ApiMethod.IAction()
         {
             @Override
-            public NetResult action() throws Error.BackendError, Exception
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception
             {
                 Byte[] bt = null;
                 if (ananalysis != null)
@@ -33,7 +34,7 @@ public class AnswerController
                     for (int i = 0; i < bf.length; i++)
                         bf[i] = bt[i];
                 }
-                return NetResult.makeResult(service.uploadAnswer(ques, user, answer.getBytes(), bt), null);
+                return NetResult.makeResult(service.uploadAnswer(ques,user, answer.getBytes(), bt), null);
             }
         }).method();
     }
@@ -42,9 +43,9 @@ public class AnswerController
         return ApiMethod.make(new ApiMethod.IAction()
         {
             @Override
-            public NetResult action() throws Error.BackendError, Exception
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception
             {
-                return NetResult.makeResult(service.deleteAnswer(ques,user),null);
+                return NetResult.makeResult(service.deleteAnswer(ques, user),null);
             }
         }).method();
     }
@@ -53,7 +54,7 @@ public class AnswerController
         return ApiMethod.make(new ApiMethod.IAction()
         {
             @Override
-            public NetResult action() throws Error.BackendError, Exception
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception
             {
                 return NetResult.makeResult(service.getAnswer(ques,user),null);
             }
