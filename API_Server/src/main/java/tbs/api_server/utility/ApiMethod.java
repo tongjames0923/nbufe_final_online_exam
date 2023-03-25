@@ -43,6 +43,15 @@ public class ApiMethod
         method.action=action;
         return method;
     }
+
+    public static NetResult makeResult(IAction action)
+    {
+        ApiMethod method= SpringUtil.getBean(ApiMethod.class);
+        method.action=action;
+        return method.method();
+    }
+
+
     private ApiMethod()
     {
 
@@ -58,7 +67,6 @@ public class ApiMethod
     {
         try
         {
-
             return action.action(AccessManager.ACCESS_MANAGER.getLoginedFromHttp());
         }
         catch (Error.BackendError error)

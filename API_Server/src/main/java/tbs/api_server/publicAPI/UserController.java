@@ -31,12 +31,13 @@ public class UserController {
 
 
     @RequestMapping("logout")
-    public NetResult logOut()
+    @NoNeedAccess
+    public NetResult logOut(String access)
     {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-                return NetResult.makeResult(service.logOut(),null);
+                return NetResult.makeResult(service.logOut(access),null);
             }
         }).method();
     }

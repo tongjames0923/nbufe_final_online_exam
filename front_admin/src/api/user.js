@@ -106,13 +106,13 @@ export function changePasswordBySec(name,password,ans)
     }
   })
 }
-export function api_log_out()
+export function api_log_out(token)
 {
   return request({
     url:'user/logout',
     method:'get',
     params:{
-
+      access:token
     }
   })
 }

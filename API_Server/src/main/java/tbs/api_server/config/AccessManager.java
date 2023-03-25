@@ -50,16 +50,11 @@ public class AccessManager {
         ValueOperations<String,UserSecurityInfo> ops= redis.opsForValue();
         return ops.get("loginKey-"+uid);
     }
-    public void logOutFromHttp()
+    public void logOut(String access)
     {
-        Enumeration<String> em= request.getHeaders("X-TOKEN");
-        String token=null;
-        while (em.hasMoreElements())
-        {
-            token=em.nextElement();
-        }
-        redis.delete("loginKey-"+token);
+        redis.delete("loginKey-"+access);
     }
+
     @Resource
     HttpServletRequest request;
     public UserSecurityInfo getLoginedFromHttp()

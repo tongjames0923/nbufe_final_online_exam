@@ -65,71 +65,58 @@ public class QuestionController {
     @Transactional
     @RequestMapping("delete")
     public NetResult delete(int ques, int user) {
-
-        try {
-            ServiceResult result = service.deleteQuestion(ques, user);
-            return NetResult.makeResult(result, null);
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                ServiceResult result = service.deleteQuestion(ques, user);
+                return NetResult.makeResult(result, null);
+            }
+        }).method();
     }
 
 
     @Transactional
     @RequestMapping(value = "find", method = RequestMethod.POST)
     public NetResult find(int type, int[] codes, int from, int num) {
-        ServiceResult result = null;
-        try {
-            final int TAG = 1, TYPE = 2;
-            if (type == TAG) {
-                result = service.findQuestionsByTags(codes, from, num);
-            } else if (TYPE == type) {
-                result = service.findQuestionsByType(codes, from, num);
-            } else {
-                return NetResult.makeResult(EC_InvalidParameter, "不存在此类型");
+
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                ServiceResult result = null;
+                final int TAG = 1, TYPE = 2;
+                if (type == TAG) {
+                    result = service.findQuestionsByTags(codes, from, num);
+                } else if (TYPE == type) {
+                    result = service.findQuestionsByType(codes, from, num);
+                } else {
+                    return NetResult.makeResult(EC_InvalidParameter, "不存在此类型");
+                }
+                return NetResult.makeResult(result, null);
             }
-            return NetResult.makeResult(result, null);
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
+        }).method();
     }
 
     @Transactional
     @RequestMapping(value = "search")
     public NetResult serach(String title, int from, int num) {
-        try {
-            ServiceResult serviceResult = service.findQuestionsByTitle(title, from, num);
-            return NetResult.makeResult(serviceResult, null);
-
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                ServiceResult serviceResult = service.findQuestionsByTitle(title, from, num);
+                return NetResult.makeResult(serviceResult, null);
+            }
+        });
     }
 
     @Transactional
     @RequestMapping("list")
     public NetResult list(int from, int num) {
-        try {
-            return NetResult.makeResult(service.listQuestions(from, num), null);
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                return NetResult.makeResult(service.listQuestions(from, num), null);
+            }
+        });
     }
 
 
@@ -174,67 +161,50 @@ public class QuestionController {
     @Transactional
     @RequestMapping("updatePublic")
     public NetResult updatePublic(int ques, int publicable) {
-        try {
-            ServiceResult result = service.updateQuestionValue(ques, const_Question.col_publicable, publicable);
-            return NetResult.makeResult(result, null);
-
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                ServiceResult result = service.updateQuestionValue(ques, const_Question.col_publicable, publicable);
+                return NetResult.makeResult(result, null);
+            }
+        });
     }
 
     @Transactional
     @RequestMapping(value = "updateTitle", method = RequestMethod.POST)
     public NetResult updateTitle(int ques, String title) {
-        try {
-            ServiceResult result = service.updateQuestionValue(ques, const_Question.col_title, title);
-            return NetResult.makeResult(result, null);
-
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                ServiceResult result = service.updateQuestionValue(ques, const_Question.col_title, title);
+                return NetResult.makeResult(result, null);
+            }
+        });
     }
 
     @Transactional
     @RequestMapping("updateType")
     public NetResult updateType(int ques, int type) {
-        try {
-            ServiceResult result = service.updateQuestionValue(ques, const_Question.col_type, type);
-            return NetResult.makeResult(result, null);
-
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
-
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                ServiceResult result = service.updateQuestionValue(ques, const_Question.col_type, type);
+                return NetResult.makeResult(result, null);
+            }
+        });
 
     }
 
     @Transactional
     @RequestMapping("questionCount")
     public NetResult getCount() {
-        try {
-            ServiceResult result = service.questionsLength();
-            return NetResult.makeResult(result, null);
-
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getMessage());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                ServiceResult result = service.questionsLength();
+                return NetResult.makeResult(result, null);
+            }
+        }).method();
     }
 
 }

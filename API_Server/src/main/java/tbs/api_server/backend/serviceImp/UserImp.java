@@ -122,8 +122,8 @@ public class UserImp implements UserService
     UserMapper mp;
 
     @Override
-    public ServiceResult logOut() {
-        AccessManager.ACCESS_MANAGER.logOutFromHttp();
+    public ServiceResult logOut(String access) {
+        AccessManager.ACCESS_MANAGER.logOut(access);
         return ServiceResult.makeResult(SUCCESS);
     }
 
