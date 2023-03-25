@@ -106,7 +106,7 @@
           <el-table-column label="题目分值">
             <template slot-scope="dp">
               <el-input-number
-                v-model="dp.row.score"
+                v-model="dp.row.score" disabled
                 controls-position="right"
               ></el-input-number>
             </template>

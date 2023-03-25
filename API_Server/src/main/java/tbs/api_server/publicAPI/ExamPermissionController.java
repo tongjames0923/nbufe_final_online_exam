@@ -83,7 +83,7 @@ public class ExamPermissionController
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception
             {
                 ExamPermission permission= (ExamPermission) service.getPermission(examid, userid).getObj();
-                if(permission.getWritealbe()==1)
+                if(permission.getWriteable()==1)
                 {
                     Boolean r=null,w=null,c=null;
                     if(read!=null)

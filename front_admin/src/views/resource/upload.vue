@@ -53,6 +53,7 @@
 /* eslint-disable */
 import axios from "axios";
 import { getToken } from "@/utils/auth";
+import { upload_resource } from '@/api/resource';
 export default {
   name: "UploadFile",
   data() {
@@ -98,14 +99,19 @@ export default {
       formDataInfo.append("type", this.ruleForm.type);
       formDataInfo.append("note", this.ruleForm.note);
       console.log(formDataInfo);
-      axios
-        .post("http://localhost:8080/resource/upload", formDataInfo)
-        .then((res) => {
+      debugger
+      upload_resource(formDataInfo).then((res) => {
           that.isloading = false;
-          console.log(res.data);
+          console.log(res);debugger
           that.$notify({
-            title: res.data.code == 40000 ? "上传成功" : "上传失败",
-            message: "",
+            title: "上传成功",
+            message: res,
+            duration: 1500,
+          });
+        }).catch(err=>{
+          that.$notify({
+            title: "上传失败",
+            message: err,
             duration: 1500,
           });
         });

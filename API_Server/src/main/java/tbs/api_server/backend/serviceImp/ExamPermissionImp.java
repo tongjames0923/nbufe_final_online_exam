@@ -27,7 +27,7 @@ public class ExamPermissionImp implements ExamPermissionService
     private UserMapper userMapper;
     @Override
     public ServiceResult getPermission(int exam_id, int userid) throws BackendError {
-        ExamPermission ep= mp.getPermission(exam_id, userid);
+        ExamPermission ep= mp.getPermission(userid,exam_id);
         if(ep!=null)
         return ServiceResult.makeResult(SUCCESS, ep);
         else
@@ -94,7 +94,7 @@ public class ExamPermissionImp implements ExamPermissionService
                 {
                     upc+=mp.updatePermissionAtReadable(userid,examid,r);
                 }
-                if(permission.getWritealbe()!=w)
+                if(permission.getWriteable()!=w)
                 {
                     upc+=mp.updatePermissionAtWriteable(userid,examid,w);
                 }

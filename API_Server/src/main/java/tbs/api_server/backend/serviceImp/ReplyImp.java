@@ -100,7 +100,7 @@ public class ReplyImp implements ReplyService
         ExamPermission permissi = examPermissionMapper.getPermission(checker, reply.getExam_id());
         if (permissi == null)
             throw _ERROR.throwError(FC_NOTFOUND, "您对该考试不存在任何权限");
-        if (permissi.getCheckable() == 0 && permissi.getWritealbe() == 0)
+        if (permissi.getCheckable() == 0 && permissi.getWriteable() == 0)
             throw _ERROR.throwError(EC_LOW_PERMISSIONS, "您对该考试的权限不足，无法提交批阅");
 
         String checkPath = Help.makeCheckPath(nubmer,reply.getPerson_id());

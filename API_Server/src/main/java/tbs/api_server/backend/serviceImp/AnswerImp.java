@@ -29,7 +29,7 @@ public class AnswerImp implements AnswerService
         ExamPermission permission = exmp.getPermission(user, ques_id);
         if (permission == null)
             throw Error._ERROR.throwError(FC_UNAVALIABLE, "用户不存在相关权限", new int[]{ques_id, user});
-        if (permission.getWritealbe() ==0&&permission.getCheckable()==0)
+        if (permission.getWriteable() ==0&&permission.getCheckable()==0)
             throw _ERROR.throwError(EC_LOW_PERMISSIONS, "查看答案需要拥有可写或可批阅权限");
         StandardAnswer answer = mp.getAnswerForQuestion(ques_id);
         if (answer == null)
@@ -44,7 +44,7 @@ public class AnswerImp implements AnswerService
         ExamPermission permission = exmp.getPermission(user, ques_id);
         if (permission == null)
             throw Error._ERROR.throwError(FC_UNAVALIABLE, "用户不存在相关权限", new int[]{ques_id, user});
-        if (permission.getWritealbe() ==0)
+        if (permission.getWriteable() ==0)
             throw _ERROR.throwError(EC_LOW_PERMISSIONS, "上传答案需要拥有可写权限");
         try
         {
@@ -70,7 +70,7 @@ public class AnswerImp implements AnswerService
         ExamPermission permission = exmp.getPermission(user, ques_id);
         if (permission == null)
             throw Error._ERROR.throwError(FC_UNAVALIABLE, "用户不存在相关权限", new int[]{ques_id, user});
-        if (permission.getWritealbe() == 0)
+        if (permission.getWriteable() == 0)
             throw _ERROR.throwError(EC_LOW_PERMISSIONS, "删除答案需要拥有可写权限");
         int c=mp.deleteAnswer(ques_id);
         if(c>0)

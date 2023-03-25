@@ -6,18 +6,23 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tbs.api_server.config.NoNeedAccess;
 import tbs.api_server.config.constant.const_Exam;
+import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.compound.exam.ExamPost;
 import tbs.api_server.objects.simple.ExamInfo;
+import tbs.api_server.objects.simple.ExamPermission;
 import tbs.api_server.objects.simple.UserSecurityInfo;
+import tbs.api_server.services.ExamPermissionService;
 import tbs.api_server.services.ExamService;
 import tbs.api_server.utility.ApiMethod;
 import tbs.api_server.utility.Error;
 import tbs.api_server.utils.TimeUtil;
 
+import javax.annotation.Resource;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import static tbs.api_server.utility.Error.SUCCESS;
@@ -28,26 +33,54 @@ import static tbs.api_server.utility.Error.SUCCESS;
 public class ExamController {
     @Autowired
     ExamService service;
+    @Resource
+    ExamPermissionService permissionService;
+    private void update(UserSecurityInfo user,List<ExamInfo> list) throws Error.BackendError {
 
-    private void update(List<ExamInfo> list) throws Error.BackendError {
-
-
-        for (ExamInfo info : list) {
-            if(info.getExam_status()>const_Exam.EXAM_STATUS_CLOSED)
-                continue;
-            if(info.getExam_status()<const_Exam.EXAM_STATUS_CLOSED&&TimeUtil.isClosed(info))
+        Iterator<ExamInfo> iter= list.iterator();
+        while (iter.hasNext())
+        {
+            ExamInfo info=iter.next();
+            try {
+                if(user.getLevel()== const_User.LEVEL_EXAM_STAFF)
+                {
+                    info.setCheckable(1);
+                    info.setReadable(1);
+                    info.setWriteable(1);
+                }
+                else
+                {
+                    ExamPermission permission= (ExamPermission) permissionService.getPermission(info.getExam_id(),user.getId()).getObj();
+                    if(permission!=null)
+                    {
+                        info.setWriteable(permission.getWriteable());
+                        info.setCheckable(permission.getCheckable());
+                        info.setReadable(permission.getReadable());
+                    }
+                }
+                if(info.getExam_status()>const_Exam.EXAM_STATUS_CLOSED)
+                    continue;
+                if(info.getExam_status()<const_Exam.EXAM_STATUS_CLOSED&&TimeUtil.isClosed(info))
+                {
+                    service.updateStatus(const_Exam.EXAM_STATUS_CLOSED, info.getExam_id());
+                    info.setExam_status(const_Exam.EXAM_STATUS_CLOSED);
+                    continue;
+                }
+                if(info.getExam_status()==const_Exam.EXAM_STATUS_WAIT&&TimeUtil.isStart(info))
+                {
+                    service.updateStatus(const_Exam.EXAM_STATUS_START, info.getExam_id());
+                    info.setExam_status(const_Exam.EXAM_STATUS_START);
+                }
+            }catch (Exception e)
             {
-                service.updateStatus(const_Exam.EXAM_STATUS_CLOSED, info.getExam_id());
-                info.setExam_status(const_Exam.EXAM_STATUS_CLOSED);
-                continue;
+
             }
-            if(info.getExam_status()==const_Exam.EXAM_STATUS_WAIT&&TimeUtil.isStart(info))
-            {
-                service.updateStatus(const_Exam.EXAM_STATUS_START, info.getExam_id());
-                info.setExam_status(const_Exam.EXAM_STATUS_START);
-            }
+
+            if(info.getReadable()==0)
+                iter.remove();
         }
     }
+
 
 
 
@@ -59,7 +92,7 @@ public class ExamController {
             public NetResult action(UserSecurityInfo applyUser) throws Exception {
 
                 List<ExamInfo> list = (List<ExamInfo>) service.list(from, num).getObj();
-                update(list);
+                update(applyUser,list);
                 return NetResult.makeResult(SUCCESS, null, list);
             }
         }).method();
@@ -87,8 +120,7 @@ public class ExamController {
             public NetResult action(UserSecurityInfo applyUser) throws Exception {
 
                 List<ExamInfo> list = (List<ExamInfo>) service.list(from, num).getObj();
-                update(list);
-
+                update(applyUser,list);
                 ServiceResult result = service.getExamByStatus(status, from, num);
                 return NetResult.makeResult(result, null);
             }
@@ -203,7 +235,7 @@ public class ExamController {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Exception {
                 List<ExamInfo> list = (List<ExamInfo>) service.getExamBeforeTime(date,from,num).getObj();
-                update(list);
+                update(applyUser,list);
                 return NetResult.makeResult(SUCCESS, null, list);
             }
         }).method();
@@ -216,7 +248,7 @@ public class ExamController {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Exception {
                 List<ExamInfo> list = (List<ExamInfo>) service.getExamByNote(note,from,num).getObj();
-                update(list);
+                update(applyUser,list);
                 return NetResult.makeResult(SUCCESS, null, list);
             }
         }).method();

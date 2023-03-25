@@ -5,7 +5,7 @@ public class ExamPermission {
     private int readable;
     private int exam_id;
     private int checkable;
-    private int writealbe;
+    private int writeable;
     private int user;
 
     public int getId() {
@@ -40,12 +40,12 @@ public class ExamPermission {
         this.checkable = checkable;
     }
 
-    public int getWritealbe() {
-        return writealbe;
+    public int getWriteable() {
+        return writeable;
     }
 
-    public void setWritealbe(int writealbe) {
-        this.writealbe = writealbe;
+    public void setWriteable(int writeable) {
+        this.writeable = writeable;
     }
 
     public int getUser() {
@@ -63,7 +63,7 @@ public class ExamPermission {
                 ", readable=" + readable +
                 ", exam_id=" + exam_id +
                 ", checkable=" + checkable +
-                ", writealbe=" + writealbe +
+                ", writealbe=" + writeable +
                 ", user=" + user +
                 '}';
     }

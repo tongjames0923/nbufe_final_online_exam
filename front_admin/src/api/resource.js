@@ -32,3 +32,11 @@ method:'get',
 params:{'note':note,'from':from,'num':num}
 })
 }
+export function upload_resource(formdata)
+{
+    return request({
+        url:"/resource/upload",
+        method:"post",
+        data:formdata
+    })
+}

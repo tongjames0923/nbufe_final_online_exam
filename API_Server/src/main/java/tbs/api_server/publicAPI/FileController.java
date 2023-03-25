@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import tbs.api_server.backend.mappers.*;
 import tbs.api_server.backend.serviceImp.ReplyImp;
+import tbs.api_server.config.NoNeedAccess;
 import tbs.api_server.config.constant.const_Resource_Type;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.simple.ExamPermission;
@@ -29,24 +30,26 @@ public class FileController
     @Autowired
     ResourceService service;
 
+    @NoNeedAccess
     @RequestMapping(value = "/res/image", produces = "image/*")
     public byte[] downloadImg(int id)
     {
+
         return getFile(service, id, const_Resource_Type.Image);
     }
-
+    @NoNeedAccess
     @RequestMapping(value = "/res/text", produces = "text/*")
     public byte[] downloadText(int id)
     {
         return getFile(service, id, const_Resource_Type.Text);
     }
-
+    @NoNeedAccess
     @RequestMapping(value = "/res/video", produces = "video/mp4")
     public byte[] downloadvideo(int id)
     {
         return getFile(service, id, const_Resource_Type.Video);
     }
-
+    @NoNeedAccess
     @RequestMapping(value = "/res/audio", produces = "audio/*")
     public byte[] downloadAuio(int id)
     {
@@ -55,7 +58,7 @@ public class FileController
 
     @Autowired
     ExamMapper examMapper;
-
+    @NoNeedAccess
     @RequestMapping("exam")
     public String downloadExam(int id)
     {
@@ -64,7 +67,7 @@ public class FileController
 
     @Autowired
     QuestionMapper qmp;
-
+    @NoNeedAccess
     @RequestMapping(value = "question")
     public NetResult downloadQuestion(int id)
     {
@@ -81,7 +84,7 @@ public class FileController
 
     @Autowired
     ExamPermissionMapper examPermissionMapper;
-
+    @NoNeedAccess
     @RequestMapping(value = "reply")
     public byte[] downloadRep(String number, int user, String password)
     {
@@ -98,7 +101,7 @@ public class FileController
                 ExamPermission permissi = examPermissionMapper.getPermission(user, reply.getExam_id());
                 if (permissi == null)
                     return null;
-                if (permissi.getCheckable() == 0 && permissi.getWritealbe() == 0)
+                if (permissi.getCheckable() == 0 && permissi.getWriteable() == 0)
                     return null;
                 FileUtility.BaseThen then = new FileUtility.FileReadThen();
                 FileUtility.existFile(ReplyImp.Help.makeRepPath(reply.getExam_number(), reply.getPerson_id()), then);
@@ -111,7 +114,7 @@ public class FileController
             return null;
         }
     }
-
+    @NoNeedAccess
     @RequestMapping("check")
     public byte[] downloadCheck(String number)
     {

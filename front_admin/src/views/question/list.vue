@@ -17,7 +17,7 @@
         <el-table max-height="750" :data="tableData"
         
         border style="width: 100%">
-            <el-table-column fixed prop="que_id" label="ID" width="50">
+            <el-table-column fixed prop="que_id" label="ID" width="150">
             </el-table-column>
             <el-table-column label="题型" prop="que_type" width="90" fixed :filters="tableFilter"
                 :filter-method="filterHandler">

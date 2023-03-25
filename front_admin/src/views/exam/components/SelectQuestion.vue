@@ -22,7 +22,7 @@
           </el-table-column>
           <el-table-column  label="题目分值">
             <template slot-scope="dp">
-              <el-input-number v-model="dp.row.score" controls-position="right"></el-input-number>
+              <el-input-number v-model="dp.row.score" controls-position="right" @change="scoreChange"></el-input-number>
             </template>
           </el-table-column>
           <el-table-column label="操作">
@@ -58,6 +58,19 @@ export default {
     };
   },
   methods: {
+    scoreChange()
+    {
+      if(this.cb)
+      {
+        debugger
+        let cbd=[]
+        for(let i=0;i<this.selected.length;i++)
+        {
+          cbd.push({score:this.selected[i].score,ques_id:this.selected[i].que.que_id})
+        }
+        this.cb(cbd);
+      }
+    },
     selectcb(val)
     {
       for(let i=0;i<this.selected.length;i++)

@@ -11,6 +11,33 @@ public class ExamInfo {
     private byte[] exam_file;
     private String exam_note;
     private int exam_status;
+
+    private transient int readable=0,writeable=0,checkable=0;
+
+    public int getReadable() {
+        return readable;
+    }
+
+    public void setReadable(int readable) {
+        this.readable = readable;
+    }
+
+    public int getWriteable() {
+        return writeable;
+    }
+
+    public void setWriteable(int writeable) {
+        this.writeable = writeable;
+    }
+
+    public int getCheckable() {
+        return checkable;
+    }
+
+    public void setCheckable(int checkable) {
+        this.checkable = checkable;
+    }
+
     public int getExam_id() {
         return exam_id;
     }

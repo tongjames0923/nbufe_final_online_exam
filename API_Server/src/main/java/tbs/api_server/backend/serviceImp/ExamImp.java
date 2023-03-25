@@ -127,7 +127,7 @@ public class ExamImp implements ExamService
         ExamPermission permission = permit.getPermission(user, examid);
         if (permission == null)
             return false;
-        return permission.getWritealbe() != 0 || permission.getCheckable() != 0;
+        return permission.getWriteable() != 0 || permission.getCheckable() != 0;
     }
 
     private boolean needWrite(int user, int examid)
@@ -145,7 +145,7 @@ public class ExamImp implements ExamService
         ExamPermission permission = permit.getPermission(user, examid);
         if (permission == null)
             return false;
-        return permission.getWritealbe() != 0;
+        return permission.getWriteable() != 0;
     }
 
     @Override

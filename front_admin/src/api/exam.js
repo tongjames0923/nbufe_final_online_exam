@@ -2,7 +2,6 @@
 import req from '@/utils/request'
 export function api_uploadExam(u,c,s,q)
 {
-
     return req({
         url:'exam/upload',
         method:'post',

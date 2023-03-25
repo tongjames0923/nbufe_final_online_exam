@@ -75,9 +75,8 @@ public class ResourceController {
                     total = (int) then.result();
                 }
                 if (total == bytes.getSize()) {
-                    return NetResult.makeResult(result, null);
+                    return NetResult.makeResult(SUCCESS, "保存 "+total+" bytes");
                 } else {
-                    Error._ERROR.rollback();
                     if (file1.exists()) {
                         file1.delete();
                     }
