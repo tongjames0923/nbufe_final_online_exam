@@ -1,5 +1,7 @@
 package tbs.api_server.objects.compound.exam;
 
+import com.alibaba.fastjson.JSON;
+
 public class ExamUser {
     String id;
     String number;
@@ -33,5 +35,10 @@ public class ExamUser {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return JSON.toJSONString(this);
     }
 }

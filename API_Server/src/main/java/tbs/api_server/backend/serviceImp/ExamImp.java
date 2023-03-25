@@ -2,6 +2,7 @@ package tbs.api_server.backend.serviceImp;
 
 import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -51,6 +52,16 @@ public class ExamImp implements ExamService
     public ServiceResult countExams(int user) {
 
             return ServiceResult.makeResult(SUCCESS,mp.countStaff());
+    }
+
+    @Override
+    public ServiceResult listExamsForStudent(String number, String id, String name) {
+        ExamUser user=new ExamUser();
+        user.setId(id);
+        user.setName(name);
+        user.setNumber(number);
+        List<ExamInfo> ex= mp.listForStudent(user.toString(),0,10);
+        return ServiceResult.makeResult(SUCCESS,ex);
     }
 
     @Override

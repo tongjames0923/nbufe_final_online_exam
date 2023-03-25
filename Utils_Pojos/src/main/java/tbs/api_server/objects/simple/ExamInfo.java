@@ -1,9 +1,10 @@
 package tbs.api_server.objects.simple;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Date;
 
-public class ExamInfo {
+public class ExamInfo implements Serializable {
     private int exam_id;
     private String exam_name;
     private Date exam_begin;

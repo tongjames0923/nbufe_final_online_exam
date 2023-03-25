@@ -204,6 +204,20 @@ public class ExamController {
         }).method();
     }
 
+
+    @RequestMapping("listExamForStudent")
+    @NoNeedAccess
+    public NetResult listExam(String name,String number,String id)
+    {
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
+                return NetResult.makeResult(service.listExamsForStudent(number,id,name),null);
+            }
+        });
+    }
+
+
     @RequestMapping("studentLogin")
     @NoNeedAccess
     public NetResult studentLogin(String name,String number,String id,int examID)

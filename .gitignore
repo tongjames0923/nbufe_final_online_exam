@@ -35,3 +35,6 @@ front_admin/tests
 API_Server/resources
 *.iml
 *.xml
+Examer_Client/obj/*
+Examer_Client/bin/*
+Examer_Client/packages/*

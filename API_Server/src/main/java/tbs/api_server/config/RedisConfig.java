@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.cache.RedisCacheConfiguration;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
@@ -31,9 +32,10 @@ public class RedisConfig {
      * 缓存管理器
      */
     @Bean
+    @Primary
     public RedisCacheManager myCacheManager3(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-                .entryTtl(Duration.ofSeconds(90))   // 设置缓存过期时间
+                .entryTtl(Duration.ofSeconds(5*60))   // 设置缓存过期时间
                 .disableCachingNullValues()     // 禁用缓存空值，不缓存null校验
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new
                         GenericJackson2JsonRedisSerializer()));     // 设置CacheManager的值序列化方式为json序列化，可加入@Class属性
