@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import tbs.api_server.backend.mappers.UserMapper;
+import tbs.api_server.config.AccessEnum;
+import tbs.api_server.config.AccessLimit;
 import tbs.api_server.config.ApplicationConfig;
 import tbs.api_server.config.constant.const_Resource_Type;
 import tbs.api_server.config.constant.const_User;
@@ -56,6 +58,7 @@ public class ResourceController {
 
     @RequestMapping(value = "/upload", method = RequestMethod.POST)
     @Transactional
+    @AccessLimit(level = AccessEnum.RESOURCE_ACCESS)
     public NetResult upload(@RequestParam MultipartFile file, @RequestParam int type, @RequestParam String note) {
 
         return ApiMethod.make(new ApiMethod.IAction() {
@@ -90,6 +93,7 @@ public class ResourceController {
 
     @Transactional
     @RequestMapping("/delete")
+    @AccessLimit(level = AccessEnum.RESOURCE_ACCESS)
     public NetResult delete(int userid, int resource_id) {
         final NetResult result = new NetResult(SUCCESS, null, null);
         return ApiMethod.make(new ApiMethod.IAction() {

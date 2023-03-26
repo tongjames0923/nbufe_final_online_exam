@@ -2,6 +2,7 @@ package tbs.api_server.publicAPI;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import tbs.api_server.config.AccessLimit;
 import tbs.api_server.config.NoLog;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.simple.UserSecurityInfo;
@@ -22,6 +23,7 @@ public class LogController {
 
     @RequestMapping("get")
     @NoLog
+    @AccessLimit
     public NetResult log(int field, String val) {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override

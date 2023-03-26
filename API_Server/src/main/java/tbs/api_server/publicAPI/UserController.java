@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tbs.api_server.config.AccessLimit;
 import tbs.api_server.config.AccessManager;
 import tbs.api_server.config.NoLog;
 import tbs.api_server.config.NoNeedAccess;
@@ -70,6 +71,7 @@ public class UserController {
      * @return 成功为修改数量int，否则为空
      */
     @Transactional
+    @AccessLimit
     public NetResult updateLevel(int id, int target, int lv) {
         try {
             ServiceResult t = service.updateUserLevel(id, target, lv);
@@ -250,6 +252,7 @@ public class UserController {
      * @return 是否成功, data都为空，msg为服务结果代码
      */
     @Transactional
+    @NoNeedAccess
     public NetResult updatePasswordByQues(String name, String password, String answer) {
         ServiceResult result = null;
         try {
@@ -300,6 +303,7 @@ public class UserController {
         }).method();
     }
     @RequestMapping("count")
+    @AccessLimit
     public  NetResult count()
     {
         return  ApiMethod.make(new ApiMethod.IAction() {
@@ -313,6 +317,7 @@ public class UserController {
 
 
     @RequestMapping("secQues")
+    @NoNeedAccess
     public NetResult getQues(String name)
     {
         return  ApiMethod.make(new ApiMethod.IAction() {
@@ -323,6 +328,7 @@ public class UserController {
         }).method();
     }
     @RequestMapping("answerSec")
+    @NoNeedAccess
     public  NetResult replySec(String name,String answer)
     {
         return  ApiMethod.make(new ApiMethod.IAction() {

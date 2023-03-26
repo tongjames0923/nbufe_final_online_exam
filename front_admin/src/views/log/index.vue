@@ -1,6 +1,7 @@
 <template>
     <div style="margin-top: 15px; margin-left: 15px;">
-        <el-select v-model="type" placeholder="请选择搜索类型" style="width: 320px; margin-right: 20px;">
+        <div v-if="hasRights">
+            <el-select v-model="type" placeholder="请选择搜索类型" style="width: 320px; margin-right: 20px;">
             <el-option v-for="item in selectables" :key="item.index" :label="item.label" :value="item.index">
             </el-option>
         </el-select>
@@ -20,6 +21,10 @@
                 <el-table-column prop="log_error" label="错误">
                 </el-table-column>
             </el-table>
+        </div>
+        <div v-else>
+            您没有权限查看系统日志
+        </div>
     </div>
 </template>
 <script>

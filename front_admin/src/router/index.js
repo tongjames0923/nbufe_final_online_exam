@@ -185,7 +185,7 @@ export const constantRoutes = [
         path: 'list',
         name: '系统日志',
         component: () => import('@/views/log/index.vue'),
-        meta: { title: '列表', icon: 'el-icon-s-order' }
+        meta: { title: '系统日志', icon: 'el-icon-s-order' }
       }
     ]
   },

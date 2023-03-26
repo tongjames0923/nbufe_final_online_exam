@@ -8,6 +8,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
+import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.simple.LogPojo;
 import tbs.api_server.objects.simple.UserSecurityInfo;
@@ -117,6 +118,7 @@ public class AopConfig {
             MethodSignature signature= (MethodSignature) proceedingJoinPoint.getSignature();
             Annotation annotation= signature.getMethod().getAnnotation(NoNeedAccess.class);
             Annotation nolog=signature.getMethod().getAnnotation(NoLog.class);
+            AccessLimit limit=signature.getMethod().getAnnotation(AccessLimit.class);
             needlog=nolog==null;
             if(annotation==null)
             {
@@ -126,16 +128,23 @@ public class AopConfig {
                {
                    token=em.nextElement();
                }
-
                UserSecurityInfo sec= manager.getLogined(token);
                if(sec==null)
                {
-                   log.setLog_end(new Date());
-                   log.setLog_type(TYPE_ERROR);
-                   WriteLog(log);
-                   return NetResult.makeResult(FC_NEED_LOGIN,"需要登录");
+                   throw _ERROR.throwError(FC_NEED_LOGIN,"需要登录");
                }
-                System.out.println("request by "+sec.getId()+" "+sec.getName());
+               if(sec.getLevel()== const_User.LEVEL_UnActive)
+               {
+                   throw _ERROR.throwError(FC_UNAVALIABLE,"账户未激活");
+               }
+               if(limit!=null)
+               {
+                   if(limit.level().value>sec.getLevel())
+                   {
+                       throw _ERROR.throwError(FC_UNAVALIABLE,"账户权限不足");
+                   }
+               }
+               System.out.println("request by "+sec.getId()+" "+sec.getName());
             }
            result =proceedingJoinPoint.proceed();
             log.setLog_end(new Date());
@@ -155,7 +164,7 @@ public class AopConfig {
             {
                 WriteLog(log);
             }
-            throw error;
+            return NetResult.makeResult(error.getCode(),error.getDetail());
         }
 
         catch (Throwable throwable) {
@@ -167,7 +176,7 @@ public class AopConfig {
             {
                 WriteLog(log);
             }
-            throw  throwable;
+            return NetResult.makeResult(EC_UNKNOWN,throwable.getMessage());
         }
     }
     @Around("logWritePointCut()")
