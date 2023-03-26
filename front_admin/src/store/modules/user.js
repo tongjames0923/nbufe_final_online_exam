@@ -1,4 +1,4 @@
-import { login, getInfo, api_log_out } from '@/api/user'
+import { login, getInfo, api_log_out, api_renew_access, getUser } from '@/api/user'
 import { getToken, setToken, removeToken, removeAccess, setAccess, getAccess } from '@/utils/auth'
 import { resetRouter } from '@/router'
 
@@ -26,7 +26,7 @@ const mutations = {
     state.avatar = avatar
   }
 }
-
+let timer;
 const actions = {
   // user login
   login({ commit }, userInfo) {
@@ -35,8 +35,13 @@ const actions = {
       login({ username: username.trim(), password: password }).then(response => {
         setAccess(response[0])
         commit('SET_TOKEN', response[1])
-        setToken(response[1])
+        timer = setInterval(() => {
+          api_renew_access().then(res => {
 
+          });
+          console.log("renewing");
+        }, 60 * 1000)
+        setToken(response[1])
         resolve()
       }).catch(error => {
         reject(error)
@@ -46,38 +51,60 @@ const actions = {
 
   // get user info
   getInfo({ commit, state }) {
-    const user = JSON.parse(getToken())
-    commit('SET_NAME', user.name)
-    commit('SET_AVATAR', 'https://papers.co/wp-content/uploads/papers.co-bj56-art-wood-mountain-digital-day-1-wallpaper-300x300.jpg')
+
+    let user = undefined;
+    try {
+      user = JSON.parse(getToken())
+      commit('SET_NAME', user.name)
+      commit('SET_AVATAR', 'https://papers.co/wp-content/uploads/papers.co-bj56-art-wood-mountain-digital-day-1-wallpaper-300x300.jpg')
+    } catch (err) {
+      console.log("error:" + err)
+      console.log("get info " + getAccess())
+      getUser(0).then(res => {
+        debugger
+        user = res
+        commit('SET_NAME', user.name)
+        commit('SET_AVATAR', 'https://papers.co/wp-content/uploads/papers.co-bj56-art-wood-mountain-digital-day-1-wallpaper-300x300.jpg')
+        setToken(user)
+      })
+
+    }
+
   },
 
   // user logout
   logout({ commit, state }) {
-    let access=getAccess();
+    let access = getAccess();
     removeAccess();
     removeToken() // must remove  token  first
     resetRouter()
     commit('RESET_STATE')
-    api_log_out(access).then(res=>{
+    api_log_out(access).then(res => {
 
     })
+    clearInterval(timer)
   },
+  renewToken() {
+    api_renew_access().then(res => {
 
+    });
+  },
   // remove token
   resetToken({ commit }) {
     return new Promise(resolve => {
-      let access=getAccess();
+      let access = getAccess();
       removeAccess();
       removeToken() // must remove  token  first
       resetRouter()
       commit('RESET_STATE')
-      api_log_out(access).then(res=>{
-  
+      api_log_out(access).then(res => {
+
       })
       resolve()
     })
   }
 }
+
 
 export default {
   namespaced: true,

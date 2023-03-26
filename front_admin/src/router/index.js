@@ -175,6 +175,20 @@ export const constantRoutes = [
       }
     ]
   },
+  {
+    path: '/logs',
+    name: '系统日志',
+    meta: { title: '系统日志', icon: 'el-icon-set-up' },
+    component: Layout,
+    children: [
+      {
+        path: 'list',
+        name: '系统日志',
+        component: () => import('@/views/log/index.vue'),
+        meta: { title: '列表', icon: 'el-icon-s-order' }
+      }
+    ]
+  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

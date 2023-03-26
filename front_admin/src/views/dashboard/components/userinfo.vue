@@ -50,12 +50,9 @@ export default {
             default:true
         }
     },
-    mounted(){
-        this.resetthis();
-        this.$forceUpdate();
-    },
     methods: {
         put(user) {
+            debugger
             this.info = user;
             this.$forceUpdate();
         },
@@ -69,12 +66,7 @@ export default {
                 setToken(res)
                 this.put(res);
             })
-        },
-        resetthis() {
-            this.info = JSON.parse(getToken());
         }
-        
-
     }
 }
 </script>

@@ -8,6 +8,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import tbs.api_server.config.AccessManager;
+import tbs.api_server.config.NoLog;
 import tbs.api_server.config.NoNeedAccess;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
@@ -28,6 +30,22 @@ public class UserController {
 
     @Autowired
     UserService service;
+
+
+    @RequestMapping("renew")
+    @NoLog
+    @NoNeedAccess
+    public NetResult renewToken()
+    {
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                AccessManager.ACCESS_MANAGER.renew();
+                return NetResult.makeResult(SUCCESS,null);
+            }
+        });
+    }
 
 
     @RequestMapping("logout")
@@ -270,15 +288,14 @@ public class UserController {
     }
 
 
-    @Transactional
     @RequestMapping("getUser")
-    public NetResult getUserInfo(int id)
+    public NetResult getUserInfo()
     {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-
-                return NetResult.makeResult( service.getUserInfo(id),null);
+                UserDetailInfo sc = (UserDetailInfo) service.getUserInfo(applyUser.getId()).getObj();
+                return NetResult.makeResult(SUCCESS,null,sc);
             }
         }).method();
     }

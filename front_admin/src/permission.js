@@ -30,11 +30,15 @@ router.beforeEach(async(to, from, next) => {
         next()
       } else {
         try {
+          debugger
+          console.log("has access")
           // get user info
           await store.dispatch('user/getInfo')
 
           next()
         } catch (error) {
+          debugger
+          console.log("has error for get")
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')
           Message.error(error || 'Has Error')
@@ -45,8 +49,6 @@ router.beforeEach(async(to, from, next) => {
     }
   } else {
     /* has no token*/
-
-
     if (whiteList.indexOf(to.path) !== -1) {
       // in the free login whitelist, go directly
       next()

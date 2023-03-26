@@ -16,13 +16,13 @@ export function removeToken() {
 }
 export function getAccess()
 {
-  return Cookies.get(AccessKey)
+  return localStorage.getItem(AccessKey);
 }
 
 export function setAccess(token) {
-  return Cookies.set(AccessKey, token)
+  return localStorage.setItem(AccessKey,token)
 }
 
 export function removeAccess() {
-  return Cookies.remove(AccessKey)
+  return localStorage.removeItem(AccessKey)
 }

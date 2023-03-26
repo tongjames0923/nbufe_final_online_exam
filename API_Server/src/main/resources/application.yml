@@ -38,4 +38,6 @@ tbs:
     queue:
         log: log_queue
     login:
-        timeout: 60
+        timeout: 5
+    log:
+        server: rmi://127.0.0.1:8888/

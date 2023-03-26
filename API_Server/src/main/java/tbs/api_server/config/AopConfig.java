@@ -81,7 +81,7 @@ public class AopConfig {
         {
             paramstext+=String.format("[%s]=[%s] ",i,args[index++].toString());
         }
-        logPojo.setLog_params(paramstext);
+        logPojo.setLog_params(sub(paramstext));
         logPojo.setLog_begin(new Date());
         return logPojo;
     }
@@ -98,16 +98,26 @@ public class AopConfig {
     @Resource
     HttpServletRequest request;
 
+    String sub(String s)
+    {
+        if(s.length()>200)
+            return s.substring(0,200);
+        return s;
+    }
+
     @Resource
     AccessManager manager;
     @Around("accessPointCut()")
     public Object accessControl(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         LogPojo log=beginALog(proceedingJoinPoint);
         log.setLog_type(TYPE_API_ACCESS);
+        boolean needlog=true;
         Object result;
         try {
             MethodSignature signature= (MethodSignature) proceedingJoinPoint.getSignature();
             Annotation annotation= signature.getMethod().getAnnotation(NoNeedAccess.class);
+            Annotation nolog=signature.getMethod().getAnnotation(NoLog.class);
+            needlog=nolog==null;
             if(annotation==null)
             {
                Enumeration<String> em= request.getHeaders("X-TOKEN");
@@ -123,22 +133,28 @@ public class AopConfig {
                    log.setLog_end(new Date());
                    log.setLog_type(TYPE_ERROR);
                    WriteLog(log);
-                   return NetResult.makeResult(FC_UNAVALIABLE,"需要登录");
+                   return NetResult.makeResult(FC_NEED_LOGIN,"需要登录");
                }
                 System.out.println("request by "+sec.getId()+" "+sec.getName());
             }
            result =proceedingJoinPoint.proceed();
             log.setLog_end(new Date());
             if(result!=null)
-                log.setLog_return(result.toString());
-            WriteLog(log);
+                log.setLog_return(sub(result.toString()));
+            if(needlog)
+            {
+                WriteLog(log);
+            }
             return result;
         } catch (BackendError error)
         {
             log.setLog_end(new Date());
             log.setLog_type(TYPE_ERROR);
             log.setLog_error(error.getDetail());
-            WriteLog(log);
+            if(needlog)
+            {
+                WriteLog(log);
+            }
             throw error;
         }
 
@@ -147,7 +163,10 @@ public class AopConfig {
             log.setLog_end(new Date());
             log.setLog_type(TYPE_ERROR);
             log.setLog_error(throwable.getMessage());
-            WriteLog(log);
+            if(needlog)
+            {
+                WriteLog(log);
+            }
             throw  throwable;
         }
     }
@@ -155,12 +174,19 @@ public class AopConfig {
     public Object MethodInvokeLog(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {
         LogPojo log=beginALog(proceedingJoinPoint);
         log.setLog_type(TYPE_IMPL);
+        boolean needlog=true;
         try {
+            MethodSignature signature= (MethodSignature) proceedingJoinPoint.getSignature();
+            Annotation nolog=signature.getMethod().getAnnotation(NoLog.class);
+            needlog=nolog==null;
            Object result= proceedingJoinPoint.proceed();
            log.setLog_end(new Date());
            if(result!=null)
-               log.setLog_return(result.toString());
-            WriteLog(log);
+               log.setLog_return(sub(result.toString()));
+            if(needlog)
+            {
+                WriteLog(log);
+            }
            return result;
         }
         catch (BackendError error)
@@ -168,7 +194,10 @@ public class AopConfig {
             log.setLog_end(new Date());
             log.setLog_type(TYPE_ERROR);
             log.setLog_error(error.getDetail());
-            WriteLog(log);
+            if(needlog)
+            {
+                WriteLog(log);
+            }
             throw  error;
         }
 
@@ -176,7 +205,10 @@ public class AopConfig {
             log.setLog_end(new Date());
             log.setLog_type(TYPE_ERROR);
             log.setLog_error(throwable.getMessage());
-            WriteLog(log);
+            if(needlog)
+            {
+                WriteLog(log);
+            }
             throw throwable;
         }
     }

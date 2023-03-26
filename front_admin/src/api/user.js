@@ -18,7 +18,6 @@ export function getUser(i) {
   return request({
     url:"user/getUser",
     method:'get',
-    params:{id:i}
   })
 }
 export function pullUserList(id,from,num)
@@ -114,5 +113,12 @@ export function api_log_out(token)
     params:{
       access:token
     }
+  })
+}
+export function api_renew_access()
+{
+  return request({
+    url:"user/renew",
+    method:'get'
   })
 }

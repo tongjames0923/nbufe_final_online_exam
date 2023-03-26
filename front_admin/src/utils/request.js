@@ -5,7 +5,7 @@ import { getAccess, getToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://localhost:8090/', // url = base url + request url
+  baseURL: 'http://localhost:8090/API_Server/', // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
   timeout: 5000 // request timeout
 })
@@ -41,9 +41,16 @@ service.interceptors.response.use(
       Message({
         message: res.message || 'Error',
         type: 'error',
-        duration: 5 * 1000
+        duration: 5 * 1000,
+        onClose:()=>{
+          if(res.code==39999)
+          {
+            store.dispatch('user/resetToken').then(() => {
+                    location.reload()
+                  })
+          }
+        }
       })
-
       // // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       // if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
       //   // to re-login

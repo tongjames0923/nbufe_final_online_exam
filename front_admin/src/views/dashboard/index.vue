@@ -1,6 +1,6 @@
 <template>
     <div style="padding:10px">
-        <userinfo :editable="true"></userinfo>
+        <userinfo ref="info" :editable="true"></userinfo>
     </div>
     <!-- <el-descriptions title="用户信息">
     <el-descriptions-item label="用户名">{{this.info==undefined?'空':this.info.name}}</el-descriptions-item>
@@ -12,11 +12,27 @@
 </template>
 
 <script>
+import { getUser } from "@/api/user";
+import { getToken } from "@/utils/auth";
 import userinfo from "./components/userinfo.vue"
 
 /* eslint-disable */
 export default {
-  components: { userinfo }
+  components: { userinfo },
+  mounted() {
+    let token=getToken();
+    if(token)
+    {
+      token=JSON.parse(token);
+      this.$refs.info.put(token);
+    }
+    else
+    {
+      getUser(0).then(res=>{
+        this.$refs.info.put(res)
+      })
+    }
+  },
 }
 </script>
 

@@ -33,6 +33,14 @@ public class AccessManager {
         ACCESS_MANAGER=this;
     }
 
+    public void renew()
+    {
+        String m_token=token();
+        if(m_token!=null)
+        {
+            redis.expire("loginKey-"+m_token,login_timeout,TimeUnit.MINUTES);
+        }
+    }
 
     public String putLogined(UserSecurityInfo info)
     {
@@ -57,7 +65,9 @@ public class AccessManager {
 
     @Resource
     HttpServletRequest request;
-    public UserSecurityInfo getLoginedFromHttp()
+
+
+    public String token()
     {
         Enumeration<String> em= request.getHeaders("X-TOKEN");
         String token=null;
@@ -65,7 +75,11 @@ public class AccessManager {
         {
             token=em.nextElement();
         }
-        UserSecurityInfo sec= getLogined(token);
+        return token;
+    }
+    public UserSecurityInfo getLoginedFromHttp()
+    {
+        UserSecurityInfo sec= getLogined(token());
         return sec;
     }
     @Resource

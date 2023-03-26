@@ -35,6 +35,9 @@ spring:
 tbs:
   queue:
     log: log_queue
+  log:
+    service: logService
+    port: 8888
 server:
   port: 8088
 
