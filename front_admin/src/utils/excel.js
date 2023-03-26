@@ -43,7 +43,7 @@ export function excel_each(sheet,func)
      const range = XLSX.utils.decode_range(sheet["!ref"]);
       for (let i = range.s.r + 1; i <= range.e.r; i++) {
         let vp = [];
-        for (let j = range.s.c; j < range.e.c; j++) {
+        for (let j = range.s.c; j <= range.e.c; j++) {
           const cell =
             sheet[XLSX.utils.encode_cell({ c:j, r: i })];
           if (cell && cell.t) {

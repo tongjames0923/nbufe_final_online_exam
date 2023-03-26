@@ -4,111 +4,70 @@
       <el-table-column label="考试ID" prop="exam_id"> </el-table-column>
       <el-table-column label="考试名称">
         <template slot-scope="data">
-          <el-input
-            v-model="data.row.exam_name"
-            @blur="ue(3, data.$index, data.row.exam_name, data.row.exam_id)"
-          ></el-input>
+          <el-input v-model="data.row.exam_name"
+            @blur="ue(3, data.$index, data.row.exam_name, data.row.exam_id)"></el-input>
         </template>
       </el-table-column>
       <el-table-column label="考试时间">
         <template slot-scope="data">
-          <el-date-picker
-            v-model="data.row.exam_begin"
-            @blur="ue(1, data.$index, data.row.exam_begin, data.row.exam_id)"
-            type="datetime"
-            placeholder="考试日期"
-            format="yyyy年MM月dd日 HH:mm"
-            value-format="yyyy-MM-dd HH:mm"
-          >
+          <el-date-picker v-model="data.row.exam_begin" @blur="ue(1, data.$index, data.row.exam_begin, data.row.exam_id)"
+            type="datetime" placeholder="考试日期" format="yyyy年MM月dd日 HH:mm" value-format="yyyy-MM-dd HH:mm">
           </el-date-picker>
         </template>
       </el-table-column>
       <el-table-column label="考试时长">
         <template slot-scope="data">
-          <el-input-number
-            @blur="ue(2, data.$index, data.row.exam_len, data.row.exam_id)"
-            v-model="data.row.exam_len"
-            :min="15"
-            controls-position="right"
-          >
+          <el-input-number @blur="ue(2, data.$index, data.row.exam_len, data.row.exam_id)" v-model="data.row.exam_len"
+            :min="15" controls-position="right">
           </el-input-number>
         </template>
       </el-table-column>
       <el-table-column label="考试备注">
         <template slot-scope="data">
-          <el-input
-            @blur="ue(4, data.$index, data.row.exam_note, data.row.exam_id)"
-            v-model="data.row.exam_note"
-          ></el-input>
+          <el-input @blur="ue(4, data.$index, data.row.exam_note, data.row.exam_id)"
+            v-model="data.row.exam_note"></el-input>
         </template>
       </el-table-column>
       <el-table-column label="考试状态">
-                <template slot-scope="data">
-                    <el-tag>{{ ex_status[data.row.exam_status] }}</el-tag>
-                </template>
-            </el-table-column>
+        <template slot-scope="data">
+          <el-tag>{{ ex_status[data.row.exam_status] }}</el-tag>
+        </template>
+      </el-table-column>
       <el-table-column label="操作">
         <template slot-scope="data">
-          <el-button
-            type="text"
-            size="small"
-            @click="examDetail(data.row.exam_id)"
-            >详情</el-button
-          >
-          <el-button
-            type="text"
-            size="small"
-            @click="del(data.row.exam_id)"
-            >删除考试</el-button
-          >
+          <el-button type="text" size="small" @click="examDetail(data.row.exam_id)">详情</el-button>
+          <el-button type="text" size="small" @click="del(data.row.exam_id)">删除考试</el-button>
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      :current-page.sync="exlist"
-      @current-change="handleCurrentChange"
-      :page-size="page"
-      layout="total, prev, pager, next"
-      :total="excount"
-    >
+    <el-pagination :current-page.sync="exlist" @current-change="handleCurrentChange" :page-size="page"
+      layout="total, prev, pager, next" :total="excount">
     </el-pagination>
     <el-collapse>
       <el-collapse-item :title=ques_title>
         <el-table border max-height="350" :data="questions" style="width: 100%">
-          <el-table-column
-            prop="ques_id"
-            width="75"
-            label="题目ID"
-          ></el-table-column>
-
-          <el-table-column
-            label="题型"
-            width="90"
-            prop="que.que_type"
-            :filters="tableFilter"
-            :filter-method="filterHandler"
-          >
+          <el-table-column prop="ques_id" width="75" label="题目ID"></el-table-column>
+          <el-table-column label="题型" width="90" prop="que.que_type" :filters="tableFilter"
+            :filter-method="filterHandler">
             <template slot-scope="data">
-              <el-tag v-if="data.row.detail.que_type == 0" type="warning"
-                >选择题</el-tag
-              >
-              <el-tag v-else-if="data.row.detail.que_type == 1" type="warning"
-                >填空题</el-tag
-              >
-              <el-tag v-else-if="data.row.detail.que_type == 2" type="warning"
-                >简答题</el-tag
-              >
+              <el-tag v-if="data.row.detail.que_type == 0" type="warning">选择题</el-tag>
+              <el-tag v-else-if="data.row.detail.que_type == 1" type="warning">填空题</el-tag>
+              <el-tag v-else-if="data.row.detail.que_type == 2" type="warning">简答题</el-tag>
               <el-tag v-else type="danger">错误</el-tag>
             </template>
           </el-table-column>
           <el-table-column prop="detail.title" label="题目标题">
           </el-table-column>
+          <el-table-column label="考题">
+            <template slot-scope="data">
+              <v-md-preview :text="data.row.detail.que_file"></v-md-preview>
+            </template>
+          </el-table-column>
           <el-table-column label="题目分值">
             <template slot-scope="dp">
-              <el-input-number
-                v-model="dp.row.score" disabled
-                controls-position="right"
-              ></el-input-number>
+              <el-input-number 
+              @blur="updateQ(dp.row.ques_id, 1, dp.row.score)" v-model="dp.row.score"
+                controls-position="right"></el-input-number>
             </template>
           </el-table-column>
         </el-table>
@@ -136,7 +95,8 @@ import {
   api_updateLen,
   api_updateName,
   api_updateNote,
-  api_delete
+  api_delete,
+  api_updateScore
 } from "@/api/exam";
 import { getToken } from "@/utils/auth";
 
@@ -151,29 +111,33 @@ export default {
       cur: 0,
       oldlist: [],
       questions: [],
-      ques_title:"考题",
-      students:[],
-      student_title:"考生",
-      ex_status: ['未开始', '正在考试', '考试结束', '考试预批阅完成', '考试批阅完成']
+      ques_title: "考题",
+      students: [],
+      student_title: "考生",
+      ex_status: ['未开始', '正在考试', '考试结束', '考试预批阅完成', '考试批阅完成'],
+      nowExam: undefined,
+      nowExamID:undefined
     };
   },
   methods: {
     del(examID) {
-            let u = JSON.parse(getToken());
-            api_delete(examID, u.id).then(res => {
-                this.$message({
-                    showClose: true,
-                    message: '删除成功'
-                });
-                this.updatelist()
-            })
-        },
+      let u = JSON.parse(getToken());
+      api_delete(examID, u.id).then(res => {
+        this.$message({
+          showClose: true,
+          message: '删除成功'
+        });
+        this.updatelist()
+      })
+    },
     examDetail(id) {
       api_fullExam(id).then((res) => {
         this.questions = res.questions;
-        this.students=res.students;
-        this.ques_title="试卷试题列表:"+res.exam_name
-        this.student_title="考生列表:"+res.exam_name
+        this.students = res.students;
+        this.ques_title = "试卷试题列表:" + res.exam_name
+        this.student_title = "考生列表:" + res.exam_name
+        this.nowExam = res.exam_name
+        this.nowExamID=id
       });
     },
     makeConfirm(text, id, value) {
@@ -187,11 +151,40 @@ export default {
         }
       );
     },
+    makeConfirmForQ(text, id, val) {
+      return this.$confirm(
+        "新值:" + val,
+        "确认修改[题目ID" + id + "]的" + text + "吗？",
+        {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }
+      );
+    },
     rollback(index) {
       this.$message({
         showClose: true,
         message: "请刷新页面来恢复数据原样",
       });
+    },
+    updateQ(qid, tp, val) {
+      if (tp === 1) {
+        debugger
+        this.makeConfirmForQ("分值", qid, val).then(() => {
+          api_updateScore(qid, this.nowExam, val).then(res => {
+            this.$message({
+              message: "修改成功",
+              type: "success",
+            });
+          })
+        }).catch(err => {
+          api_fullExam(this.examID).then((res) => {
+            this.questions = res.questions;
+            this.students = res.students;
+          });
+        })
+      }
     },
     ue(what, index, value, id) {
       let u = JSON.parse(getToken());
@@ -277,5 +270,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

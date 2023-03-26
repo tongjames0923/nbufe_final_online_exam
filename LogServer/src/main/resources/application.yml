@@ -17,18 +17,18 @@ spring:
     date-format: yyyy-MM-dd HH:mm:ss:SSSS
     time-zone: GMT+8
   redis:
-    host: 127.0.0.1
-    password: redispw
-    port: 32768
-    database: 0
-    timeout: 1000
+      host: 127.0.0.1
+      password: tongyi0923
+      port: 6379
+      database: 0
+      timeout: 1000
   rabbitmq:
-    host: 127.0.0.1
-    port: 19889
-    username: root
-    password: tongyi0923
-    listener:
-      simple:
+      host: 127.0.0.1
+      port: 5672
+      username: abstergo
+      password: tongyi0923
+      listener:
+       simple:
         acknowledge-mode: manual
         retry:
           enabled: true # 是否支持重试

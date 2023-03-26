@@ -18,7 +18,7 @@ public class Question {
     @DateTimeFormat(pattern="yyyy年MM月dd日 hh:mm:ss")
     @JsonFormat(pattern="yyyy年MM月dd日 hh:mm:ss",timezone="GMT+8")
     private Date que_alter_time;
-    private byte[] que_file;
+    private String que_file;
     private int publicable;
     private int use_time;
     private int answerd;
@@ -79,12 +79,12 @@ public class Question {
         this.que_alter_time = que_alter_time;
     }
 
-    public byte[] getQue_file()
+    public String getQue_file()
     {
         return que_file;
     }
 
-    public void setQue_file(byte[] que_file)
+    public void setQue_file(String que_file)
     {
         this.que_file = que_file;
     }

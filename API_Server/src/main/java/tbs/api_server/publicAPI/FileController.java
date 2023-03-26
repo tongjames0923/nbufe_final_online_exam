@@ -71,8 +71,7 @@ public class FileController
     @RequestMapping(value = "question")
     public NetResult downloadQuestion(int id)
     {
-        Question q=qmp.getQuestionFile(id);
-        String s=new String(q.getQue_file());
+        String s=qmp.getQuestionFile(id);
         return NetResult.makeResult(SUCCESS,null,s);
     }
 

@@ -193,6 +193,7 @@ public class ExamController {
     }
 
 
+    @NoNeedAccess
     @RequestMapping("getFull")
     public NetResult getfull(int id)
     {
@@ -228,6 +229,18 @@ public class ExamController {
                 return NetResult.makeResult(service.StudentLogin(name,id,number,examID),null);
             }
         }).method();
+    }
+
+
+    @RequestMapping("updateScore")
+    public NetResult updateScore(int qid,String exam,int score)
+    {
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
+                return NetResult.makeResult(service.updateScore(exam,qid,score),null);
+            }
+        });
     }
 
 
