@@ -19,6 +19,9 @@ public class RemoteInvokeConfig {
         RmiProxyFactoryBean bean=new RmiProxyFactoryBean();
         bean.setServiceInterface(ILogService.class);
         bean.setServiceUrl(log_server+"logService");
+        bean.setLookupStubOnStartup(false);
+        bean.setRefreshStubOnConnectFailure(true);
+        bean.afterPropertiesSet();
         return bean;
     }
 }

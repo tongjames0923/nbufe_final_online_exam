@@ -43,7 +43,7 @@ service.interceptors.response.use(
       Message({
         message: res.message || 'Error',
         type: 'error',
-        duration: 5 * 1000,
+        duration: res.code==39999?500:5 * 1000,
         onClose:()=>{
           if(res.code==39999)
           {

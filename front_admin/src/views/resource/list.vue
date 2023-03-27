@@ -1,11 +1,7 @@
 <template>
   <el-main>
     <el-row>
-      <el-switch
-        v-model="smode"
-        active-text="按类型搜索"
-        inactive-text="按备注搜索"
-      >
+      <el-switch v-model="smode" active-text="按类型搜索" inactive-text="按备注搜索">
       </el-switch>
     </el-row>
 
@@ -18,20 +14,14 @@
     </el-header>
     <el-header v-else>
       <el-input v-model="input" placeholder="请输入需要搜索的备注"></el-input>
-      <el-button @click="search" icon="el-icon-search" class="blankDiv"
-        >搜索</el-button
-      >
+      <el-button @click="search" icon="el-icon-search" class="blankDiv">搜索</el-button>
     </el-header>
     <div style="height:30px"></div>
     <el-table :data="resList" border>
       <el-table-column label="预览" width="120" fixed>
         <template slot-scope="scope">
-          <el-avatar
-            v-if="scope.row.resource_type == 2000"
-            shape="fill"
-            :size="100"
-            :src="SerLocation+ scope.row.resource"
-          ></el-avatar>
+          <el-avatar v-if="scope.row.resource_type == 2000" shape="fill" :size="100"
+            :src="SerLocation + scope.row.resource"></el-avatar>
           <el-empty v-else></el-empty>
         </template>
       </el-table-column>
@@ -44,35 +34,33 @@
         </template>
       </el-table-column>
       <el-table-column label="备注" width="750" prop="note"> </el-table-column>
-      <el-table-column label="链接" width="120" fixed>
+      <el-table-column label="链接" width="80" fixed>
         <template slot-scope="scope">
-          <el-link
-            type="success"
-            :href="SerLocation+ scope.row.resource"
-            target="_blank"
-            >点击打开</el-link
-          >
+          <el-popover placement="top" trigger="click">
+            <div style="text-align: left;; margin: 0">
+              <el-link type="success" :href="SerLocation + scope.row.resource" target="_blank">
+                链接:{{SerLocation + scope.row.resource}}</el-link>
+              <el-button style="margin-left: 12px;" type="text" size="medium"
+                @click="copy(SerLocation + scope.row.resource); ">拷贝链接</el-button>
+            </div>
+            <el-button type="text" size="medium" slot="reference">查看</el-button>
+          </el-popover>
         </template>
       </el-table-column>
       <el-table-column label="删除" fixed>
         <template slot-scope="scope">
-          <el-button
-            type="danger"
-            icon="el-icon-delete"
-            circle
-            @click="deleteItem(scope.$index)"
-          ></el-button>
+          <el-button type="danger" icon="el-icon-delete" circle @click="deleteItem(scope.$index)"></el-button>
         </template>
       </el-table-column>
     </el-table>
   </el-main>
 </template>
   
-  <script>
+<script>
 /* eslint-disable */
 
 
-import {deleteResource,getInfoByType,searchByNote} from '@/api/resource'
+import { deleteResource, getInfoByType, searchByNote } from '@/api/resource'
 import { Server } from '@/settings';
 export default {
   name: "ListResourceVue",
@@ -86,11 +74,25 @@ export default {
       arr: ["请选择文件类型", "文本", "图片", "视频", "音频"],
       input: "",
       smode: true,
-      SerLocation:undefined
+      SerLocation: undefined
     };
   },
 
   methods: {
+    copy(text) {
+      this.$copyText(text).then(success => {
+        this.$message({
+          type: 'success',
+          message: "拷贝成功"
+        })
+      },
+        err => {
+          this.$message({
+            type: 'error',
+            message: "拷贝失败"
+          })
+        })
+    },
     load() {
       console.log("loading");
       this.getinfo(this.tp);
@@ -103,19 +105,19 @@ export default {
     search() {
       var that = this;
       this.resList = [];
-      searchByNote(this.input,this.from,this.num)
-.then((res) => {
+      searchByNote(this.input, this.from, this.num)
+        .then((res) => {
 
           for (let i = 0; i < res.length; i++) {
             that.resList.push(res[i]);
           }
           that.$forceUpdate();
-      });
+        });
     },
     deleteItem(rid) {
       var that = this;
       deleteResource(this.resList[rid].id).then((res) => {
-         {
+        {
           that.$notify({
             title: "删除成功",
             message: "",
@@ -128,17 +130,17 @@ export default {
     },
     getinfo(type) {
       var that = this;
-      getInfoByType(type,this.from,this.num).then(function (res) {
-          for (let i = 0; i < res.length; i++) {
-            that.resList.push(res[i]);
-          }
-          that.$forceUpdate();
+      getInfoByType(type, this.from, this.num).then(function (res) {
+        for (let i = 0; i < res.length; i++) {
+          that.resList.push(res[i]);
+        }
+        that.$forceUpdate();
       });
     },
   },
   beforeMount() {
     this.getinfo(2000);
-    this.SerLocation=Server
+    this.SerLocation = Server
   },
 };
 </script>

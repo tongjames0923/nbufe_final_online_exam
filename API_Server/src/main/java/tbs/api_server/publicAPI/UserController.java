@@ -49,6 +49,7 @@ public class UserController {
 
     @RequestMapping("logout")
     @NoNeedAccess
+    @NoLog
     public NetResult logOut(String access)
     {
         return ApiMethod.makeResultNoLogin(new ApiMethod.IAction() {
@@ -93,6 +94,7 @@ public class UserController {
      */
     @Transactional
     @NoNeedAccess
+    @NoLog
     public NetResult login(String username, String password) {
 
         return  ApiMethod.makeResultNoLogin(new ApiMethod.IAction() {
@@ -121,6 +123,7 @@ public class UserController {
      * @return 成功为个人安全信息，密保答案隐藏，否则为错误信息
      */
     @Transactional
+    @NoLog
     public NetResult updateSecQues(int id, String ques, String ans) {
         try {
             ServiceResult sc = service.UpdateUserSecQuestion(id, ques, ans);
@@ -148,7 +151,7 @@ public class UserController {
      * @return 成功为用户详细信息，否则为空
      */
     @Transactional
-    public NetResult updatedetails(int id,
+    public NetResult updatedetails(
                                    @RequestParam(required = false)
                                    String email,
                                    @RequestParam(required = false)
@@ -157,19 +160,16 @@ public class UserController {
                                                String address,
                                    @RequestParam(required = false)
                                    String note) {
-        try {
-            ServiceResult<UserDetailInfo> dt = service.UpdateUserDetails(id, address,
-                    phone,
-                    email,
-                    note);
-            return NetResult.makeResult(dt.getCode(), null, dt.getObj());
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getDetail());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                ServiceResult<UserDetailInfo> dt = service.UpdateUserDetails(applyUser.getId(), address,
+                        phone,
+                        email,
+                        note);
+                return NetResult.makeResult(dt.getCode(), null, dt.getObj());
+            }
+        });
 
     }
 
@@ -185,6 +185,7 @@ public class UserController {
      */
     @Transactional
     @NoNeedAccess
+    @NoLog
     public NetResult register(String username, String password, @RequestParam(required = false) String question, @RequestParam(required = false) String answer,
                               @RequestParam(required = false) String address, @RequestParam(required = false) String phone, @RequestParam(required = false) String email,
                               @RequestParam(required = false) String note) {
@@ -224,6 +225,7 @@ public class UserController {
      * @return
      */
     @Transactional
+    @NoLog
     public NetResult updatePassword(int id, String password, String oldpassword) {
         ServiceResult result = null;
         try {
@@ -251,6 +253,7 @@ public class UserController {
      */
     @Transactional
     @NoNeedAccess
+    @NoLog
     public NetResult updatePasswordByQues(String name, String password, String answer) {
         ServiceResult result = null;
         try {
@@ -321,10 +324,11 @@ public class UserController {
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 return NetResult.makeResult(service.getUserSecQuestion(name),null);
             }
-        }).methodWithLogined();
+        }).method();
     }
     @RequestMapping("answerSec")
     @NoNeedAccess
+    @NoLog
     public  NetResult replySec(String name,String answer)
     {
         return  ApiMethod.make(new ApiMethod.IAction() {
@@ -332,11 +336,11 @@ public class UserController {
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 return NetResult.makeResult(service.replySecQuestion(name,answer),null);
             }
-        }).methodWithLogined();
+        }).method();
     }
 
     @RequestMapping("findUser")
-
+    @AccessLimit
     public NetResult findUserByName(String name)
     {
         return ApiMethod.makeResultNoLogin(new ApiMethod.IAction() {

@@ -30,8 +30,6 @@ public class ApiServerApplication {
     }
 
     public static void main(String[] args) {
-        Starter();
-
         SpringApplication.run(ApiServerApplication.class, args);
     }
 

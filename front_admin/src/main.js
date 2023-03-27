@@ -61,6 +61,8 @@ Vue.use(ElementUI, { locale })
 // Vue.use(ElementUI)
 
 Vue.config.productionTip = false
+import VueClipBoard from 'vue-clipboard2'
+Vue.use(VueClipBoard)
 
 new Vue({
   el: '#app',
