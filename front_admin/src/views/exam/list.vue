@@ -100,12 +100,15 @@
               </el-switch>
             </template>
           </el-table-column>
-          <el-table-column title="功能">
+          <el-table-column label="功能">
             <template slot-scope="data">
-              <el-button v-if="data.row.user.id != me.id" type="text" size="small"
+              <div v-if="data.row.user.id != me.id">
+                <el-button  type="text" size="small"
                 @click="set_permit(data.row.user,data.row.permission.writeable, 1, data.row.permission.checkable)">确认权限</el-button>
-              <el-button v-if="data.row.user.id != me.id" type="text" size="small"
+              <el-button type="text" size="small"
                 @click="set_permit(data.row.user,0, 0, 0)">取消所有权限</el-button>
+              </div>
+              <div v-else>这是你自己</div>
             </template>
           </el-table-column>
         </el-table>

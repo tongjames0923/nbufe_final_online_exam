@@ -101,17 +101,8 @@ public class UserImp implements UserService
     }
 
     @Override
-    public ServiceResult pullUserInfo(int id, int from, int num) throws BackendError {
-        int lv= mp.getUserDetailInfoByID(id).getLevel();
-        if(lv== LEVEL_EXAM_STAFF)
-        {
+    public ServiceResult pullUserInfo( int from, int num) throws BackendError {
            return ServiceResult.makeResult(SUCCESS, mp.getUserDetailInfos(from, num));
-        }
-        else
-        {
-            throw  _ERROR.throwError(EC_LOW_PERMISSIONS,String.format("LEVEL {%d} 权限无法拉取用户信息",lv));
-
-        }
     }
 
     @Override

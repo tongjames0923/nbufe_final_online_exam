@@ -268,6 +268,7 @@ public class UserController {
 
     @Transactional
     @RequestMapping("pullusers")
+    @AccessLimit
     /***
      * 为EXAM_STAFF 用户获取用户列表
      * @param id 拉取人
@@ -275,17 +276,14 @@ public class UserController {
      * @param num 数量
      * @return 成功为用户信息列表，否则为错误信息或空，msg为NET_FAILURE时候data为错误信息
      */
-    public NetResult getUserinfoPage(int id, int from, int num) {
-        try {
-            ServiceResult result = service.pullUserInfo(id, from, num);
-            return NetResult.makeResult(result, null);
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getDetail());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
+    public NetResult getUserinfoPage( int from, int num) {
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                ServiceResult result = service.pullUserInfo( from, num);
+                return NetResult.makeResult(result, null);
+            }
+        });
     }
 
 

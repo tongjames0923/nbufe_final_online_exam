@@ -172,7 +172,15 @@ export const constantRoutes = [
           title: '用户管理',
           icon: 'el-icon-user-solid'
         },
-      }
+      },
+      {
+        path: 'SingleMananger',
+        component: () => import('@/views/userList/userSearch.vue'),
+        meta: {
+          title: '用户精确配置',
+          icon: 'el-icon-circle-check'
+        },
+      },
     ]
   },
   {

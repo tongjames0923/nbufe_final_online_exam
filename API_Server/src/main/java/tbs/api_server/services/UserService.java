@@ -37,7 +37,7 @@ public interface UserService
 
    ServiceResult getUserInfo(int userid);
 
-   ServiceResult pullUserInfo(int id,int from,int num) throws Error.BackendError;
+   ServiceResult pullUserInfo(int from,int num) throws Error.BackendError;
 
    ServiceResult total();
 

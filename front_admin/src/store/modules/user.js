@@ -26,7 +26,6 @@ const mutations = {
     state.avatar = avatar
   }
 }
-let timer;
 const actions = {
   // user login
   login({ commit }, userInfo) {
@@ -35,12 +34,6 @@ const actions = {
       login({ username: username.trim(), password: password }).then(response => {
         setAccess(response[0])
         commit('SET_TOKEN', response[1])
-        timer = setInterval(() => {
-          api_renew_access().then(res => {
-
-          });
-          console.log("renewing");
-        }, 60 * 1000)
         setToken(response[1])
         resolve()
       }).catch(error => {
@@ -60,8 +53,7 @@ const actions = {
     } catch (err) {
       console.log("error:" + err)
       console.log("get info " + getAccess())
-      getUser(0).then(res => {
-        debugger
+      getUser().then(res => {
         user = res
         commit('SET_NAME', user.name)
         commit('SET_AVATAR', 'https://papers.co/wp-content/uploads/papers.co-bj56-art-wood-mountain-digital-day-1-wallpaper-300x300.jpg')
@@ -82,7 +74,6 @@ const actions = {
     api_log_out(access).then(res => {
 
     })
-    clearInterval(timer)
   },
   renewToken() {
     api_renew_access().then(res => {

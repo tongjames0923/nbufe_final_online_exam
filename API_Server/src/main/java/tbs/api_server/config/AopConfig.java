@@ -80,7 +80,8 @@ public class AopConfig {
         int index=0;
         for (String i:signature.getParameterNames())
         {
-            paramstext+=String.format("[%s]=[%s] ",i,args[index++].toString());
+            paramstext+=String.format("[%s]=[%s] ",i,args[index]==null?"null":args[index].toString());
+            index++;
         }
         logPojo.setLog_params(sub(paramstext));
         logPojo.setLog_begin(new Date());

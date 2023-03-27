@@ -1,12 +1,5 @@
 <template>
 <div>
-<!--  <el-descriptions title="用户信息">-->
-<!--    <el-descriptions-item label="用户名">{{this.info==undefined?'空':this.info.name}}</el-descriptions-item>-->
-<!--    <el-descriptions-item label="手机号">{{this.info==undefined?'空':this.info.phone}}</el-descriptions-item>-->
-<!--    <el-descriptions-item label="电子邮箱">{{this.info==undefined?'空':this.info.email}}</el-descriptions-item>-->
-<!--    <el-descriptions-item label="联系地址">{{this.info==undefined?'空':this.info.address}}</el-descriptions-item>-->
-<!--    <el-descriptions-item label="备注">{{this.info==undefined?'空':this.info.note}}</el-descriptions-item>-->
-<!--  </el-descriptions>-->
 <div v-if="authable" >
   <el-table
       :data="tableData"
@@ -40,10 +33,10 @@
           <el-radio-group v-model="data.row.level" size="mini"
           @input="changeLevel(data.row)"
           >
-      <el-radio-button label=-1>未激活</el-radio-button>
-      <el-radio-button label=0>标准激活用户</el-radio-button>
-      <el-radio-button label=1>资源写入权限用户</el-radio-button>
-      <el-radio-button label=2>高级管理员</el-radio-button>
+      <el-radio-button :disabled="user.id===data.row.id||data.row.level==2" label=-1>未激活</el-radio-button>
+      <el-radio-button :disabled="user.id===data.row.id||data.row.level==2"  label=0>标准激活用户</el-radio-button>
+      <el-radio-button :disabled="user.id===data.row.id ||data.row.level==2"  label=1>资源写入权限用户</el-radio-button>
+      <el-radio-button :disabled="user.id===data.row.id||data.row.level==2"  label=2>高级管理员</el-radio-button>
     </el-radio-group>
         </template>
     </el-table-column>
