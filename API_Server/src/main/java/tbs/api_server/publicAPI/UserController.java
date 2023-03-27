@@ -337,5 +337,17 @@ public class UserController {
         }).methodWithLogined();
     }
 
+    @RequestMapping("findUser")
+
+    public NetResult findUserByName(String name)
+    {
+        return ApiMethod.makeResultNoLogin(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                return NetResult.makeResult(service.findUserByNameLike(name),null);
+            }
+        });
+    }
+
 
 }

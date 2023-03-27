@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import tbs.api_server.backend.mappers.ExamPermissionMapper;
 import tbs.api_server.backend.mappers.UserMapper;
 import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.objects.compound.exam.ExamPermitionVo;
 import tbs.api_server.objects.simple.ExamPermission;
 import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.services.ExamPermissionService;
@@ -25,6 +26,19 @@ public class ExamPermissionImp implements ExamPermissionService
     private ExamPermissionMapper mp;
     @Autowired
     private UserMapper userMapper;
+
+    @Override
+    public ServiceResult getPermission(int examid) {
+        List<ExamPermission> permissions=mp.getExamPermittion(examid);
+        List<ExamPermitionVo> list=new ArrayList<>();
+        for(ExamPermission e :permissions)
+        {
+          UserDetailInfo detailInfo=  userMapper.getUserDetailInfoByID(e.getUser());
+          list.add(new ExamPermitionVo(e,detailInfo));
+        }
+        return ServiceResult.makeResult(SUCCESS,list);
+    }
+
     @Override
     public ServiceResult getPermission(int exam_id, int userid) throws BackendError {
         ExamPermission ep= mp.getPermission(userid,exam_id);
@@ -98,11 +112,11 @@ public class ExamPermissionImp implements ExamPermissionService
                 {
                     upc+=mp.updatePermissionAtWriteable(userid,examid,w);
                 }
-                return ServiceResult.makeResult(upc);
+                return ServiceResult.makeResult(SUCCESS,upc);
             }
             else
             {
-                return ServiceResult.makeResult(mp.putPermission(userid,examid,r,w,c)) ;
+                return ServiceResult.makeResult(SUCCESS,mp.putPermission(userid,examid,r,w,c)) ;
             }
     }
 

@@ -138,3 +138,13 @@ export function api_renew_access()
     method:'get'
   })
 }
+export function api_findUserByName(name)
+{
+  return request({
+    url:"user/findUser",
+    method:'get',
+    params:{
+      'name':name
+    }
+  })
+}

@@ -2,6 +2,7 @@ package tbs.api_server.services;
 
 import org.springframework.lang.NonNull;
 import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.utility.Error;
 
 public interface UserService
@@ -39,5 +40,7 @@ public interface UserService
    ServiceResult pullUserInfo(int id,int from,int num) throws Error.BackendError;
 
    ServiceResult total();
+
+   ServiceResult<UserDetailInfo> findUserByNameLike(String name);
 
 }

@@ -5,7 +5,6 @@ import com.alibaba.fastjson.JSON;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import tbs.api_server.backend.mappers.*;
 import tbs.api_server.config.AccessManager;
@@ -46,9 +45,12 @@ public class ExamImp implements ExamService {
     QuestionMapper questionMapper;
 
     @Override
-    public ServiceResult countExams(int user) {
-
-        return ServiceResult.makeResult(SUCCESS, mp.countStaff());
+    public ServiceResult countExams(UserSecurityInfo user) {
+        if(user.getLevel()>=2)
+        {
+            return ServiceResult.makeResult(SUCCESS,mp.countStaff());
+        }
+        return ServiceResult.makeResult(SUCCESS, mp.countReadable(user.getId()));
     }
 
     @Override
@@ -112,7 +114,7 @@ public class ExamImp implements ExamService {
     }
 
     @Override
-    public ServiceResult deleteExam(int id, int userid) throws BackendError {
+    public ServiceResult deleteExam(int id, UserSecurityInfo userid) throws BackendError {
         if (needWrite(userid, id)) {
             int c = mp.deleteExam(id);
             if (c > 0)
@@ -124,12 +126,17 @@ public class ExamImp implements ExamService {
     }
 
     @Override
-    public ServiceResult list(int from, int num) throws BackendError {
-        List<ExamInfo> list = mp.list(from, num);
+    public ServiceResult list(UserSecurityInfo user, int from, int num) throws BackendError {
+        List<ExamInfo> list=null;
+        if(user.getLevel()>=2)
+        {
+            list= mp.list(from, num);
+        }
+        else
+            list=mp.listWithPermit(user.getId(), from,num);
         if (list.size() > 0)
             return ServiceResult.makeResult(SUCCESS, list);
         throw _ERROR.throwError(EC_DB_SELECT_NOTHING, "不存在考试");
-
     }
 
     private boolean needCheck(int user, int examid) {
@@ -139,16 +146,12 @@ public class ExamImp implements ExamService {
         return permission.getWriteable() != 0 || permission.getCheckable() != 0;
     }
 
-    private boolean needWrite(int user, int examid) {
+    private boolean needWrite(UserSecurityInfo user, int examid) {
 
-        UserDetailInfo userDetailInfo = userMapper.getUserDetailInfoByID(user);
-        if (userDetailInfo == null) {
-            return false;
-        }
-        if (userDetailInfo.getLevel() == const_User.LEVEL_EXAM_STAFF) {
+        if (user.getLevel() == const_User.LEVEL_EXAM_STAFF) {
             return true;
         }
-        ExamPermission permission = permit.getPermission(user, examid);
+        ExamPermission permission = permit.getPermission(user.getId(), examid);
         if (permission == null)
             return false;
         return permission.getWriteable() != 0;
@@ -163,7 +166,7 @@ public class ExamImp implements ExamService {
     }
 
     @Override
-    public ServiceResult updateLen(int len, int user, int examid) throws BackendError {
+    public ServiceResult updateLen(int len, UserSecurityInfo user, int examid) throws BackendError {
         ExamInfo info = mp.getExamByid(examid);
         if (info == null)
             throw _ERROR.throwError(EC_DB_SELECT_NOTHING, "不存在的考试id");
@@ -181,7 +184,7 @@ public class ExamImp implements ExamService {
     }
 
     @Override
-    public ServiceResult updateNote(String note, int user, int examid) throws BackendError {
+    public ServiceResult updateNote(String note, UserSecurityInfo user, int examid) throws BackendError {
         if (needWrite(user, examid)) {
             int c = mp.updateExam(examid, const_Exam.col_notes, note);
             if (c > 0)
@@ -193,7 +196,7 @@ public class ExamImp implements ExamService {
     }
 
     @Override
-    public ServiceResult updateBegin(Date date, int user, int examid) throws BackendError {
+    public ServiceResult updateBegin(Date date, UserSecurityInfo user, int examid) throws BackendError {
         if (date.before(new Date()))
             throw _ERROR.throwError(EC_InvalidParameter, "不支持修改到过去时间");
         ExamInfo info = mp.getExamByid(examid);
@@ -213,7 +216,7 @@ public class ExamImp implements ExamService {
     }
 
     @Override
-    public ServiceResult updateName(String name, int user, int examid) throws BackendError {
+    public ServiceResult updateName(String name, UserSecurityInfo user, int examid) throws BackendError {
         try {
             if (needWrite(user, examid)) {
                 int c = mp.updateExam(examid, const_Exam.col_name, name);

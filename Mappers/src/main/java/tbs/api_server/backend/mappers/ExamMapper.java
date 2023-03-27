@@ -35,6 +35,9 @@ public interface ExamMapper {
     @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status` from " +
             "`exam` limit #{from},#{num} FOR UPDATE")
     List<ExamInfo> list(int from, int num);
+    @Select("Select e.`exam_id`,e.`exam_name`,e.`exam_begin`,e.`exam_len`,e.`exam_note`,e.`exam_status` from " +
+            "`exam` e join `per_exam` pe on pe.user=#{userid} AND pe.exam_id=e.exam_id where pe.readable=1 limit #{from},#{num} FOR UPDATE")
+    List<ExamInfo>listWithPermit(int userid,int from,int num);
 
     @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status` from " +
             "`exam` where `exam_file` like '%${student}%' limit #{from},#{num} FOR UPDATE")
@@ -68,7 +71,9 @@ public interface ExamMapper {
     @Update("UPDATE `exam` SET `${field}`=#{value} WHERE `exam_id`=#{exam_id}")
     int updateExam(int exam_id, String field, Object value);
 
-
-    @Select("SELECT COUNT(*) FROM exam;")
+    @Select("select count(1) from exam")
     int countStaff();
+
+    @Select("SELECT COUNT(e.exam_id) FROM `exam` e join `per_exam` pe on pe.user=#{user} AND pe.exam_id=e.exam_id where pe.readable=1;")
+    int countReadable(int user);
 }

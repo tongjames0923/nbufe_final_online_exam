@@ -79,31 +79,13 @@ public class ExamController {
         }
     }
 
-
-
-
-    @RequestMapping("list")
-    @Transactional
-    public NetResult list(int from, int num) {
-        return ApiMethod.make(new ApiMethod.IAction() {
-            @Override
-            public NetResult action(UserSecurityInfo applyUser) throws Exception {
-
-                List<ExamInfo> list = (List<ExamInfo>) service.list(from, num).getObj();
-                update(applyUser,list);
-                return NetResult.makeResult(SUCCESS, null, list);
-            }
-        }).methodWithLogined();
-    }
-
-
     @RequestMapping("count")
-    public NetResult count(int user)
+    public NetResult count()
     {
         return  ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
-                return NetResult.makeResult(service.countExams(user),null);
+                return NetResult.makeResult(service.countExams(applyUser),null);
             }
         })
                 .methodWithLogined();
@@ -117,7 +99,7 @@ public class ExamController {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Exception {
 
-                List<ExamInfo> list = (List<ExamInfo>) service.list(from, num).getObj();
+                List<ExamInfo> list = (List<ExamInfo>) service.list(applyUser,from, num).getObj();
                 update(applyUser,list);
                 ServiceResult result = service.getExamByStatus(status, from, num);
                 return NetResult.makeResult(result, null);
@@ -126,45 +108,58 @@ public class ExamController {
     }
     @RequestMapping("updateLen")
     @Transactional
-    public NetResult updateLen(int len, int user, int examid) {
+    public NetResult updateLen(int len,  int examid) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Exception {
 
-                return NetResult.makeResult(service.updateLen(len, user, examid), null);
+                return NetResult.makeResult(service.updateLen(len, applyUser, examid), null);
             }
         }).methodWithLogined();
     }
     @RequestMapping("updateName")
     @Transactional
-    public NetResult updateName(String name, int user, int examid) {
+    public NetResult updateName(String name,  int examid) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Exception {
 
-                return NetResult.makeResult(service.updateName(name, user, examid), null);
+                return NetResult.makeResult(service.updateName(name, applyUser, examid), null);
             }
         }).methodWithLogined();
     }
+
+    @RequestMapping("list")
+    public NetResult listMyExam(int from,int num)
+    {
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
+                return NetResult.makeResult(service.list(applyUser,from,num),null);
+            }
+        });
+    }
+
+
     @RequestMapping("updateNote")
     @Transactional
-    public NetResult updateNote(String note, int user, int examid) {
+    public NetResult updateNote(String note,int examid) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Exception {
 
-                return NetResult.makeResult(service.updateNote(note, user, examid), null);
+                return NetResult.makeResult(service.updateNote(note, applyUser, examid), null);
             }
         }).methodWithLogined();
     }
     @RequestMapping("updateBegin")
     @Transactional
-    public NetResult updateBegin(String time, int user, int examid) {
+    public NetResult updateBegin(String time, int examid) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Exception {
                 Date d=new Date(new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(time).getTime());
-                return NetResult.makeResult(service.updateBegin(d, user, examid), null);
+                return NetResult.makeResult(service.updateBegin(d,applyUser, examid), null);
             }
         }).methodWithLogined();
     }
@@ -244,11 +239,11 @@ public class ExamController {
 
     @RequestMapping("delete")
     @Transactional
-    public NetResult delete(int id, int user) {
+    public NetResult delete(int id) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Exception {
-                return NetResult.makeResult(service.deleteExam(id, user), null);
+                return NetResult.makeResult(service.deleteExam(id, applyUser), null);
             }
         }).methodWithLogined();
     }

@@ -20,6 +20,10 @@ public interface UserMapper {
     @Select("select *,ui.level from `user_sec` uc join `user_info` ui on ui.id=uc.id  where uc.`name`=#{name} FOR UPDATE")
     UserSecurityInfo getUserSecurityInfoByName( @NonNull String name);
 
+
+    @Select("select a.*,b.`name` from `user_info` a INNER JOIN user_sec b ON b.id=a.id where b.name like '${name}%' order by b.name limit #{from},#{num} FOR UPDATE")
+    List<UserDetailInfo> findByNameLike(String name,int from,int num);
+
     @Select("select a.*,b.`name` from `user_info` a INNER JOIN user_sec b ON b.id=a.id limit #{from},#{num} FOR UPDATE")
     List<UserDetailInfo> getUserDetailInfos(int from,int num);
 

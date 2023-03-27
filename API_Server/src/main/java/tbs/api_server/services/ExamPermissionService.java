@@ -5,6 +5,7 @@ import tbs.api_server.utility.Error;
 
 public interface ExamPermissionService
 {
+    ServiceResult getPermission(int examid);
     ServiceResult getPermission(int exam_id, int userid) throws Error.BackendError;
 
     ServiceResult getCheckerList(int examid,int from,int num) throws Error.BackendError;

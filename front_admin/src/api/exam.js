@@ -80,3 +80,29 @@ export function api_updateScore(qid, exam, score) {
         }
     })
 }
+export function api_listExamAccess(examid)
+{
+    return req({
+        url:'exampermissions/listExamAccess',
+        method:'get',
+        params:{
+            'examid':examid
+        }
+    })
+}
+
+export function api_setAccessForExam(exam,u,w,r,c)
+{
+    return req({
+        url:'exampermissions/set',
+        method:'get',
+        params:
+        {
+            examid:exam,
+            targetid:u,
+            read:r,
+            write:w,
+            check:c
+        }
+    })
+}

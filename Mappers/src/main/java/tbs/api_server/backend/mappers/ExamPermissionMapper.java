@@ -34,6 +34,9 @@ public interface ExamPermissionMapper
     List<Integer> getWriterList(int exam_id,int from, int num);
 
 
+    @Select("select * from `per_exam` where `exam_id`=#{exam} and readable=1")
+    List<ExamPermission> getExamPermittion(int exam);
+
 
     @Insert("INSERT INTO `per_exam`(`user`,`exam_id`,`readable`,`writeable`,`checkable`) VALUES(" +
             "#{param1},#{param2},#{param3},#{param4},#{param5}) ")

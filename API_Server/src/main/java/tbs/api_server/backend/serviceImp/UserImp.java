@@ -8,6 +8,7 @@ import tbs.api_server.backend.mappers.UserMapper;
 import tbs.api_server.config.AccessManager;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.compound.exam.UserVo;
+import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.UserService;
 
@@ -116,6 +117,11 @@ public class UserImp implements UserService
     @Override
     public ServiceResult total() {
         return ServiceResult.makeResult(SUCCESS,mp.userCount());
+    }
+
+    @Override
+    public ServiceResult<UserDetailInfo> findUserByNameLike(String name) {
+        return ServiceResult.makeResult(SUCCESS,mp.findByNameLike(name,0,5));
     }
 
     @Autowired

@@ -70,18 +70,18 @@ public class ExamPermissionController
     }
     @RequestMapping("set")
     @Transactional
-    public NetResult setPermission(int examid, int userid, int targetid,
-                                   @RequestParam(required = false) Integer read,
-                                   @RequestParam(required = false) Integer write,
-                                   @RequestParam(required = false) Integer check)
+    public NetResult setPermission(int examid, int targetid,
+                                   @RequestParam(required = false,defaultValue = "1") Integer read,
+                                   @RequestParam(required = false,defaultValue = "0") Integer write,
+                                   @RequestParam(required = false,defaultValue = "0") Integer check)
     {
         return ApiMethod.make(new ApiMethod.IAction()
         {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception
             {
-                ExamPermission permission= (ExamPermission) service.getPermission(examid, userid).getObj();
-                if(permission.getWriteable()==1)
+                ExamPermission permission= (ExamPermission) service.getPermission(examid, applyUser.getId()).getObj();
+                if(permission.getWriteable()==1||applyUser.getLevel()>=2)
                 {
                     Boolean r=null,w=null,c=null;
                     if(read!=null)
@@ -97,47 +97,14 @@ public class ExamPermissionController
             }
         }).methodWithLogined();
     }
-    @RequestMapping("list")
-    public NetResult userOwnPermission(int userid,int from,int num)
+    @RequestMapping("listExamAccess")
+    public NetResult examUsers(int examid)
     {
-        return ApiMethod.make(new ApiMethod.IAction()
-        {
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
-            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception
-            {
-                ArrayList<ExamPermission>[] arrayList=new ArrayList[3];
-                try
-                {
-                    arrayList[0]= (ArrayList<ExamPermission>) service.getExamsFORREAD(userid, from, num).getObj();
-                }catch (Exception e)
-                {
-                }
-                try
-                {
-                    arrayList[1]= (ArrayList<ExamPermission>) service.getExamsFORWRITE(userid, from, num).getObj();
-                }catch (Exception e)
-                {
-
-                }
-                try
-                {
-                    arrayList[2]= (ArrayList<ExamPermission>) service.getExamsFORCHECK(userid, from, num).getObj();
-                }catch (Exception e)
-                {
-
-                }
-                String[] names={"readable", "writable", "checkable"};
-                int j=0;
-                HashMap<String,ArrayList<ExamPermission>> map = new HashMap<>();
-                for(ArrayList<ExamPermission> i:arrayList)
-                {
-                    if(i!=null)
-                    {
-                        map.put(names[j++],i );
-                    }
-                }
-                return NetResult.makeResult(SUCCESS,null,map);
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                return NetResult.makeResult(service.getPermission(examid),null);
             }
-        }).methodWithLogined();
+        });
     }
 }
