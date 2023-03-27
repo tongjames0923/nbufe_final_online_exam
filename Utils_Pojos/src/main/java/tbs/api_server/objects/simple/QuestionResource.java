@@ -11,8 +11,7 @@ public class QuestionResource {
     private String resource;
     private String note;
     private int resource_type;
-
-
+    private final static long serialVersionUID = 1L;
     @DateTimeFormat(pattern="yyyy年MM月dd日 hh:mm:ss")
     @JsonFormat(pattern="yyyy年MM月dd日 hh:mm:ss",timezone="GMT+8")
     private Date altertime;

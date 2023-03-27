@@ -33,8 +33,7 @@ public class Tag {
                 ", tag_used=" + tag_used +
                 '}';
     }
-
-    public void setTag_used(int tag_used) {
+    private final static long serialVersionUID = 1L;    public void setTag_used(int tag_used) {
         this.tag_used = tag_used;
     }
 }

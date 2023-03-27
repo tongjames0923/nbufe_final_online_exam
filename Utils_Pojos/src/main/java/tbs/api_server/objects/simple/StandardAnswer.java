@@ -7,8 +7,7 @@ public class StandardAnswer {
     private int ques_id;
     private byte[] answer_content;
     private byte[] answer_analysis;
-
-    public int getId() {
+    private final static long serialVersionUID = 1L;    public int getId() {
         return id;
     }
 

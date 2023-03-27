@@ -7,7 +7,7 @@ public class ExamPermission {
     private int checkable;
     private int writeable;
     private int user;
-
+    private final static long serialVersionUID = 1L;
     public int getId() {
         return id;
     }

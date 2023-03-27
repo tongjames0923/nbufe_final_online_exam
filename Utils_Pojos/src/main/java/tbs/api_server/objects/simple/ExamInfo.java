@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 public class ExamInfo implements Serializable {
-    private int exam_id;
+    private final static long serialVersionUID = 1L;    private int exam_id;
     private String exam_name;
     private Date exam_begin;
     private int exam_len;

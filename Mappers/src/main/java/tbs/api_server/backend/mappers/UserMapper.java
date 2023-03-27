@@ -24,11 +24,11 @@ public interface UserMapper {
     @Select("select a.*,b.`name` from `user_info` a INNER JOIN user_sec b ON b.id=a.id where b.name like '${name}%' order by b.name limit #{from},#{num} FOR UPDATE")
     List<UserDetailInfo> findByNameLike(String name,int from,int num);
 
-    @Select("select a.*,b.`name` from `user_info` a INNER JOIN user_sec b ON b.id=a.id limit #{from},#{num} FOR UPDATE")
+    @Select("select a.*,b.`name` from `user_info` a INNER JOIN user_sec b ON b.id=a.id limit #{from},#{num}")
     List<UserDetailInfo> getUserDetailInfos(int from,int num);
 
 
-    @Select("select a.*,b.`name` from `user_info` a INNER JOIN user_sec b ON b.id=a.id where a.`id`=#{id} FOR UPDATE")
+    @Select("select a.*,b.`name` from `user_info` a INNER JOIN user_sec b ON b.id=a.id where a.`id`=#{id}")
     @Cacheable(value = "userDetail",key = "#id")
     UserDetailInfo getUserDetailInfoByID(int id);
 

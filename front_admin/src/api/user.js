@@ -42,7 +42,6 @@ export function pullUserList(id,from,num)
     url:'user/pullusers',
     method:'get',
     params:{
-      'id':id,
       'from':from,
       'num':num
     }

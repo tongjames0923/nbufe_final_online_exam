@@ -10,8 +10,7 @@ public class UserDetailInfo {
     private String email;
     private String note;
     private int level;
-
-
+    private final static long serialVersionUID = 1L;
     public String getName() {
         return name;
     }

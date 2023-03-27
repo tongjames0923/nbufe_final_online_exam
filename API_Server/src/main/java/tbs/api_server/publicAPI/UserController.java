@@ -72,17 +72,14 @@ public class UserController {
     @Transactional
     @AccessLimit
     public NetResult updateLevel(int id, int target, int lv) {
-        try {
-            ServiceResult t = service.updateUserLevel(id, target, lv);
-            return NetResult.makeResult(t.getCode(), null, null);
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getDetail());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
 
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                ServiceResult t = service.updateUserLevel(applyUser, target, lv);
+                return NetResult.makeResult(t.getCode(), null, null);
+            }
+        });
     }
 
     @RequestMapping("login")

@@ -73,17 +73,20 @@ export default {
     },
     updateList(id,from,num)
     {
+      this.updateTotal();
       pullUserList(id,from,num).then(res=>{
         this.tableData=res;
         this.$forceUpdate();
       })
-      this.updateTotal();
+
     },
     changeLevel(data)
     {
       console.log(data)
       updateLevel(this.user.id,data.id,data.level).then(res=>{
         
+      }).catch(e=>{
+        this.updateList(this.user.id,(this.cur-1)*this.per,this.per)
       })
     }
   },

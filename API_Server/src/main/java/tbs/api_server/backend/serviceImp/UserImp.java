@@ -3,6 +3,7 @@ package tbs.api_server.backend.serviceImp;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DuplicateKeyException;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import tbs.api_server.backend.mappers.UserMapper;
 import tbs.api_server.config.AccessManager;
@@ -13,6 +14,8 @@ import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.UserService;
 
 import javax.annotation.Resource;
+
+import java.util.concurrent.TimeUnit;
 
 import static tbs.api_server.config.constant.const_User.*;
 import static tbs.api_server.utility.Error.*;
@@ -173,16 +176,34 @@ public class UserImp implements UserService
 
     }
 
+    @Resource
+    RedisTemplate<String,Object> redisTemplate;
+
     @Override
-    public ServiceResult updateUserLevel(int userid,int target, int level) throws BackendError {
+    public ServiceResult updateUserLevel(UserSecurityInfo userid,int target, int level) throws BackendError {
 
         if(level<-1||level>2)
             throw _ERROR.throwError(EC_InvalidParameter,"权限有效值-1~2");
-        int lv= mp.getUserDetailInfoByID(userid).getLevel();
-
+        int lv=userid.getLevel();
+        UserDetailInfo tar=mp.getUserDetailInfoByID(target);
+        if(tar.getId()==userid.getId())
+            throw _ERROR.throwError(EC_InvalidParameter,"不能给自己修改权限");
         if(lv== LEVEL_EXAM_STAFF)
         {
+            if(tar.getLevel()>=2)
+            {
+                throw _ERROR.throwError(EC_LOW_PERMISSIONS,"无法为管理员赋予权限");
+            }
+
+
+            Object db= redisTemplate.opsForValue().get("double_check"+tar.getId());
+            if(db==null)
+            {
+                redisTemplate.opsForValue().set("double_check"+tar.getId(),"申请新增管理员",10, TimeUnit.SECONDS);
+                throw _ERROR.throwError(FC_DOUBLE_CHECK,"请在10秒内重新操作以确认");
+            }
             int k = mp.setValueForUserDetails(target, uinfo_level, level);
+            redisTemplate.delete("double_check"+tar.getId());
             return ServiceResult.makeResult(SUCCESS,k);
         }
         else

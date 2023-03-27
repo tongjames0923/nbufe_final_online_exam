@@ -3,6 +3,7 @@ package tbs.api_server.services;
 import org.springframework.lang.NonNull;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.simple.UserDetailInfo;
+import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.utility.Error;
 
 public interface UserService
@@ -30,7 +31,7 @@ public interface UserService
     ServiceResult UpdateUserSecQuestion(int userid,String question,String answer) throws Error.BackendError;
 
 
-    ServiceResult updateUserLevel(int userid,int target,int level) throws Error.BackendError;
+    ServiceResult updateUserLevel(UserSecurityInfo user, int target, int level) throws Error.BackendError;
 
    ServiceResult loginUser(@NonNull String username, @NonNull String password) throws Error.BackendError;
 

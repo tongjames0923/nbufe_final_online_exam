@@ -8,8 +8,7 @@ public class UserSecurityInfo {
     private String sec_ques;
     private String sec_ans;
     private transient int level;
-
-    public int getLevel() {
+    private final static long serialVersionUID = 1L;    public int getLevel() {
         return level;
     }
 

@@ -42,7 +42,7 @@ service.interceptors.response.use(
     if (res.code !== 40000) {
       Message({
         message: res.message || 'Error',
-        type: 'error',
+        type: res.code>40000?'error':'warning',
         duration: res.code==39999?500:5 * 1000,
         onClose:()=>{
           if(res.code==39999)

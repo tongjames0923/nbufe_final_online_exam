@@ -7,8 +7,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 public class Question {
-
-    private int que_id;
+    private final static long serialVersionUID = 1L;    private int que_id;
     private int que_type;
     private String title;
 

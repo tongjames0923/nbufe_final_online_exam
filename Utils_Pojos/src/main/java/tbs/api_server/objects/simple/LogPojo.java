@@ -7,6 +7,7 @@ import java.io.Serializable;
 import java.util.Date;
 
 public class LogPojo implements Serializable {
+    private final static long serialVersionUID = 1L;
     private int log_id;
     private String log_type,log_function,log_invoker;
     @DateTimeFormat(pattern="yyyy年MM月dd日 hh:mm:ss")

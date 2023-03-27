@@ -10,30 +10,30 @@
             </el-row>
             <el-row >
                 <el-col span="24" type="flex" class="row-bg" justify="space-between">
-                    <el-radio-group style="margin-top: 15px;" v-if="info" v-model="this.info.level"
+                    <el-radio-group style="margin-top: 15px;" v-if="info" v-model="info.level"
                     
-                        size="small" @input="changeLevel(this.info)">
-                        <el-radio-button :disabled="user.id === this.info.id || this.info.level == 2"
+                        size="small" @input="changeLevel(info)">
+                        <el-radio-button :disabled="user.id === info.id || info.level == 2"
                             label=-1>未激活</el-radio-button>
-                        <el-radio-button :disabled="user.id === this.info.id || this.info.level == 2"
+                        <el-radio-button :disabled="user.id === info.id || info.level == 2"
                             label=0>标准激活用户</el-radio-button>
-                        <el-radio-button :disabled="user.id === this.info.id || this.info.level == 2"
+                        <el-radio-button :disabled="user.id === info.id || info.level == 2"
                             label=1>资源写入权限用户</el-radio-button>
-                        <el-radio-button :disabled="user.id === this.info.id || this.info.level == 2"
+                        <el-radio-button :disabled="user.id === info.id || info.level == 2"
                             label=2>高级管理员</el-radio-button>
                     </el-radio-group>
                 </el-col>
                 <el-col span="24">
                     <el-descriptions title="用户信息" v-if="info" style="margin-top: 15px;">
-                        <el-descriptions-item label="用户名">{{ this.info == undefined ? '空' : this.info.name
+                        <el-descriptions-item label="用户名">{{ info == undefined ? '空' : info.name
                         }}</el-descriptions-item>
-                        <el-descriptions-item label="手机号">{{ this.info == undefined ? '空' : this.info.phone
+                        <el-descriptions-item label="手机号">{{ info == undefined ? '空' : info.phone
                         }}</el-descriptions-item>
-                        <el-descriptions-item label="电子邮箱">{{ this.info == undefined ? '空' : this.info.email
+                        <el-descriptions-item label="电子邮箱">{{ info == undefined ? '空' : info.email
                         }}</el-descriptions-item>
-                        <el-descriptions-item label="联系地址">{{ this.info == undefined ? '空' : this.info.address
+                        <el-descriptions-item label="联系地址">{{ info == undefined ? '空' : info.address
                         }}</el-descriptions-item>
-                        <el-descriptions-item label="备注">{{ this.info == undefined ? '空' : this.info.note
+                        <el-descriptions-item label="备注">{{ info == undefined ? '空' :info.note
                         }}</el-descriptions-item>
                     </el-descriptions>
                 </el-col>
@@ -46,7 +46,7 @@
     
 <script>
 import { getToken } from '@/utils/auth';
-import { allUserCount, api_findUserByName, pullUserList, updateLevel } from '@/api/user';
+import { allUserCount, api_findUserByName, getUser, pullUserList, updateLevel } from '@/api/user';
 export default {
     name: "UserConfigPage",
     data() {
@@ -80,6 +80,10 @@ export default {
             console.log(data)
             updateLevel(this.user.id, data.id, data.level).then(res => {
 
+            }).catch(e=>{
+                getUser(data.id).then(res=>{
+                    this.info=res;
+                })
             })
         }
     },

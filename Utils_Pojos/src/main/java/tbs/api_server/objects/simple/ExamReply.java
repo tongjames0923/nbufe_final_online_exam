@@ -3,7 +3,7 @@ package tbs.api_server.objects.simple;
 import java.util.Arrays;
 
 public class ExamReply {
-    private int id;
+    private final static long serialVersionUID = 1L;    private int id;
     private int exam_id,status;
 
     public int getStatus()

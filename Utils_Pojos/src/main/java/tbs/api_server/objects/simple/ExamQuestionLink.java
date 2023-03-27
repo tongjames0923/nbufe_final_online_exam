@@ -1,7 +1,7 @@
 package tbs.api_server.objects.simple;
 
 public class ExamQuestionLink {
-    private String insertor,examname;
+    private final static long serialVersionUID = 1L;    private String insertor,examname;
     private int id, score,questionid;
 
     public int getQuestionid() {
