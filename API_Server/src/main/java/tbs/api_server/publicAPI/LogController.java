@@ -2,6 +2,7 @@ package tbs.api_server.publicAPI;
 
 import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import tbs.api_server.config.AccessLimit;
 import tbs.api_server.config.NoLog;
@@ -23,12 +24,12 @@ public class LogController {
     @RequestMapping("get")
     @NoLog
     @AccessLimit
-    public NetResult log(int field, String val) {
+    public NetResult log(int field, String val,@RequestParam(required = false,defaultValue = "200") Integer maxpage) {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
                 ILogService service= SpringUtil.getBean(ILogService.class);
-                return new NetResult(SUCCESS, service.listLogInPage(0, 200, field, val), null);
+                return new NetResult(SUCCESS, service.listLogInPage(0, maxpage, field, val), null);
             }
         });
     }

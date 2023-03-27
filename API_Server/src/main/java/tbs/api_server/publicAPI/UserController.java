@@ -2,7 +2,6 @@ package tbs.api_server.publicAPI;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +25,6 @@ import static tbs.api_server.utility.Error.*;
 
 @RestController
 @RequestMapping("user/*")
-@Scope("prototype")
 public class UserController {
 
     @Autowired
@@ -53,12 +51,12 @@ public class UserController {
     @NoNeedAccess
     public NetResult logOut(String access)
     {
-        return ApiMethod.make(new ApiMethod.IAction() {
+        return ApiMethod.makeResultNoLogin(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 return NetResult.makeResult(service.logOut(access),null);
             }
-        }).method();
+        });
     }
 
 
@@ -97,7 +95,7 @@ public class UserController {
     @NoNeedAccess
     public NetResult login(String username, String password) {
 
-        return  ApiMethod.make(new ApiMethod.IAction() {
+        return  ApiMethod.makeResultNoLogin(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 UserDetailInfo info = null;
@@ -111,7 +109,7 @@ public class UserController {
                     return NetResult.makeResult(EC_InvalidParameter, "用户名和密码的强度不足", null);
                 }
             }
-        }).method();
+        });
     }
 
     @RequestMapping("updateSecQues")
@@ -292,15 +290,15 @@ public class UserController {
 
 
     @RequestMapping("getUser")
-    public NetResult getUserInfo()
+    public NetResult getUserInfo(@RequestParam(required = false) Integer id)
     {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-                UserDetailInfo sc = (UserDetailInfo) service.getUserInfo(applyUser.getId()).getObj();
+                UserDetailInfo sc = (UserDetailInfo) service.getUserInfo(id==null?applyUser.getId():id).getObj();
                 return NetResult.makeResult(SUCCESS,null,sc);
             }
-        }).method();
+        }).methodWithLogined();
     }
     @RequestMapping("count")
     @AccessLimit
@@ -311,7 +309,7 @@ public class UserController {
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 return NetResult.makeResult(service.total(),null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
 
@@ -325,7 +323,7 @@ public class UserController {
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 return NetResult.makeResult(service.getUserSecQuestion(name),null);
             }
-        }).method();
+        }).methodWithLogined();
     }
     @RequestMapping("answerSec")
     @NoNeedAccess
@@ -336,7 +334,7 @@ public class UserController {
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 return NetResult.makeResult(service.replySecQuestion(name,answer),null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
 

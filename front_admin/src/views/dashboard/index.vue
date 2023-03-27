@@ -28,7 +28,7 @@ export default {
     }
     else
     {
-      getUser(0).then(res=>{
+      getUser().then(res=>{
         this.$refs.info.put(res)
       })
     }

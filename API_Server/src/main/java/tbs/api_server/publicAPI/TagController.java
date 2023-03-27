@@ -1,7 +1,6 @@
 package tbs.api_server.publicAPI;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +13,6 @@ import tbs.api_server.utility.Error;
 
 @RestController
 @RequestMapping("tag/*")
-@Scope("prototype")
 public class TagController {
 
     @Autowired
@@ -32,7 +30,7 @@ public class TagController {
                 ServiceResult result = service.listTags();
                 return NetResult.makeResult(result, null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
     @Transactional
@@ -45,7 +43,7 @@ public class TagController {
                 ServiceResult result = service.findTagsByQuestion(ques);
                 return NetResult.makeResult(result, null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
     @Transactional
@@ -57,7 +55,7 @@ public class TagController {
                 ServiceResult result = service.newTag(tag);
                 return NetResult.makeResult(result, null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
     @Transactional
@@ -70,7 +68,7 @@ public class TagController {
                 ServiceResult result = service.deleteTag(tag);
                 return NetResult.makeResult(result, null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
     @Transactional
@@ -83,7 +81,7 @@ public class TagController {
                 ServiceResult result = service.linkTag(ques, tag);
                 return NetResult.makeResult(result, null);
             }
-        }).method();
+        }).methodWithLogined();
 
     }
 
@@ -97,7 +95,7 @@ public class TagController {
                 ServiceResult result = service.unLinkTag(ques, tag);
                 return NetResult.makeResult(result, null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
 }

@@ -2,6 +2,9 @@ package tbs.api_server.backend.mappers;
 
 
 import org.apache.ibatis.annotations.*;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.lang.NonNull;
 import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.objects.simple.UserSecurityInfo;
@@ -12,6 +15,7 @@ import java.util.List;
 public interface UserMapper {
 
     @Select("select *,ui.level from `user_sec` uc join `user_info` ui on ui.id=uc.id  where uc.`id`=#{id} FOR UPDATE")
+    @Cacheable(value = "userSec",key = "#id")
     UserSecurityInfo getUserSecurityInfo(int id);
     @Select("select *,ui.level from `user_sec` uc join `user_info` ui on ui.id=uc.id  where uc.`name`=#{name} FOR UPDATE")
     UserSecurityInfo getUserSecurityInfoByName( @NonNull String name);
@@ -21,6 +25,7 @@ public interface UserMapper {
 
 
     @Select("select a.*,b.`name` from `user_info` a INNER JOIN user_sec b ON b.id=a.id where a.`id`=#{id} FOR UPDATE")
+    @Cacheable(value = "userDetail",key = "#id")
     UserDetailInfo getUserDetailInfoByID(int id);
 
     @Insert("INSERT INTO `user_sec` (`name`, `password`, `sec_ques`, `sec_ans`)" +
@@ -34,11 +39,17 @@ public interface UserMapper {
     int insertUserDetails(int id, String address, String phone, String email, String note);
 
     @Update("UPDATE `user_sec` SET `${property}` = #{value} WHERE `id` =#{id}")
+    @CacheEvict(value = "userSec",key = "#id")
     int setValueForUserSecurity(int id, String property, Object value);
 
     @Update("UPDATE `user_info` SET `${property}` = #{value} WHERE `id` = #{id}")
+    @CacheEvict(value = "userDetail",key = "#id")
     int setValueForUserDetails(int id, String property, Object value);
     @Delete("DELETE FROM `user_sec` WHERE `id` = (#{id})")
+    @Caching(evict = {
+            @CacheEvict(value = "userDetail",key = "#id"),
+            @CacheEvict(value = "userSec",key = "#id")
+    })
     int deleteUser(int id);
     @Select("SELECT COUNT(*) FROM user_sec;")
     int userCount();

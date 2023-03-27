@@ -1,7 +1,6 @@
 package tbs.api_server.publicAPI;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -13,7 +12,6 @@ import tbs.api_server.utility.Error;
 
 @RestController
 @RequestMapping("answer/*")
-@Scope("prototype")
 public class AnswerController
 {
     @Autowired
@@ -36,7 +34,7 @@ public class AnswerController
                 }
                 return NetResult.makeResult(service.uploadAnswer(ques,user, answer.getBytes(), bt), null);
             }
-        }).method();
+        }).methodWithLogined();
     }
     public NetResult delete(int ques,int user)
     {
@@ -47,7 +45,7 @@ public class AnswerController
             {
                 return NetResult.makeResult(service.deleteAnswer(ques, user),null);
             }
-        }).method();
+        }).methodWithLogined();
     }
     public NetResult get(int ques,int user)
     {
@@ -58,6 +56,6 @@ public class AnswerController
             {
                 return NetResult.makeResult(service.getAnswer(ques,user),null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 }

@@ -9,7 +9,7 @@ const se=Server;
 const service = axios.create({
   baseURL: se, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 5000 // request timeout
+  timeout: 1000*60*2 // request timeout
 })
 
 // request interceptor

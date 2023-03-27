@@ -147,7 +147,7 @@ public class AopConfig {
                System.out.println("request by "+sec.getId()+" "+sec.getName());
             }
            result =proceedingJoinPoint.proceed();
-            log.setLog_end(new Date());
+            log.setCost(new Date().getTime()-log.getLog_begin().getTime());
             if(result!=null)
                 log.setLog_return(sub(result.toString()));
             if(needlog)
@@ -157,7 +157,7 @@ public class AopConfig {
             return result;
         } catch (BackendError error)
         {
-            log.setLog_end(new Date());
+            log.setCost(new Date().getTime()-log.getLog_begin().getTime());
             log.setLog_type(TYPE_ERROR);
             log.setLog_error(error.getDetail());
             if(needlog)
@@ -169,7 +169,7 @@ public class AopConfig {
 
         catch (Throwable throwable) {
 
-            log.setLog_end(new Date());
+            log.setCost(new Date().getTime()-log.getLog_begin().getTime());
             log.setLog_type(TYPE_ERROR);
             log.setLog_error(throwable.getMessage());
             if(needlog)
@@ -189,7 +189,7 @@ public class AopConfig {
             Annotation nolog=signature.getMethod().getAnnotation(NoLog.class);
             needlog=nolog==null;
            Object result= proceedingJoinPoint.proceed();
-           log.setLog_end(new Date());
+            log.setCost(new Date().getTime()-log.getLog_begin().getTime());
            if(result!=null)
                log.setLog_return(sub(result.toString()));
             if(needlog)
@@ -200,7 +200,7 @@ public class AopConfig {
         }
         catch (BackendError error)
         {
-            log.setLog_end(new Date());
+            log.setCost(new Date().getTime()-log.getLog_begin().getTime());
             log.setLog_type(TYPE_ERROR);
             log.setLog_error(error.getDetail());
             if(needlog)
@@ -211,7 +211,7 @@ public class AopConfig {
         }
 
         catch (Throwable throwable) {
-            log.setLog_end(new Date());
+            log.setCost(new Date().getTime()-log.getLog_begin().getTime());
             log.setLog_type(TYPE_ERROR);
             log.setLog_error(throwable.getMessage());
             if(needlog)

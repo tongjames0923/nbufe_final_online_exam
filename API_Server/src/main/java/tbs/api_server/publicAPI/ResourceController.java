@@ -1,7 +1,6 @@
 package tbs.api_server.publicAPI;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -13,31 +12,24 @@ import tbs.api_server.config.AccessEnum;
 import tbs.api_server.config.AccessLimit;
 import tbs.api_server.config.ApplicationConfig;
 import tbs.api_server.config.constant.const_Resource_Type;
-import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.simple.QuestionResource;
-import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.ResourceService;
 import tbs.api_server.utility.ApiMethod;
-import tbs.api_server.utility.Error;
 import tbs.api_server.utility.FileUtility;
 import tbs.api_server.utils.SecurityTools;
 
 import java.io.File;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 import static tbs.api_server.publicAPI.ResourceController.Help.*;
 import static tbs.api_server.utility.Error.*;
 
 @RestController
 @RequestMapping(value = "/resource/*")
-@Scope("prototype")
 public class ResourceController {
     @Autowired
     ResourceService service;
@@ -53,7 +45,7 @@ public class ResourceController {
                 resourcesLinkApply((List<QuestionResource>) result.getObj());
                 return NetResult.makeResult(result, null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
 
@@ -87,7 +79,7 @@ public class ResourceController {
                     return NetResult.makeResult(EC_FILESYSTEM_ERROR, "写入失败");
                 }
             }
-        }).method();
+        }).methodWithLogined();
     }
     @Autowired
     UserMapper userMapper;
@@ -113,7 +105,7 @@ public class ResourceController {
                 }
                 return result;
             }
-        }).method();
+        }).methodWithLogined();
     }
     @Transactional
     @RequestMapping("/getByNote")
@@ -125,7 +117,7 @@ public class ResourceController {
                 resourcesLinkApply((List<QuestionResource>) rs.getObj());
                 return NetResult.makeResult(SUCCESS, null, rs.getObj());
             }
-        }).method();
+        }).methodWithLogined();
     }
 
 

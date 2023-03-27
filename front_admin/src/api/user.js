@@ -15,10 +15,26 @@ export function register(data) {
   })
 }
 export function getUser(i) {
-  return request({
-    url:"user/getUser",
-    method:'get',
-  })
+  if(i)
+  {
+    return request({
+      url:"user/getUser",
+      method:'get',
+      params:{
+        id:i
+      }
+    })
+  }
+  else
+  {
+    return request({
+      url:"user/getUser",
+      method:'get',
+      params:{
+      }
+    })
+  }
+
 }
 export function pullUserList(id,from,num)
 {

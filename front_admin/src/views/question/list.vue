@@ -165,6 +165,7 @@ export default
             pul(ix) {
                 this.drawer = true
                 getUser(ix).then(data => {
+                    debugger
                     this.$refs.user.put(data);
                 });
             },

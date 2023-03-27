@@ -9,12 +9,11 @@ import java.util.Date;
 public class LogPojo implements Serializable {
     private int log_id;
     private String log_type,log_function,log_invoker;
-    @DateTimeFormat(pattern="yyyy年MM月dd日 hh:mm:ss.SSSS")
-    @JsonFormat(pattern="yyyy年MM月dd日 hh:mm:ss.SSSSSS",timezone="GMT+8")
+    @DateTimeFormat(pattern="yyyy年MM月dd日 hh:mm:ss")
+    @JsonFormat(pattern="yyyy年MM月dd日 hh:mm:ss",timezone="GMT+8")
     private Date log_begin;
-    @DateTimeFormat(pattern="yyyy年MM月dd日 hh:mm:ss.SSSS")
-    @JsonFormat(pattern="yyyy年MM月dd日 hh:mm:ss.SSSSSS",timezone="GMT+8")
-    private Date log_end;
+
+    long cost;
 
     public String getLog_error() {
         return log_error;
@@ -26,15 +25,25 @@ public class LogPojo implements Serializable {
 
     private String log_return,log_params,log_error;
 
-    public LogPojo(int log_id, int log_cost, String log_type, String log_function, String log_invoker, Date log_begin, Date log_end, String log_return, String log_params) {
+
+    public long getCost() {
+        return cost;
+    }
+
+    public void setCost(long cost) {
+        this.cost = cost;
+    }
+
+    public LogPojo(int log_id, String log_type, String log_function, String log_invoker, Date log_begin, long cost, String log_return, String log_params, String log_error) {
         this.log_id = log_id;
         this.log_type = log_type;
         this.log_function = log_function;
         this.log_invoker = log_invoker;
         this.log_begin = log_begin;
-        this.log_end = log_end;
+        this.cost = cost;
         this.log_return = log_return;
         this.log_params = log_params;
+        this.log_error = log_error;
     }
 
     public LogPojo() {
@@ -81,13 +90,6 @@ public class LogPojo implements Serializable {
         this.log_begin = log_begin;
     }
 
-    public Date getLog_end() {
-        return log_end;
-    }
-
-    public void setLog_end(Date log_end) {
-        this.log_end = log_end;
-    }
 
     public String getLog_return() {
         return log_return;
@@ -105,18 +107,4 @@ public class LogPojo implements Serializable {
         this.log_params = log_params;
     }
 
-    @Override
-    public String toString() {
-        return "LogPojo{" +
-                "log_id=" + log_id +
-                ", log_type='" + log_type + '\'' +
-                ", log_function='" + log_function + '\'' +
-                ", log_invoker='" + log_invoker + '\'' +
-                ", log_begin=" + log_begin +
-                ", log_end=" + log_end +
-                ", log_return='" + log_return + '\'' +
-                ", log_params='" + log_params + '\'' +
-                ", log_error='" + log_error + '\'' +
-                '}';
-    }
 }

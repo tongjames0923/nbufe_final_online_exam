@@ -23,7 +23,6 @@ import static tbs.api_server.utility.Error.SUCCESS;
 
 @RestController
 @RequestMapping("/file/*")
-@Scope("prototype")
 public class FileController
 {
 

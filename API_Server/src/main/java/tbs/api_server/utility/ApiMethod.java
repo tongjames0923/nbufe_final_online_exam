@@ -10,8 +10,6 @@ import tbs.api_server.objects.simple.UserSecurityInfo;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
-import java.util.Enumeration;
-
 import static tbs.api_server.utility.Error.EC_UNKNOWN;
 import static tbs.api_server.utility.Error._ERROR;
 
@@ -48,9 +46,14 @@ public class ApiMethod
     {
         ApiMethod method= SpringUtil.getBean(ApiMethod.class);
         method.action=action;
+        return method.methodWithLogined();
+    }
+    public static NetResult makeResultNoLogin(IAction action)
+    {
+        ApiMethod method= SpringUtil.getBean(ApiMethod.class);
+        method.action=action;
         return method.method();
     }
-
 
     private ApiMethod()
     {
@@ -64,6 +67,21 @@ public class ApiMethod
     AccessManager manager;
 
     public NetResult method()
+    {
+        try
+        {
+            return action.action(null);
+        }
+        catch (Error.BackendError error)
+        {
+            return action.CatchBackendError(error);
+        }catch (Exception e)
+        {
+            return action.CatchException(e);
+        }
+    }
+
+    public NetResult methodWithLogined()
     {
         try
         {

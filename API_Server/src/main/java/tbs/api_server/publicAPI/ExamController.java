@@ -1,7 +1,6 @@
 package tbs.api_server.publicAPI;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import tbs.api_server.config.NoNeedAccess;
@@ -29,7 +28,6 @@ import static tbs.api_server.utility.Error.SUCCESS;
 
 @RestController
 @RequestMapping("exam/*")
-@Scope("prototype")
 public class ExamController {
     @Autowired
     ExamService service;
@@ -95,7 +93,7 @@ public class ExamController {
                 update(applyUser,list);
                 return NetResult.makeResult(SUCCESS, null, list);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
 
@@ -108,7 +106,7 @@ public class ExamController {
                 return NetResult.makeResult(service.countExams(user),null);
             }
         })
-                .method();
+                .methodWithLogined();
     }
 
     @RequestMapping("byStatus")
@@ -124,7 +122,7 @@ public class ExamController {
                 ServiceResult result = service.getExamByStatus(status, from, num);
                 return NetResult.makeResult(result, null);
             }
-        }).method();
+        }).methodWithLogined();
     }
     @RequestMapping("updateLen")
     @Transactional
@@ -135,7 +133,7 @@ public class ExamController {
 
                 return NetResult.makeResult(service.updateLen(len, user, examid), null);
             }
-        }).method();
+        }).methodWithLogined();
     }
     @RequestMapping("updateName")
     @Transactional
@@ -146,7 +144,7 @@ public class ExamController {
 
                 return NetResult.makeResult(service.updateName(name, user, examid), null);
             }
-        }).method();
+        }).methodWithLogined();
     }
     @RequestMapping("updateNote")
     @Transactional
@@ -157,7 +155,7 @@ public class ExamController {
 
                 return NetResult.makeResult(service.updateNote(note, user, examid), null);
             }
-        }).method();
+        }).methodWithLogined();
     }
     @RequestMapping("updateBegin")
     @Transactional
@@ -168,7 +166,7 @@ public class ExamController {
                 Date d=new Date(new SimpleDateFormat("yyyy-MM-dd HH:mm").parse(time).getTime());
                 return NetResult.makeResult(service.updateBegin(d, user, examid), null);
             }
-        }).method();
+        }).methodWithLogined();
     }
     @RequestMapping("get")
     @Transactional
@@ -179,7 +177,7 @@ public class ExamController {
 
                 return NetResult.makeResult(service.getExamByName(name), null);
             }
-        }).method();
+        }).methodWithLogined();
     }
     @RequestMapping(value = "upload",method = RequestMethod.POST)
     @Transactional
@@ -189,7 +187,7 @@ public class ExamController {
             public NetResult action(UserSecurityInfo applyUser) throws Exception {
                 return NetResult.makeResult(service.uploadExam(user, exam),null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
 
@@ -202,7 +200,7 @@ public class ExamController {
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
                 return  NetResult.makeResult(service.getFullExamInfoById(id),null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
 
@@ -228,7 +226,7 @@ public class ExamController {
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
                 return NetResult.makeResult(service.StudentLogin(name,id,number,examID),null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
 
@@ -252,7 +250,7 @@ public class ExamController {
             public NetResult action(UserSecurityInfo applyUser) throws Exception {
                 return NetResult.makeResult(service.deleteExam(id, user), null);
             }
-        }).method();
+        }).methodWithLogined();
     }
     @RequestMapping("bytime")
     @Transactional
@@ -265,7 +263,7 @@ public class ExamController {
                 update(applyUser,list);
                 return NetResult.makeResult(SUCCESS, null, list);
             }
-        }).method();
+        }).methodWithLogined();
     }
     @RequestMapping("bynote")
     @Transactional
@@ -278,6 +276,6 @@ public class ExamController {
                 update(applyUser,list);
                 return NetResult.makeResult(SUCCESS, null, list);
             }
-        }).method();
+        }).methodWithLogined();
     }
 }

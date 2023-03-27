@@ -2,7 +2,6 @@ package tbs.api_server.publicAPI;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,7 +16,6 @@ import tbs.api_server.utility.Error;
 
 @RestController
 @RequestMapping("reply")
-@Scope("prototype")
 public class ReplyController
 {
 
@@ -38,7 +36,7 @@ public class ReplyController
             {
                 return NetResult.makeResult(service.uploadReply(examid, number, person, file),null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
     @RequestMapping(value = "check",method = RequestMethod.POST)
@@ -52,7 +50,7 @@ public class ReplyController
             {
                return NetResult.makeResult(service.uploadCheck(number,status,checker,password,file),null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
     @RequestMapping("list")
@@ -66,7 +64,7 @@ public class ReplyController
             {
                 return NetResult.makeResult(service.listall(examid),null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
 

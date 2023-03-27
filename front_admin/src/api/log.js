@@ -1,13 +1,14 @@
 import req from '@/utils/request'
 
-export function api_log(f,v)
+export function api_log(f,v,p)
 {
     return req({
         url:'log/get',
         method:'get',
         params:{
             field:f,
-            val:v
+            val:v,
+            maxpage:p
         }
     })
 }

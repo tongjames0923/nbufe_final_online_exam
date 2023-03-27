@@ -101,6 +101,7 @@
 import TagAdd from "@/views/tag/add.vue"
 import TagList from '@/views/tag/list.vue';
 import {create_ques} from '@/api/question'
+import { getToken } from '@/utils/auth';
 export default {
     components: { TagAdd, TagList },
     data() {
@@ -124,8 +125,9 @@ export default {
             let files = new File([new Blob([this.text], { type: 'text/plain;chartset=UTF-8' })],
              "quesfile.md")
              var data=new FormData();
+             const user=JSON.parse(getToken())
              data.append("type",this.type);
-             data.append("creator",1);
+             data.append("creator",user.id);
              data.append("title",this.title)
              data.append("md",files)
              data.append("isopen",this.isopen)

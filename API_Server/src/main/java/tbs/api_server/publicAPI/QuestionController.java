@@ -1,15 +1,12 @@
 package tbs.api_server.publicAPI;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import tbs.api_server.backend.filters.QuestionFilter;
 import tbs.api_server.config.constant.const_Question;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
-import tbs.api_server.objects.simple.Question;
 import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.QuestionService;
 import tbs.api_server.services.TagService;
@@ -17,14 +14,11 @@ import tbs.api_server.utility.ApiMethod;
 import tbs.api_server.utility.Error;
 
 import java.util.List;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static tbs.api_server.utility.Error.*;
 
 @RestController
 @RequestMapping("/question/*")
-@Scope("prototype")
 public class QuestionController {
     @Autowired
     QuestionService service;
@@ -71,7 +65,7 @@ public class QuestionController {
                 ServiceResult result = service.deleteQuestion(ques, user);
                 return NetResult.makeResult(result, null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
 
@@ -93,7 +87,7 @@ public class QuestionController {
                 }
                 return NetResult.makeResult(result, null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
     @Transactional
@@ -129,7 +123,7 @@ public class QuestionController {
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 return NetResult.makeResult(service.findQuestionsByID(id),null);
             }
-        }).method();
+        }).methodWithLogined();
     }
     @RequestMapping("findByTag")
     @Transactional
@@ -139,7 +133,7 @@ public class QuestionController {
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 return NetResult.makeResult(service.findQuestionsByTag(tag),null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
 
@@ -204,7 +198,7 @@ public class QuestionController {
                 ServiceResult result = service.questionsLength();
                 return NetResult.makeResult(result, null);
             }
-        }).method();
+        }).methodWithLogined();
     }
 
 }

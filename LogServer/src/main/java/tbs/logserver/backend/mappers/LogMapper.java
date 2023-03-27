@@ -10,8 +10,8 @@ import java.util.List;
 @Mapper
 public interface LogMapper {
 
-    @Insert("INSERT INTO `log` (`log_type`, `log_function`, `log_invoker`, `log_begin`, `log_end`, `log_return`, `log_params`, `log_error`) VALUES " +
-            "(#{log_type}, #{log_function}, #{log_invoker}, #{log_begin}, #{log_end}, #{log_return},#{log_params}, #{log_error})")
+    @Insert("INSERT INTO `log` (`log_type`, `log_function`, `log_invoker`, `log_begin`, `cost`, `log_return`, `log_params`, `log_error`) VALUES " +
+            "(#{log_type}, #{log_function}, #{log_invoker}, #{log_begin}, #{cost}, #{log_return},#{log_params}, #{log_error})")
     public int writeLog(LogPojo pojo);
 
     @Select("select  * from log where `${fied}` like '%${val}%' order by log_begin desc limit #{from},#{num}")
