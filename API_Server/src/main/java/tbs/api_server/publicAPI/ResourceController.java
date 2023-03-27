@@ -30,6 +30,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 import static tbs.api_server.publicAPI.ResourceController.Help.*;
 import static tbs.api_server.utility.Error.*;
@@ -100,36 +101,16 @@ public class ResourceController {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 QuestionResource resource = (QuestionResource) service.getResourceById(resource_id).getObj();
-                Optional.ofNullable(resource).ifPresent(new Consumer<QuestionResource>() {
-                    @Override
-                    public void accept(QuestionResource questionResource) {
-                        UserDetailInfo info =userMapper.getUserDetailInfoByID(userid);
-                        if (info.getLevel() == const_User.LEVEL_EXAM_STAFF) {
-
-                            try {
-
-                                ServiceResult rs = service.DeleteResource(resource_id);
-                                FileUtility.BaseThen then = new FileUtility.FileDeleteThen();
-                                FileUtility.existFile(genPath(questionResource.getResource()), then);
-                                boolean deleted = (boolean) then.result();
-                                if (!deleted) {
-                                    result.setCode(EC_FILESYSTEM_ERROR);
-                                    result.setMessage("删除资源文件失败");
-                                }
-                            } catch (BackendError backendError) {
-                                result.setCode(backendError.getCode());
-                                result.setMessage(backendError.getMessage());
-                                result.setData(backendError.getData());
-                            } catch (Exception e) {
-                                result.setCode(EC_UNKNOWN);
-                                result.setMessage(e.getMessage());
-                            }
-                        } else {
-                            result.setCode(EC_LOW_PERMISSIONS);
-                            result.setMessage("权限不足,无法删除资源");
-                        }
-                    }
-                });
+                if(resource==null)
+                    throw  _ERROR.throwError(EC_DB_SELECT_NOTHING,String.format("不存在%d资源",resource_id));
+                ServiceResult rs = service.DeleteResource(resource_id);
+                FileUtility.BaseThen then = new FileUtility.FileDeleteThen();
+                FileUtility.existFile(genPath(resource.getResource()), then);
+                int deleted =(int) then.result();
+                if(deleted== FileUtility.FileDeleteThen.ERROR)
+                {
+                    throw _ERROR.throwError(EC_FILESYSTEM_ERROR,"删除资源文件失败");
+                }
                 return result;
             }
         }).method();

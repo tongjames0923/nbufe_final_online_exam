@@ -30,7 +30,7 @@
             v-if="scope.row.resource_type == 2000"
             shape="fill"
             :size="100"
-            :src="'http://localhost:8080' + scope.row.resource"
+            :src="SerLocation+ scope.row.resource"
           ></el-avatar>
           <el-empty v-else></el-empty>
         </template>
@@ -48,7 +48,7 @@
         <template slot-scope="scope">
           <el-link
             type="success"
-            :href="'http://localhost:8080' + scope.row.resource"
+            :href="SerLocation+ scope.row.resource"
             target="_blank"
             >点击打开</el-link
           >
@@ -73,6 +73,7 @@
 
 
 import {deleteResource,getInfoByType,searchByNote} from '@/api/resource'
+import { Server } from '@/settings';
 export default {
   name: "ListResourceVue",
 
@@ -85,6 +86,7 @@ export default {
       arr: ["请选择文件类型", "文本", "图片", "视频", "音频"],
       input: "",
       smode: true,
+      SerLocation:undefined
     };
   },
 
@@ -134,8 +136,9 @@ export default {
       });
     },
   },
-  mounted() {
+  beforeMount() {
     this.getinfo(2000);
+    this.SerLocation=Server
   },
 };
 </script>

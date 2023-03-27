@@ -1,6 +1,7 @@
 module.exports = {
 
-  title: 'Vue Admin Template',
+  title: '在线考试系统教师端',
+  Server:'http://localhost:8090/API_Server',
 
   /**
    * @type {boolean} true | false

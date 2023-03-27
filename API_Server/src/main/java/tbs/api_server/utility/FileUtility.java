@@ -126,13 +126,15 @@ public class FileUtility {
     }
 
     public static class FileDeleteThen extends BaseThen {
-        boolean deleted = false;
+        public static final int NOT_EXSIT=0,DELETED=1,ERROR=2,UNDO=-1;
+        int deleted = UNDO;
 
         @Override
         protected void then(FileResult fileResult) throws Exception {
             if (fileResult.isExist())
-                deleted = fileResult.file.delete();
-
+                deleted = fileResult.file.delete()?DELETED:ERROR;
+            else
+            deleted=NOT_EXSIT;
         }
 
         @Override

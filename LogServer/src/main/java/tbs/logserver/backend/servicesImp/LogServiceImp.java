@@ -14,7 +14,7 @@ public class LogServiceImp implements ILogService {
     LogMapper logMapper;
     @Override
     public List<LogPojo> listLogInPage(int from, int num, int fied, String val) {
-        String[] avaliables={"log_type","log_invoker"};
+        String[] avaliables={"log_type","log_invoker","log_function"};
         if(fied>=0&&fied<avaliables.length)
         {
           return logMapper.select(from,num,avaliables[fied],val);

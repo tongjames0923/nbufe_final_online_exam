@@ -86,12 +86,12 @@ public class Error
 
     }
 
-    public BackendError throwError(int error, String detail, Object data) throws BackendError
+    public BackendError throwError(int error, String detail, Object data)
     {
         return BackendError.newError(error, ERROR_TEXT(error),detail, data);
     }
 
-    public BackendError throwError(int error, String detail) throws BackendError
+    public BackendError throwError(int error, String detail)
     {
         return throwError(error, detail, null);
     }
