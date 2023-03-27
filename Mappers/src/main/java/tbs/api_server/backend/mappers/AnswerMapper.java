@@ -19,7 +19,7 @@ public interface AnswerMapper
 //    int updateAnswerAnalyst(int ques_id, byte[] analysis);
 
     @Insert("INSERT INTO answer(ques_id,answer_content,answer_analysis) VALUES (#{param1},#{param2},#{param3})")
-    int insertAnswer(int ques_id, byte[] answer, Byte[] analysis);
+    int insertAnswer(int ques_id,String answer, String analysis);
 
 
     @Delete("DELETE FROM answer WHERE ques_id=#{ques_id}")

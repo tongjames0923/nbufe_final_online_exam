@@ -6,6 +6,6 @@ import tbs.api_server.utility.Error;
 public interface AnswerService
 {
     ServiceResult getAnswer(int ques_id,int user) throws Error.BackendError;
-    ServiceResult uploadAnswer(int ques_id,int user,byte[] answer,Byte[] analysis) throws Error.BackendError;
+    ServiceResult uploadAnswer(int ques_id,int user,byte[] answer,byte[] analysis) throws Error.BackendError;
     ServiceResult deleteAnswer(int ques_id,int user) throws Error.BackendError;
 }

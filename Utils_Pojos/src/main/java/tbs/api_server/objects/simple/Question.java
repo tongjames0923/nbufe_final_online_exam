@@ -13,14 +13,14 @@ public class Question {
     private String title;
 
 
-    private String answer_data;
+    private transient String answer_data;
     private int que_creator;
     @DateTimeFormat(pattern="yyyy年MM月dd日 hh:mm:ss")
     @JsonFormat(pattern="yyyy年MM月dd日 hh:mm:ss",timezone="GMT+8")
     private Date que_alter_time;
     private String que_file;
     private int publicable;
-    private int use_time;
+    private transient int use_time;
     private int answerd;
     private float answerd_right;
     public String getAnswer_data() {

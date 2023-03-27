@@ -11,17 +11,22 @@ import java.util.List;
 @Mapper
 public interface QuestionMapper {
     //问题
-    @Insert("INSERT INTO `question` (`que_id`,`que_type`, `que_creator`, `que_alter_time`, `que_file`, `publicable`,  `use_time`, `answerd`, `answerd_right`,`title`,`answer_data`) VALUES (#{id},#{que_type},#{creator_id}, CURRENT_TIMESTAMP, #{que_file}, #{isopen}, '0', '0', '0',#{title},#{ans})")
-    int insertQuestion(long id, int que_type, int creator_id, byte[] que_file, String title, Integer isopen, String ans);
+    @Insert("INSERT INTO `question` (`que_id`,`que_type`, `que_creator`, `que_alter_time`, `que_file`, `publicable`,   `answerd`, `answerd_right`,`title`) VALUES (#{id},#{que_type},#{creator_id}, CURRENT_TIMESTAMP, #{que_file}, #{isopen},'0', '0',#{title})")
+    int insertQuestion(long id, int que_type, int creator_id, byte[] que_file, String title, Integer isopen);
 
-    @Select("SELECT `que_id`,`que_type`, `que_creator`,`answer_data`, `que_alter_time`, `publicable`,`use_time`, `answerd`, `answerd_right`,`title` FROM `question` LIMIT #{from},#{num} FOR UPDATE")
+    @Select("SELECT q.`que_id`,q.`que_type`, q.`que_creator`,ans.answer_content as answer_data, q.`que_alter_time`, q.`publicable`,(select count(1) from exam_link where questionid=q.que_id) as use_time, q.`answerd`, q.`answerd_right`,q.`title` " +
+            "FROM `question` q join `answer` ans on ans.ques_id=q.que_id " +
+            "LIMIT #{from},#{num} FOR UPDATE")
     List<Question> getQuestions(int from, int num);
 
-    @Select("SELECT `que_id`,`que_type`, `que_creator`,`answer_data`, `que_alter_time`, `publicable`, `use_time`, `answerd`, `answerd_right`,`title` FROM `question` WHERE `que_type`=#{type} LIMIT #{from},#{num} FOR UPDATE")
+    @Select("SELECT q.`que_id`,q.`que_type`, q.`que_creator`,ans.answer_content as answer_data, q.`que_alter_time`, q.`publicable`,(select count(1) from exam_link where questionid=q.que_id) as use_time, q.`answerd`, q.`answerd_right`,q.`title` " +
+            "FROM `question` q join `answer` ans on ans.ques_id=q.que_id " +
+            "WHERE `que_type`=#{type} LIMIT #{from},#{num} FOR UPDATE")
     List<Question> getQuestionsByType(int type, int from, int num);
 
-    @Select("SELECT `que_id`,`que_type`, `que_creator`,`answer_data`, `que_alter_time`, `publicable`,`use_time`, `answerd`, `answerd_right`,`title` " +
-            "FROM `question` WHERE `title` LIKE '%${title}%' LIMIT #{from},#{num} FOR UPDATE")
+    @Select("SELECT q.`que_id`,q.`que_type`, q.`que_creator`,ans.answer_content as answer_data, q.`que_alter_time`, q.`publicable`,(select count(1) from exam_link where questionid=q.que_id) as use_time, q.`answerd`, q.`answerd_right`,q.`title` " +
+            "FROM `question` q join `answer` ans on ans.ques_id=q.que_id " +
+            "WHERE `title` LIKE '%${title}%' LIMIT #{from},#{num} FOR UPDATE")
     List<Question> findQuestionByTitle(String title, int from, int num);
 
     @Select("SELECT `que_file` FROM `question` WHERE `que_id`=#{quesid} FOR UPDATE")
@@ -45,15 +50,19 @@ public interface QuestionMapper {
     })
     int deleteQuestion(int id);
 
-    @Select("SELECT `que_id`,`que_type`,`answer_data`, `que_creator`, `que_alter_time`, `publicable`, `use_time`, `answerd`, `answerd_right`,`title` " +
-            "FROM `question` WHERE `que_id`=#{que_id} FOR UPDATE")
+    @Select("SELECT q.`que_id`,q.`que_type`, q.`que_creator`,ans.answer_content as answer_data, q.`que_alter_time`, q.`publicable`,(select count(1) from exam_link where questionid=q.que_id) as use_time, q.`answerd`, q.`answerd_right`,q.`title` " +
+            "FROM `question` q join `answer` ans on ans.ques_id=q.que_id " +
+            " WHERE `que_id`=#{que_id} FOR UPDATE")
     @Cacheable(value = "que", key = "#id")
     Question getQuestionByID(int id);
 
-    @Select("SELECT `que_id`,`que_type`,`answer_data`, `que_creator`, `que_alter_time`, `publicable`, `use_time`, `answerd`, `answerd_right`,`title` " +
-            "FROM `question` WHERE `que_id`=#{que_id} and `que_creator`=#{user} FOR UPDATE")
+    @Select("SELECT q.`que_id`,q.`que_type`, q.`que_creator`,ans.answer_content as answer_data, q.`que_alter_time`, q.`publicable`,(select count(1) from exam_link where questionid=q.que_id) as use_time, q.`answerd`, q.`answerd_right`,q.`title` " +
+            "FROM `question` q join `answer` ans on ans.ques_id=q.que_id " +
+            "WHERE `que_id`=#{que_id} and `que_creator`=#{user} FOR UPDATE")
     Question OwnQuestion(int que_id, int user);
 
-    @Select("SELECT q.* FROM question q JOIN tag_link l ON l.ques_id=q.que_id JOIN tag t ON t.tag_id=l.tag_id WHERE t.tag_name LIKE '%${tag}%'")
+    @Select("SELECT q.`que_id`,q.`que_type`, q.`que_creator`,ans.answer_content as answer_data, q.`que_alter_time`, q.`publicable`,(select count(1) from exam_link where questionid=q.que_id) as use_time, q.`answerd`, q.`answerd_right`,q.`title` " +
+            "FROM `question` q join `answer` ans on ans.ques_id=q.que_id " +
+            " JOIN tag_link l ON l.ques_id=q.que_id JOIN tag t ON t.tag_id=l.tag_id WHERE t.tag_name LIKE '%${tag}%'")
     List<Question> getQuestionByTag(@Param(value = "tag") String tag);
 }

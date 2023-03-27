@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 import tbs.api_server.backend.filters.QuestionFilter;
+import tbs.api_server.backend.mappers.AnswerMapper;
 import tbs.api_server.backend.mappers.QuestionMapper;
 import tbs.api_server.backend.mappers.TagMapper;
 import tbs.api_server.backend.mappers.UserMapper;
@@ -15,6 +16,7 @@ import tbs.api_server.objects.simple.UserDetailInfo;
 import tbs.api_server.services.QuestionService;
 import tbs.api_server.utility.Error;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -51,12 +53,15 @@ public class QuestionImp implements QuestionService {
         return uuid;
     }
 
+    @Resource
+    AnswerMapper answerMapper;
 
     @Override
     public ServiceResult uploadQuestion(int que_type, String title, int creator_id, byte[] que_file, Integer isopen, String ans) throws BackendError {
         int id = getID();
-        int c = mp.insertQuestion(id, que_type, creator_id, que_file, title, isopen, ans);
-        if (c > 0) {
+        int c = mp.insertQuestion(id, que_type, creator_id, que_file, title, isopen);
+        c+= answerMapper.insertAnswer(id,ans,null);
+        if (c > 1) {
             return ServiceResult.makeResult(SUCCESS, id);
         } else
             throw _ERROR.throwError(EC_DB_INSERT_FAIL, "上传问题失败");

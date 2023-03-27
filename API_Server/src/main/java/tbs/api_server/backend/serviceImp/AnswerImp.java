@@ -39,7 +39,7 @@ public class AnswerImp implements AnswerService
     }
 
     @Override
-    public ServiceResult uploadAnswer(int ques_id, int user, byte[] answer, Byte[] analysis) throws BackendError
+    public ServiceResult uploadAnswer(int ques_id, int user, byte[] answer, byte[] analysis) throws BackendError
     {
         ExamPermission permission = exmp.getPermission(user, ques_id);
         if (permission == null)
@@ -48,7 +48,7 @@ public class AnswerImp implements AnswerService
             throw _ERROR.throwError(EC_LOW_PERMISSIONS, "上传答案需要拥有可写权限");
         try
         {
-            int c = mp.insertAnswer(ques_id, answer, analysis);
+            int c = mp.insertAnswer(ques_id, new String(answer),new String(analysis));
             if (c > 0)
                 return ServiceResult.makeResult(SUCCESS, null);
             else

@@ -24,15 +24,7 @@ public class AnswerController
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception
             {
-                Byte[] bt = null;
-                if (ananalysis != null)
-                {
-                    byte[] bf = ananalysis.getBytes();
-                    bt = new Byte[bf.length];
-                    for (int i = 0; i < bf.length; i++)
-                        bf[i] = bt[i];
-                }
-                return NetResult.makeResult(service.uploadAnswer(ques,user, answer.getBytes(), bt), null);
+                return NetResult.makeResult(service.uploadAnswer(ques,user, answer.getBytes(), ananalysis.getBytes()), null);
             }
         }).methodWithLogined();
     }

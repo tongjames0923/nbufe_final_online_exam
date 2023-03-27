@@ -9,7 +9,7 @@
             <el-button icon="el-icon-search" @click.prevent.native="search()" type="primary">搜索日志</el-button>
             <el-input-number v-model="MaxPage" :step="2"></el-input-number>
             <el-table :data="logData" style="width: 100%">
-                <el-table-column prop="log_begin" label="调用日期" width="180">
+                <el-table-column prop="log_begin" label="调用日期" width="220">
                 </el-table-column>
                 <el-table-column label="耗时" width="80">
                     <template slot-scope="data">
