@@ -25,7 +25,10 @@
             <el-collapse-item title="答案编辑器" name="2">
                 <div v-if="this.type == 0">
                     <el-table :data="ques" style="width: 100%">
-                        <el-table-column prop="text" label="选项内容" width="180">
+                        <el-table-column label="选项内容" width="180">
+                            <template slot-scope="data">
+                                <el-input v-model="data.row.text"></el-input>
+                            </template>
                         </el-table-column>
                         <el-table-column prop="right" label="正确性" width="100">
                             <template slot-scope="scope">
@@ -54,7 +57,10 @@
                 </div>
                 <div v-else-if="this.type == 1">
                     <el-table :data="ques" style="width: 100%">
-                        <el-table-column prop="text" label="填空答案" width="180">
+                        <el-table-column  label="填空答案" width="180">
+                            <template slot-scope="data">
+                                <el-input v-model="data.row.text"></el-input>
+                            </template>
                         </el-table-column>
                         <el-table-column prop="equal" label="完全匹配" width="100">
                             <template slot-scope="scope">

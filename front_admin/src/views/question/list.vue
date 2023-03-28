@@ -14,10 +14,8 @@
 
         </el-input>
 
-        <el-table max-height="750" :data="tableData"
-        
-        border style="width: 100%">
-            <el-table-column fixed prop="que_id" label="ID" width="150">
+        <el-table max-height="750" :data="tableData" border style="width: 100%">
+            <el-table-column fixed prop="que_id" label="ID" width="120">
             </el-table-column>
             <el-table-column label="题型" prop="que_type" width="90" fixed :filters="tableFilter"
                 :filter-method="filterHandler">
@@ -28,9 +26,9 @@
                     <el-tag v-else type="danger">错误</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column prop="title" label="标题" width="480" fixed>
+            <el-table-column prop="title" label="标题" width="280" fixed>
             </el-table-column>
-            <el-table-column label="创建者信息" width="120">
+            <el-table-column label="创建者信息" width="180">
                 <template slot-scope="scope">
                     <el-button type="info" @click="pul(scope.row.que_creator)">用户:{{
                         scope.row.que_creator
@@ -44,9 +42,9 @@
                         :format="format"></el-progress>
                 </template>
             </el-table-column>
-            <el-table-column prop="use_time" label="使用次数" width="105" sortable>
+            <el-table-column prop="use_time" label="使用次数" width="85" sortable>
             </el-table-column>
-            <el-table-column label="公开性" :filters='pbFilter' width="125" :filter-method="pbfilterHandler" fixed>
+            <el-table-column label="公开性" :filters='pbFilter' :filter-method="pbfilterHandler" fixed>
                 <template slot-scope="scope">
                     <el-button icon="el-icon-unlock" v-if="scope.row.publicable == 1"
                         @click="changePublic(scope.$index, 0)">公开</el-button>
@@ -61,7 +59,7 @@
                     <el-button type="text" size="small" @click="showBody(scope.row.que_id)">查看题目</el-button>
                     <el-button type="text" size="small" @click="deleteQues(scope.row.que_id)">删除题目</el-button>
 
-                
+
                 </template>
             </el-table-column>
         </el-table>
@@ -87,12 +85,12 @@
 /* eslint-disable */
 import UserInfo from '@/views/dashboard/components/userinfo.vue';
 import TagList from '@/views/tag/list.vue';
-import { getTagByQues } from '@/api/tag';
+import { getAllTags, getTagByQues } from '@/api/tag';
 import { getUser } from '@/api/user'
 import { list, CountQues, questionBody, api_changePublic, searchByTitle, searchByID, searchByTag, deleteQues } from '@/api/question';
 import Answer from './answer.vue';
 import { getToken } from '@/utils/auth';
-const SelectCallback=function(item){}
+const SelectCallback = function (item) { }
 export default
     {
         components: {
@@ -100,8 +98,8 @@ export default
             Answer,
         },
         name: "QuestionList",
-        props:{
-            
+        props: {
+
             selectable:{
                 type:Boolean,
             default:false
@@ -194,8 +192,7 @@ export default
                     console.log(error);
                 });
             },
-            handleCurrentChange(val)
-            {
+            handleCurrentChange(val) {
                 list((val) * this.per, this.per).then(res => {
                     this.tableData = res
                 })
