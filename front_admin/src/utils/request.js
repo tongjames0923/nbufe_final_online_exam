@@ -3,19 +3,29 @@ import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getAccess, getToken } from '@/utils/auth'
 import { Server } from '@/settings'
-
-const se=Server;
+import getMAC, { isMAC } from 'getmac'
+const se = Server;
 // create an axios instance
 const service = axios.create({
   baseURL: se, // url = base url + request url
   // withCredentials: true, // send cookies when cross-domain requests
-  timeout: 1000*60*2 // request timeout
+  timeout: 1000 * 60 * 2 // request timeout
 })
 
 // request interceptor
 service.interceptors.request.use(
   config => {
-      config.headers['X-TOKEN'] =getAccess()
+
+    const access = getAccess();
+    if (access) {
+      config.headers['X-TOKEN'] = access
+    }
+    try {
+      config.headers['X-MAC-ADDRESS'] = getMAC()
+    } catch (e) {
+
+    }
+
     return config
   },
   error => {
@@ -42,14 +52,13 @@ service.interceptors.response.use(
     if (res.code !== 40000) {
       Message({
         message: res.message || 'Error',
-        type: res.code>40000?'error':'warning',
-        duration: res.code==39999?500:5 * 1000,
-        onClose:()=>{
-          if(res.code==39999)
-          {
+        type: res.code > 40000 ? 'error' : 'warning',
+        duration: res.code == 39999 ? 500 : 5 * 1000,
+        onClose: () => {
+          if (res.code == 39999) {
             store.dispatch('user/resetToken').then(() => {
-                    location.reload()
-                  })
+              location.reload()
+            })
           }
         }
       })

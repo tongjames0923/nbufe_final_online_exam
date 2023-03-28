@@ -7,13 +7,16 @@
 <script>
 import { mount } from '@vue/test-utils'
 import { api_renew_access } from './api/user';
+import { getTokenObj } from './utils/auth';
 export default {
   name: 'App',
   mounted() {
     let timer = setInterval(() => {
-      api_renew_access().then(res => {
+      if (getTokenObj()) {
+        api_renew_access().then(res => {
 
-      });
+        });
+      }
       console.log("renewing");
     }, 60 * 1000)
   }

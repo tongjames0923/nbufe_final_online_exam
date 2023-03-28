@@ -34,14 +34,13 @@ public class UserController {
     @RequestMapping("renew")
     @NoLog
     @NoNeedAccess
-    public NetResult renewToken()
-    {
+    public NetResult renewToken() {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
 
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 AccessManager.ACCESS_MANAGER.renew();
-                return NetResult.makeResult(SUCCESS,null);
+                return NetResult.makeResult(SUCCESS, null);
             }
         });
     }
@@ -50,12 +49,11 @@ public class UserController {
     @RequestMapping("logout")
     @NoNeedAccess
     @NoLog
-    public NetResult logOut(String access)
-    {
+    public NetResult logOut(String access) {
         return ApiMethod.makeResultNoLogin(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-                return NetResult.makeResult(service.logOut(access),null);
+                return NetResult.makeResult(service.logOut(access), null);
             }
         });
     }
@@ -93,7 +91,7 @@ public class UserController {
     @NoLog
     public NetResult login(String username, String password) {
 
-        return  ApiMethod.makeResultNoLogin(new ApiMethod.IAction() {
+        return ApiMethod.makeResultNoLogin(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
                 UserDetailInfo info = null;
@@ -102,7 +100,7 @@ public class UserController {
                     ServiceResult<UserVo> sc = service.loginUser(username, passwords);
                     info = (UserDetailInfo) service.getUserInfo(sc.getObj().getId()).getObj();
                     sc.getObj().setSec_ans(null);
-                    return NetResult.makeResult(sc.getCode(), null,new Object[]{sc.getObj().getUid(),info});
+                    return NetResult.makeResult(sc.getCode(), null, new Object[]{sc.getObj().getUid(), info});
                 } else {
                     return NetResult.makeResult(EC_InvalidParameter, "用户名和密码的强度不足", null);
                 }
@@ -121,14 +119,14 @@ public class UserController {
     @Transactional
     @NoLog
     public NetResult updateSecQues(String ques, String ans) {
-        final  String q=ques,a=ans;
+        final String q = ques, a = ans;
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-                String ans= UserUtility.passwordEncode(q);
+                String ans = UserUtility.passwordEncode(q);
                 ServiceResult sc = service.UpdateUserSecQuestion(applyUser.getId(), ques, ans);
                 ((UserSecurityInfo) sc.getObj()).setSec_ans(null);
-                return NetResult.makeResult(sc,null);
+                return NetResult.makeResult(sc, null);
             }
         });
 
@@ -147,14 +145,14 @@ public class UserController {
      */
     @Transactional
     public NetResult updatedetails(
-                                   @RequestParam(required = false)
-                                   String email,
-                                   @RequestParam(required = false)
-                                   String phone,
-                                   @RequestParam(required = false)
-                                               String address,
-                                   @RequestParam(required = false)
-                                   String note) {
+            @RequestParam(required = false)
+            String email,
+            @RequestParam(required = false)
+            String phone,
+            @RequestParam(required = false)
+            String address,
+            @RequestParam(required = false)
+            String note) {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
@@ -169,7 +167,7 @@ public class UserController {
     }
 
 
-    @RequestMapping(value = "register",method = RequestMethod.POST)
+    @RequestMapping(value = "register", method = RequestMethod.POST)
     /***
      * 注册 密保问题和答案一个为空即视为不设置密保。
      * @param username 用户名
@@ -194,8 +192,8 @@ public class UserController {
                         answer = null;
                 }
                 password = UserUtility.passwordEncode(password);
-                if(answer!=null)
-                    answer=UserUtility.passwordEncode(answer);
+                if (answer != null)
+                    answer = UserUtility.passwordEncode(answer);
                 ServiceResult<Integer> sc = service.registerUser(username, password, question, answer);
                 ServiceResult result = service.UpdateUserDetails(sc.getObj(), address,
                         phone, email, note);
@@ -255,7 +253,7 @@ public class UserController {
         ServiceResult result = null;
         try {
             result = service.updateUserPasswordByQuestion(name, UserUtility.passwordEncode(password)
-                    ,UserUtility.passwordEncode(answer));
+                    , UserUtility.passwordEncode(answer));
             return NetResult.makeResult(result, null);
         } catch (Error.BackendError e) {
             _ERROR.rollback();
@@ -276,11 +274,11 @@ public class UserController {
      * @param num 数量
      * @return 成功为用户信息列表，否则为错误信息或空，msg为NET_FAILURE时候data为错误信息
      */
-    public NetResult getUserinfoPage( int from, int num) {
+    public NetResult getUserinfoPage(int from, int num) {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-                ServiceResult result = service.pullUserInfo( from, num);
+                ServiceResult result = service.pullUserInfo(from, num);
                 return NetResult.makeResult(result, null);
             }
         });
@@ -288,62 +286,58 @@ public class UserController {
 
 
     @RequestMapping("getUser")
-    public NetResult getUserInfo(@RequestParam(required = false) Integer id)
-    {
+    public NetResult getUserInfo(@RequestParam(required = false) Integer id) {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-                UserDetailInfo sc = (UserDetailInfo) service.getUserInfo(id==null?applyUser.getId():id).getObj();
-                return NetResult.makeResult(SUCCESS,null,sc);
-            }
-        }).methodWithLogined();
-    }
-    @RequestMapping("count")
-    @AccessLimit
-    public  NetResult count()
-    {
-        return  ApiMethod.make(new ApiMethod.IAction() {
-            @Override
-            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-                return NetResult.makeResult(service.total(),null);
+                UserDetailInfo sc = (UserDetailInfo) service.getUserInfo(id == null ? applyUser.getId() : id).getObj();
+                return NetResult.makeResult(SUCCESS, null, sc);
             }
         }).methodWithLogined();
     }
 
+    @RequestMapping("count")
+    @AccessLimit
+    public NetResult count() {
+        return ApiMethod.make(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                return NetResult.makeResult(service.total(), null);
+            }
+        }).methodWithLogined();
+    }
 
 
     @RequestMapping("secQues")
     @NoNeedAccess
-    public NetResult getQues(String name)
-    {
-        return  ApiMethod.make(new ApiMethod.IAction() {
+    public NetResult getQues(String name) {
+        return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-                return NetResult.makeResult(service.getUserSecQuestion(name),null);
+                return NetResult.makeResult(service.getUserSecQuestion(name), null);
             }
         }).method();
     }
+
     @RequestMapping("answerSec")
     @NoNeedAccess
     @NoLog
-    public  NetResult replySec(String name,String answer)
-    {
-        return  ApiMethod.make(new ApiMethod.IAction() {
+    public NetResult replySec(String name, String answer) {
+        return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-                return NetResult.makeResult(service.replySecQuestion(name,UserUtility.passwordEncode(answer)),null);
+                return NetResult.makeResult(service.replySecQuestion(name, UserUtility.passwordEncode(answer)), null);
             }
         }).method();
     }
 
     @RequestMapping("findUser")
     @AccessLimit
-    public NetResult findUserByName(String name)
-    {
+    public NetResult findUserByName(String name) {
         return ApiMethod.makeResultNoLogin(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-                return NetResult.makeResult(service.findUserByNameLike(name),null);
+                return NetResult.makeResult(service.findUserByNameLike(name), null);
             }
         });
     }
