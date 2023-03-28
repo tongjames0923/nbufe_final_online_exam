@@ -15,6 +15,7 @@ import tbs.api_server.services.UserService;
 
 import javax.annotation.Resource;
 
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import static tbs.api_server.config.constant.const_User.*;
@@ -126,15 +127,20 @@ public class UserImp implements UserService
         AccessManager.ACCESS_MANAGER.logOut(access);
         return ServiceResult.makeResult(SUCCESS);
     }
-
+    Integer getID() {
+        Integer uuid = UUID.randomUUID().toString().replaceAll("-", "").hashCode();
+        uuid = uuid < 0 ? -uuid : uuid;//String.hashCode() 值会为空
+        return uuid;
+    }
     @Override
     public ServiceResult registerUser(String username, String password, String question,
                                       String answer) throws BackendError {
         try
         {
-            int c = mp.insertSecurityInfo(username, password, question, answer);
+            int id=getID();
+            int c = mp.insertSecurityInfo(id,username, password, question, answer);
             if (c == 1)
-                return new ServiceResult<>(SUCCESS, mp.getUserSecurityInfoByName(username));
+                return new ServiceResult<>(SUCCESS, id);
             else
             {
                 throw _ERROR.throwError(EC_DB_INSERT_FAIL,"插入数据失败");
@@ -225,7 +231,7 @@ public class UserImp implements UserService
                 throw _ERROR.throwError(FC_NOTFOUND,"用户名不存在");
             else
             {
-                if(mp.getUserDetailInfoByID(des.getId()).getLevel()==LEVEL_UnActive)
+                if(des.getLevel()==LEVEL_UnActive)
                 {
                     throw  _ERROR.throwError(FC_UNAVALIABLE,"您的账户尚未激活");
                 }

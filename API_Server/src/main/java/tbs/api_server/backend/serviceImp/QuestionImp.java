@@ -13,6 +13,7 @@ import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.simple.Question;
 import tbs.api_server.objects.simple.UserDetailInfo;
+import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.QuestionService;
 import tbs.api_server.utility.Error;
 
@@ -167,7 +168,7 @@ public class QuestionImp implements QuestionService {
 
 
     @Override
-    public ServiceResult questionsLength() throws BackendError {
-        return ServiceResult.makeResult(SUCCESS, mp.countQuestions());
+    public ServiceResult questionsLength(UserSecurityInfo u) throws BackendError {
+        return ServiceResult.makeResult(SUCCESS, mp.countQuestions(u.getId(),u.getLevel()));
     }
 }

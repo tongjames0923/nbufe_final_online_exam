@@ -99,6 +99,7 @@ import route from '@/router/index'
         this.$refs["userdata"].validate((valid) => {
           if (valid) {
             var that = this;
+            debugger
             register(this.$qs.stringify(this.userdata))
               .then(function (res) {
                   that.$notify({
@@ -107,10 +108,9 @@ import route from '@/router/index'
                     duration: 0,
                     type: "success",
                   });
-                  debugger
                   route.push({ path:'/' })
               }).catch(error=>{
-
+                console.log(error)
               });
             return true;
           } else {
@@ -118,12 +118,6 @@ import route from '@/router/index'
           }
         });
       },
-    },
-    created() {
-      console.log("url:" + this.url);
-    },
-    props: {
-      url: String,
-    },
+    }
   };
   </script>

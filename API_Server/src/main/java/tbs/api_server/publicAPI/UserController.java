@@ -89,7 +89,6 @@ public class UserController {
      * @param password 密码
      * @return 成功为用户信息，否则为空或错误消息
      */
-    @Transactional
     @NoNeedAccess
     @NoLog
     public NetResult login(String username, String password) {
@@ -121,18 +120,17 @@ public class UserController {
      */
     @Transactional
     @NoLog
-    public NetResult updateSecQues(int id, String ques, String ans) {
-        try {
-            ServiceResult sc = service.UpdateUserSecQuestion(id, ques, ans);
-            ((UserSecurityInfo) sc.getObj()).setSec_ans(null);
-            return NetResult.makeResult(sc.getCode(), null, sc.getObj());
-        } catch (Error.BackendError e) {
-            _ERROR.rollback();
-            return NetResult.makeResult(e.getCode(), e.getDetail());
-        } catch (Exception ex) {
-            _ERROR.rollback();
-            return NetResult.makeResult(EC_UNKNOWN, ex.getMessage());
-        }
+    public NetResult updateSecQues(String ques, String ans) {
+        final  String q=ques,a=ans;
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                String ans= UserUtility.passwordEncode(q);
+                ServiceResult sc = service.UpdateUserSecQuestion(applyUser.getId(), ques, ans);
+                ((UserSecurityInfo) sc.getObj()).setSec_ans(null);
+                return NetResult.makeResult(sc,null);
+            }
+        });
 
     }
 
@@ -196,11 +194,13 @@ public class UserController {
                         answer = null;
                 }
                 password = UserUtility.passwordEncode(password);
-                ServiceResult<UserSecurityInfo> sc = service.registerUser(username, password, question, answer);
-                ServiceResult result = service.UpdateUserDetails(sc.getObj().getId(), address,
+                if(answer!=null)
+                    answer=UserUtility.passwordEncode(answer);
+                ServiceResult<Integer> sc = service.registerUser(username, password, question, answer);
+                ServiceResult result = service.UpdateUserDetails(sc.getObj(), address,
                         phone, email, note);
 
-                return NetResult.makeResult(result, null);
+                return NetResult.makeResult(sc, null);
             } else {
                 return NetResult.makeResult(EC_InvalidParameter, "用户名或密码强度不足");
             }
@@ -255,7 +255,7 @@ public class UserController {
         ServiceResult result = null;
         try {
             result = service.updateUserPasswordByQuestion(name, UserUtility.passwordEncode(password)
-                    , answer);
+                    ,UserUtility.passwordEncode(answer));
             return NetResult.makeResult(result, null);
         } catch (Error.BackendError e) {
             _ERROR.rollback();
@@ -331,7 +331,7 @@ public class UserController {
         return  ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-                return NetResult.makeResult(service.replySecQuestion(name,answer),null);
+                return NetResult.makeResult(service.replySecQuestion(name,UserUtility.passwordEncode(answer)),null);
             }
         }).method();
     }

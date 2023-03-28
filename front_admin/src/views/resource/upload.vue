@@ -45,7 +45,6 @@
       </el-upload>
     </el-form-item>
     <el-button type="primary" @click="submit(ruleForm)">提交</el-button>
-    <el-button type="cancel" @click="cancel">取消提交</el-button>
   </el-form>
 </template>
   
@@ -143,7 +142,6 @@ export default {
       this.hasFile = false;
       this.files = [];
     },
-    cancel() {},
     submitUpload(file, fileList) {
       this.ruleForm.file = file.file;
       this.hasFile = true;

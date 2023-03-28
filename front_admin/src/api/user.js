@@ -147,3 +147,14 @@ export function api_findUserByName(name)
     }
   })
 }
+export function api_changeSec(sec,ans)
+{
+  return request({
+    url:'user/updateSecQues',
+    method:'get',
+    params:{
+      'ques':sec,
+      'ans':ans
+    }
+  })
+}

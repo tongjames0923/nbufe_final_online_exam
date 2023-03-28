@@ -18,6 +18,7 @@ public interface UserMapper {
     @Cacheable(value = "userSec",key = "#id")
     UserSecurityInfo getUserSecurityInfo(int id);
     @Select("select *,ui.level from `user_sec` uc join `user_info` ui on ui.id=uc.id  where uc.`name`=#{name} FOR UPDATE")
+    @Cacheable(value = "userSec",key = "result.id")
     UserSecurityInfo getUserSecurityInfoByName( @NonNull String name);
 
 
@@ -32,10 +33,10 @@ public interface UserMapper {
     @Cacheable(value = "userDetail",key = "#id")
     UserDetailInfo getUserDetailInfoByID(int id);
 
-    @Insert("INSERT INTO `user_sec` (`name`, `password`, `sec_ques`, `sec_ans`)" +
+    @Insert("INSERT INTO `user_sec` (`id`,`name`, `password`, `sec_ques`, `sec_ans`)" +
             "VALUES\n" +
-            "\t(#{name},#{password},#{securityques}, #{securityans});")
-    int insertSecurityInfo(@NonNull String name, @NonNull String password, String securityques, String securityans);
+            "\t(#{id},#{name},#{password},#{securityques}, #{securityans});")
+    int insertSecurityInfo(int id,@NonNull String name, @NonNull String password, String securityques, String securityans);
 
     @Insert("INSERT INTO `user_info` (`id`, `address`, `phone`, `email`, `note`)" +
             "VALUES\n" +

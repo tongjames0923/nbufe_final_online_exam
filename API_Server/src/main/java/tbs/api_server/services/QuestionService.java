@@ -1,6 +1,7 @@
 package tbs.api_server.services;
 
 import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.utility.Error;
 
 public interface QuestionService
@@ -23,7 +24,7 @@ public interface QuestionService
 
     ServiceResult updateQuestionValue(int ques_id,String field,Object value) throws Error.BackendError;
 
-    ServiceResult questionsLength() throws Error.BackendError;
+    ServiceResult questionsLength(UserSecurityInfo user) throws Error.BackendError;
 
 
 

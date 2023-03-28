@@ -6,7 +6,8 @@
                 </el-option>
             </el-select>
             <el-input v-model="input" placeholder="请输入搜索内容" style="margin-right: 15px; width: 350px;"></el-input>
-            <el-button icon="el-icon-search" @click.prevent.native="search()" type="primary">搜索日志</el-button>
+            <el-button icon="el-icon-search" @click.prevent.native="search()" type="primary" style="margin-right: 10px;">搜索日志</el-button>
+           条数：
             <el-input-number v-model="MaxPage" :step="2"></el-input-number>
             <el-table :data="logData" style="width: 100%">
                 <el-table-column prop="log_begin" label="调用日期" width="220">

@@ -188,14 +188,12 @@ public class QuestionController {
         });
 
     }
-
-    @Transactional
     @RequestMapping("questionCount")
     public NetResult getCount() {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-                ServiceResult result = service.questionsLength();
+                ServiceResult result = service.questionsLength(applyUser);
                 return NetResult.makeResult(result, null);
             }
         }).methodWithLogined();

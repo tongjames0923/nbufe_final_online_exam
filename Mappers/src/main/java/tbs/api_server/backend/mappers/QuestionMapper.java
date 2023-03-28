@@ -40,8 +40,8 @@ public interface QuestionMapper {
     })
     int updateQuestionValue(int id, String field, Object value);
 
-    @Select("select count(*) from `question` FOR UPDATE")
-    int countQuestions();
+    @Select("select count(*) from `question` where publicable=1 or que_creator=#{user} or #{level}>=2")
+    int countQuestions(int user,int level);
 
     @Delete("DELETE FROM `question` WHERE `que_id`=#{id}")
     @Caching(evict = {

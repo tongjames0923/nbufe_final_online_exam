@@ -71,7 +71,13 @@ export const constantRoutes = [
       name: '修改密码',
       component: () => import('@/views/PasswordChange/Logined.vue'),
       meta: { title: "修改密码", icon: 'el-icon-s-check' }
-    }
+    },
+    {
+      path: 'sec',
+      name: '修改密保',
+      component: () => import('@/views/secChange/index'),
+      meta: { title: "修改密保", icon: 'el-icon-s-check' }
+    },
 
     ]
   },
