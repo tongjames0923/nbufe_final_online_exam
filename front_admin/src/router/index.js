@@ -6,6 +6,7 @@ Vue.use(Router)
 /* Layout */
 import Layout from '@/layout'
 import { title } from "@/settings";
+import { getToken } from '@/utils/auth';
 
 /**
  * Note: sub-menu only appear when route children.length >= 1
@@ -91,6 +92,7 @@ export const constantRoutes = [
       {
         path: 'upload',
         name: '资源上传',
+        roles:1,
         component: () => import('@/views/resource/upload.vue'),
         meta: { title: '资源上传', icon: 'el-icon-upload' }
       }
@@ -160,6 +162,7 @@ export const constantRoutes = [
   {
     path: '/userlist',
     component: Layout,
+    roles:2,
     meta: {
       title: '用户管理',
       icon: 'el-icon-user-solid'
@@ -188,6 +191,7 @@ export const constantRoutes = [
     name: '系统日志',
     meta: { title: '系统日志', icon: 'el-icon-set-up' },
     component: Layout,
+    roles:2,
     children: [
       {
         path: 'list',

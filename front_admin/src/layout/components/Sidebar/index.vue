@@ -31,6 +31,7 @@ export default {
       'sidebar'
     ]),
     routes() {
+      debugger
       return this.$router.options.routes
     },
     activeMenu() {
@@ -40,6 +41,7 @@ export default {
       if (meta.activeMenu) {
         return meta.activeMenu
       }
+      debugger
       return path
     },
     showLogo() {

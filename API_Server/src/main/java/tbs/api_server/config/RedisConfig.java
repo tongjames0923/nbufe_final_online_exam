@@ -36,7 +36,7 @@ public class RedisConfig {
     public RedisCacheManager myCacheManager3(RedisConnectionFactory connectionFactory) {
         RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .entryTtl(Duration.ofSeconds(5*60))   // 设置缓存过期时间
-                .disableCachingNullValues()     // 禁用缓存空值，不缓存null校验
+//                .disableCachingNullValues()     // 禁用缓存空值，不缓存null校验
                 .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(new
                         GenericJackson2JsonRedisSerializer()));     // 设置CacheManager的值序列化方式为json序列化，可加入@Class属性
         // 使用RedisCacheConfiguration创建RedisCacheManager

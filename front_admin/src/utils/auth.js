@@ -26,3 +26,15 @@ export function setAccess(token) {
 export function removeAccess() {
   return localStorage.removeItem(AccessKey)
 }
+export function getTokenObj()
+{
+  let u=undefined;
+  try
+  {
+    u=JSON.parse(getToken());
+  }catch(e)
+  {
+
+  }
+  return u;
+}
