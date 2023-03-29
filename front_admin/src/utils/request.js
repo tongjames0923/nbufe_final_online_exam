@@ -3,7 +3,6 @@ import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getAccess, getToken } from '@/utils/auth'
 import { Server } from '@/settings'
-import getMAC, { isMAC } from 'getmac'
 const se = Server;
 // create an axios instance
 const service = axios.create({
@@ -20,12 +19,6 @@ service.interceptors.request.use(
     if (access) {
       config.headers['X-TOKEN'] = access
     }
-    try {
-      config.headers['X-MAC-ADDRESS'] = getMAC()
-    } catch (e) {
-
-    }
-
     return config
   },
   error => {
@@ -81,7 +74,6 @@ service.interceptors.response.use(
     }
   },
   error => {
-    console.log('err' + error) // for debug
     Message({
       message: error.message,
       type: 'error',

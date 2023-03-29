@@ -65,7 +65,6 @@ export default {
       const u=getTokenObj();
       if(u)
       {
-        debugger
         if(item.roles)
         {
           return item.roles<=u.level

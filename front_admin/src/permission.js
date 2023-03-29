@@ -30,14 +30,12 @@ router.beforeEach(async(to, from, next) => {
         next()
       } else {
         try {
-          debugger
           console.log("has access")
           // get user info
           await store.dispatch('user/getInfo')
 
           next()
         } catch (error) {
-          debugger
           console.log("has error for get")
           // remove token and go to login page to re-login
           await store.dispatch('user/resetToken')

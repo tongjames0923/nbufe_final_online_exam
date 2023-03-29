@@ -16,7 +16,8 @@ export function removeToken() {
 }
 export function getAccess()
 {
-  return localStorage.getItem(AccessKey);
+  const obj= localStorage.getItem(AccessKey)
+  return obj==='null'?null:obj;
 }
 
 export function setAccess(token) {

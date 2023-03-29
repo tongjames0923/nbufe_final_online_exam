@@ -14,7 +14,6 @@ import java.util.List;
 import static tbs.api_server.utility.Error.*;
 
 @Service
-@Scope("prototype")
 public class ResourceImp implements ResourceService
 {
     @Autowired
@@ -92,5 +91,14 @@ public class ResourceImp implements ResourceService
         if(ulr>0)
         return ServiceResult.makeResult(SUCCESS);
         throw _ERROR.throwError(EC_DB_DELETE_FAIL,"取消资源链接失败");
+    }
+
+    @Override
+    public ServiceResult updateResourceNote(int res_id, String note) throws BackendError {
+        int i= mp.updateResourceNoteById(res_id,note);
+        if(i>0)
+            return ServiceResult.makeResult(SUCCESS);
+        else
+            throw _ERROR.throwError(EC_DB_UPDATE_FAIL,"资源更新失败");
     }
 }

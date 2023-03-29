@@ -13,4 +13,5 @@ public interface ResourceService
     ServiceResult DeleteResource(int id) throws Error.BackendError;
     ServiceResult linkResource(int res_id,int ques_id) throws Error.BackendError;
     ServiceResult unlinkResource(int res_id,int ques_id) throws Error.BackendError;
+    ServiceResult updateResourceNote(int res_id,String note) throws Error.BackendError;
 }

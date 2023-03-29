@@ -33,13 +33,22 @@
           <el-tag>{{ arr[scope.row.resource_type / 1000] }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="备注" width="750" prop="note"> </el-table-column>
+      <el-table-column label="备注" width="750">
+        <template slot-scope="data">
+          <el-input placeholder="备注"
+            @blur="changeResource(data.row.id,data.row.note)" v-model="data.row.note"
+            style="width: auto;"
+            >
+          </el-input>
+        </template>
+
+      </el-table-column>
       <el-table-column label="链接" width="80" fixed>
         <template slot-scope="scope">
           <el-popover placement="top" trigger="click">
             <div style="text-align: left;; margin: 0">
               <el-link type="success" :href="SerLocation + scope.row.resource" target="_blank">
-                链接:{{SerLocation + scope.row.resource}}</el-link>
+                链接:{{ SerLocation + scope.row.resource }}</el-link>
               <el-button style="margin-left: 12px;" type="text" size="medium"
                 @click="copy(SerLocation + scope.row.resource); ">拷贝链接</el-button>
             </div>
@@ -60,7 +69,7 @@
 /* eslint-disable */
 
 
-import { deleteResource, getInfoByType, searchByNote } from '@/api/resource'
+import { api_changeResourceNote, deleteResource, getInfoByType, searchByNote } from '@/api/resource'
 import { Server } from '@/settings';
 export default {
   name: "ListResourceVue",
@@ -91,6 +100,30 @@ export default {
             type: 'error',
             message: "拷贝失败"
           })
+        })
+    },
+    changeResource(id,note)
+    {
+      this.$confirm(
+          "确认将[" + id + "]资源的备注改成["+note+"]吗？",
+          "确认修改资源备注",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          }
+        ).then(() => {
+          api_changeResourceNote(id,note).then(()=>{
+            that.$notify({
+            title: "修改成功",
+            message: "",
+            duration: 800,
+          });
+          }).catch(e=>{
+            this.getinfo(this.tp);
+          });
+        }).catch(e=>{
+          this.getinfo(this.tp);
         })
     },
     load() {
@@ -130,6 +163,7 @@ export default {
     },
     getinfo(type) {
       var that = this;
+      this.resList=[]
       getInfoByType(type, this.from, this.num).then(function (res) {
         for (let i = 0; i < res.length; i++) {
           that.resList.push(res[i]);

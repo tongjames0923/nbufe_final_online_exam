@@ -1,6 +1,7 @@
 package tbs.api_server.config;
 
 
+import io.netty.util.internal.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -77,11 +78,13 @@ public class AccessManager {
         Enumeration<String> em = request.getHeaders("X-TOKEN");
         String token = null;
         while (em.hasMoreElements()) {
-            token = em.nextElement();
+            String tmp=em.nextElement();
+            if(!StringUtil.isNullOrEmpty(tmp))
+            token = tmp;
         }
         if(token!=null)
         {
-            if(token.length()==0||token.trim().equals("null"))
+            if(token.trim().equals("null"))
             {
                 token=null;
             }

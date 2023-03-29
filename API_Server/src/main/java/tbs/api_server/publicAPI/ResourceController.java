@@ -121,6 +121,21 @@ public class ResourceController {
     }
 
 
+    @Transactional
+    @RequestMapping("setnote")
+    @AccessLimit(level = AccessEnum.RESOURCE_ACCESS)
+    public NetResult updateResourceNote(int resource,String note)
+    {
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                return NetResult.makeResult(service.updateResourceNote(resource, note),null);
+            }
+        });
+    }
+
+
+
     public static class Help {
 
         public static void resourcesLinkApply(List<QuestionResource> resources) {

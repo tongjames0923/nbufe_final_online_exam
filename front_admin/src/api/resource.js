@@ -40,3 +40,14 @@ export function upload_resource(formdata)
         data:formdata
     })
 }
+export function api_changeResourceNote(id,note)
+{
+    return request({
+        url:'resource/setnote',
+        method:'get',
+        params:{
+            'resource':id,
+            'note':note
+        }
+    })
+}
