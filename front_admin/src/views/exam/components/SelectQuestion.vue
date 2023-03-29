@@ -62,7 +62,7 @@ export default {
     {
       if(this.cb)
       {
-        debugger
+        
         let cbd=[]
         for(let i=0;i<this.selected.length;i++)
         {

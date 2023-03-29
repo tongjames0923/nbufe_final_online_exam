@@ -27,14 +27,14 @@ public interface TagMapper
     int deleteTagByName(String name);
 
 
+    @Select("select t.tag_id,t.tag_name,(select count(1) from tag_link tg where tg.tag_id=t.tag_id) as tag_used from tag t WHERE (SELECT count(1) FROM tag_link tl WHERE tl.ques_id=#{ques_id} AND t.tag_id=tl.tag_id)=0;")
+    List<Tag> getUnselectTags(int ques_id);
+
+
     @Insert("INSERT INTO `tag` ( `tag_name`)\n" +
             "VALUES\n" +
             "\t(#{tag});\n")
     int insertTag(String tag);
-
-
-
-
 
     @Insert("INSERT INTO `tag_link`(`tag_id`,`ques_id`) VALUES\n" +
     "(#{tagid},#{ques_id})\n" )
@@ -49,6 +49,7 @@ public interface TagMapper
     @Delete("delete from `tag_link` where `ques_id`=#{ques_id}")
     @CacheEvict(value = "quesTags",key = "#ques_id")
     int unLinkTagByQuestion(int ques_id);
+
 
     @Select("SELECT `ques_id` from `tag_link` where `tag_id`=#{id}")
     List<Integer> listQuestionIdByTagId(int id);

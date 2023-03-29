@@ -28,6 +28,14 @@
             </el-table-column>
             <el-table-column prop="title" label="标题" width="280" fixed>
             </el-table-column>
+            <el-table-column label="标签">
+                <template slot-scope="data">
+                    <el-select v-model="selected_tags[data.$index]" value-key="tag_name" multiple placeholder="请选择">
+                        <el-option v-for="item in tags" :key="item.tag_name" :label="item.tag_name" :value="item">
+                        </el-option>
+                    </el-select>
+                </template>
+            </el-table-column>
             <el-table-column label="创建者信息" width="180">
                 <template slot-scope="scope">
                     <el-button type="info" @click="pul(scope.row.que_creator)">用户:{{
@@ -54,7 +62,7 @@
             <el-table-column label="操作">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" v-if="selectable" @click="select(scope.row)">选择本题</el-button>
-                    <el-button type="text" size="small" @click="findTag(scope.$index)">查看Tag</el-button>
+                    <el-button type="text" size="small" @click="updateTag(scope.$index)">更新Tag</el-button>
                     <el-button type="text" size="small" @click="findAnswer(scope.$index)">查看答案</el-button>
                     <el-button type="text" size="small" @click="showBody(scope.row.que_id)">查看题目</el-button>
                     <el-button type="text" size="small" @click="deleteQues(scope.row.que_id)">删除题目</el-button>
@@ -67,9 +75,6 @@
             style="padding:20px">
             <UserInfo ref="user" :editable="false"></UserInfo>
         </el-drawer>
-        <el-dialog title="标签" :visible.sync="showtag">
-            <tag-list ref="ques_tag" :editable="false"></tag-list>
-        </el-dialog>
         <el-dialog title="答案" :visible.sync="showAns">
             <answer ref="ans"></answer>
         </el-dialog>
@@ -85,9 +90,9 @@
 /* eslint-disable */
 import UserInfo from '@/views/dashboard/components/userinfo.vue';
 import TagList from '@/views/tag/list.vue';
-import { getAllTags, getTagByQues } from '@/api/tag';
+import { api_getUnselect, getAllTags, getTagByQues } from '@/api/tag';
 import { getUser } from '@/api/user'
-import { list, CountQues, questionBody, api_changePublic, searchByTitle, searchByID, searchByTag, deleteQues } from '@/api/question';
+import { list, CountQues, questionBody, api_changePublic, searchByTitle, searchByID, searchByTag, deleteQues, api_updateTags } from '@/api/question';
 import Answer from './answer.vue';
 import { getToken } from '@/utils/auth';
 const SelectCallback = function (item) { }
@@ -100,13 +105,13 @@ export default
         name: "QuestionList",
         props: {
 
-            selectable:{
-                type:Boolean,
-            default:false
+            selectable: {
+                type: Boolean,
+                default: false
             },
-            cb:{
-                type:SelectCallback,
-                default:(item)=>{
+            cb: {
+                type: SelectCallback,
+                default: (item) => {
                     console.log(item)
                 }
             }
@@ -121,13 +126,14 @@ export default
                 per: 30,
                 drawer: false,
                 direction: 'rtl',
-                showtag: false,
                 showAns: false,
                 showques: false,
                 ques_body: '',
                 tableFilter: [{ text: '选择题', value: 0 }, { text: '填空题', value: 1 }, { text: '简答题', value: 2 }],
                 acFilter: [{ text: '>20%', value: 20 }, { text: '>50%', value: 50 }, { text: '>80%', value: 80 }],
-                pbFilter: [{ text: '公开', value: 1 }, { text: '私有', value: 0 }]
+                pbFilter: [{ text: '公开', value: 1 }, { text: '私有', value: 0 }],
+                tags:[],
+                selected_tags:[]
             };
         }
         ,
@@ -137,7 +143,12 @@ export default
         },
         methods:
         {
-            
+            updateTag(index)
+            {
+                api_updateTags(this.tableData[index].que_id,this.selected_tags[index]).then(res=>{
+                    this.$message({ message: "更新成功", type: 'success' })
+                })
+            },
             deleteQues(que_id) {
                 const usr = JSON.parse(getToken());
                 deleteQues(que_id, usr.id).then(res => {
@@ -163,17 +174,9 @@ export default
             pul(ix) {
                 this.drawer = true
                 getUser(ix).then(data => {
-                    debugger
+                    
                     this.$refs.user.put(data);
                 });
-            },
-            findTag(idx) {
-                this.showtag = true
-                getTagByQues(this.tableData[idx].que_id).then(res => {
-                    this.$refs.ques_tag.updateData(res);
-                },err=>{
-                    this.$refs.ques_tag.updateData([]);
-                })
             },
             format(percentage) {
                 return percentage === 100 ? '满' : `${percentage}%`;
@@ -200,13 +203,16 @@ export default
             load() {
                 list((this.cur - 1) * this.per, this.per).then(res => {
                     this.tableData = res
+                    for(let i=0;i<res.length;i++)
+                    {
+                        this.selected_tags=[]
+                        this.selected_tags.push(res[i].tags)
+                    }
+                    console.log("stg="+this.selected_tags)
                 })
-                // getAllTags().then(tags => {
-                //     this.tableFilter = []
-                //     for (let i in tags) {
-                //         this.tableFilter.push({ 'text': i.tag_name, value: i.tag_id })
-                //     }
-                // })
+                getAllTags().then(tgs => {
+                    this.tags=tgs;
+                })
 
             },
             select(val) {

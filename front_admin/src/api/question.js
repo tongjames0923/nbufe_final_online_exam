@@ -54,3 +54,15 @@ export function deleteQues(que,user)
 {
     return request({url:'question/delete',method:'get',params:{ques:que,user:user}});
 }
+export function api_updateTags(que,tags)
+{
+    return request({
+        url:'question/updateTags',
+        method:'post',
+        params:{
+            'ques':que
+        },
+        data:tags
+
+    })
+}

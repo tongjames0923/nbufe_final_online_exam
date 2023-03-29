@@ -99,7 +99,7 @@ import route from '@/router/index'
         this.$refs["userdata"].validate((valid) => {
           if (valid) {
             var that = this;
-            debugger
+            
             register(this.$qs.stringify(this.userdata))
               .then(function (res) {
                   that.$notify({

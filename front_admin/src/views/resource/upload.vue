@@ -86,7 +86,7 @@ export default {
   created() {
     let u = JSON.parse(getToken());
     this.u_level = u.level;
-    debugger;
+    ;
   },
   methods: {
     uploadfile(fileobject) {
@@ -98,10 +98,10 @@ export default {
       formDataInfo.append("type", this.ruleForm.type);
       formDataInfo.append("note", this.ruleForm.note);
       console.log(formDataInfo);
-      debugger
+      
       upload_resource(formDataInfo).then((res) => {
           that.isloading = false;
-          console.log(res);debugger
+          console.log(res);
           that.$notify({
             title: "上传成功",
             message: res,

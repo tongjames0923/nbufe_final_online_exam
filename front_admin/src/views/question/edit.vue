@@ -17,7 +17,7 @@
         <div style="height:15px"></div>
         <el-collapse>
             <el-collapse-item title="标签选择">
-                <tag-list ref="tags"></tag-list>
+                <tag-list :selectable="true" ref="tags"></tag-list>
             </el-collapse-item>
             <el-collapse-item title="题面编辑器" name="1">
                 <v-md-editor v-model="text" height="400px" @save=saveFile></v-md-editor>

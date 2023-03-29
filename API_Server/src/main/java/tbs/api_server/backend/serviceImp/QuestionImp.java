@@ -87,6 +87,10 @@ public class QuestionImp implements QuestionService {
         }
         List<Question> result = new ArrayList<>(res);
         result = result.stream().filter(QuestionFilter.VisibleFilter).collect(Collectors.toList());
+        for(Question q:result)
+        {
+            q.setTags(tagMapper.findTagsByQuestion(q.getQue_id()));
+        }
         if (result.size() > 0)
             return ServiceResult.makeResult(SUCCESS, result);
         else
@@ -104,6 +108,10 @@ public class QuestionImp implements QuestionService {
         }
         List<Question> result = new ArrayList<>(res);
         result = result.stream().filter(QuestionFilter.VisibleFilter).collect(Collectors.toList());
+        for(Question q:result)
+        {
+            q.setTags(tagMapper.findTagsByQuestion(q.getQue_id()));
+        }
         if (result.size() > 0)
             return ServiceResult.makeResult(SUCCESS, result);
         else
@@ -115,6 +123,10 @@ public class QuestionImp implements QuestionService {
     public ServiceResult findQuestionsByTitle(String title, int from, int num) throws BackendError {
         List<Question> ls = mp.findQuestionByTitle(title, from, num);
         ls = ls.stream().filter(QuestionFilter.VisibleFilter).collect(Collectors.toList());
+        for(Question q:ls)
+        {
+            q.setTags(tagMapper.findTagsByQuestion(q.getQue_id()));
+        }
         if (ls.size() > 0)
             return ServiceResult.makeResult(SUCCESS, ls);
         else
@@ -130,6 +142,10 @@ public class QuestionImp implements QuestionService {
         List<Question> ls = new ArrayList<>();
         ls.add(q);
         ls = ls.stream().filter(QuestionFilter.VisibleFilter).collect(Collectors.toList());
+        for(Question qx:ls)
+        {
+            qx.setTags(tagMapper.findTagsByQuestion(qx.getQue_id()));
+        }
         return ServiceResult.makeResult(SUCCESS, ls);
     }
 
@@ -143,6 +159,10 @@ public class QuestionImp implements QuestionService {
 
         List<Question> obj = mp.getQuestions(from, num);
         obj = obj.stream().filter(QuestionFilter.VisibleFilter).collect(Collectors.toList());
+        for(Question q:obj)
+        {
+            q.setTags(tagMapper.findTagsByQuestion(q.getQue_id()));
+        }
         if (obj.size() > 0)
             return ServiceResult.makeResult(SUCCESS, obj);
         else
@@ -170,5 +190,15 @@ public class QuestionImp implements QuestionService {
     @Override
     public ServiceResult questionsLength(UserSecurityInfo u) throws BackendError {
         return ServiceResult.makeResult(SUCCESS, mp.countQuestions(u.getId(),u.getLevel()));
+    }
+
+    @Override
+    public ServiceResult updateTags(int[] tags, int ques) {
+        tagMapper.unLinkTagByQuestion(ques);
+        for(int tg:tags)
+        {
+            tagMapper.linkTag(ques,tg);
+        }
+        return ServiceResult.makeResult(SUCCESS);
     }
 }

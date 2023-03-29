@@ -20,3 +20,13 @@ export function add(val)
 params:{tag:val}
 })
 }
+export function api_getUnselect(ques)
+{
+    return request({
+        url:'tag/unselected_tags',
+        method:'get',
+        params:{
+            'ques':ques
+        }
+    })
+}

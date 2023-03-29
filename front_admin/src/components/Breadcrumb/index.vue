@@ -52,7 +52,7 @@ export default {
       return toPath(params)
     },
     handleLink(item) {
-      debugger
+      
       const { redirect, path } = item
       if (redirect) {
         this.$router.push(redirect)

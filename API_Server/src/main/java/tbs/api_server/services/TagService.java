@@ -25,4 +25,5 @@ public interface TagService
     ServiceResult unLinkTag(int ques_id) throws Error.BackendError;
     ServiceResult findTagsByQuestion(int ques_id) throws Error.BackendError;
 
+    ServiceResult findUnSelectTagByQuesId(int quesid);
 }

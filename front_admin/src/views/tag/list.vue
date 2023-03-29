@@ -1,7 +1,7 @@
 <template>
     <div>
         <el-table :data="tags" style="width: 100%" highlight-current-row @selection-change="handleSelectionChange">
-            <el-table-column type="selection" width="55">
+            <el-table-column v-if="selectable" type="selection" width="55">
             </el-table-column>
             <el-table-column prop="tag_name" label="标签名称" width="180">
             </el-table-column>
@@ -41,6 +41,10 @@ export default {
         editable:{
             type:Boolean,
             default:true
+        },
+        selectable:{
+            type:Boolean,
+            default:false
         }
     },
     methods: {

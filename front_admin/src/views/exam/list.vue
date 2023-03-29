@@ -257,7 +257,7 @@ export default {
     },
     updateQ(qid, tp, val) {
       if (tp === 1) {
-        debugger
+        
         this.makeConfirmForQ("分值", qid, val).then(() => {
           api_updateScore(qid, this.nowExam, val).then(res => {
             this.$message({
@@ -303,7 +303,7 @@ export default {
             this.rollback(index);
           });
       } else if (what === 3) {
-        debugger;
+        ;
         this.makeConfirm("考试名称", id, value)
           .then(() => {
             api_updateName(value, u.id, id).then((res) => {

@@ -91,4 +91,9 @@ public class TagImp implements TagService
         else
             throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"这个问题没有资源");
     }
+
+    @Override
+    public ServiceResult findUnSelectTagByQuesId(int quesid) {
+        return ServiceResult.makeResult(SUCCESS,tg.getUnselectTags(quesid));
+    }
 }

@@ -85,6 +85,20 @@ public class TagController {
 
     }
 
+
+    @RequestMapping("unselected_tags")
+    public NetResult getUnselectedTags(int ques)
+    {
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
+                return null;
+            }
+        });
+    }
+
+    //WHERE (SELECT count(1) FROM tag_link WHERE tag_link.ques_id='1490310066' AND tag.tag_id=tag_link.tag_id)=0;
+
     @Transactional
     @RequestMapping("unlink")
     public NetResult unLinkTag(String tag, int ques) {

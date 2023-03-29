@@ -4,9 +4,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import tbs.api_server.config.AccessLimit;
 import tbs.api_server.config.constant.const_Question;
 import tbs.api_server.objects.NetResult;
 import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.objects.simple.Tag;
 import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.services.QuestionService;
 import tbs.api_server.services.TagService;
@@ -25,6 +27,27 @@ public class QuestionController {
     @Autowired
     TagService tagService;
 
+
+
+    @RequestMapping(value = "updateTags",method = RequestMethod.POST)
+    public NetResult updateTags(
+            int ques,@RequestBody List<Tag> tags)
+    {
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                if(tags==null)
+                    throw _ERROR.throwError(EC_InvalidParameter,"参数空错误");
+                int[] arr=new int[tags.size()];
+                int i=0;
+                for(Tag t:tags)
+                {
+                    arr[i++]=t.getTag_id();
+                }
+                return NetResult.makeResult(service.updateTags(arr,ques),null);
+            }
+        });
+    }
 
 
 
@@ -101,7 +124,6 @@ public class QuestionController {
             }
         });
     }
-
     @Transactional
     @RequestMapping("list")
     public NetResult list(int from, int num) {
@@ -186,7 +208,6 @@ public class QuestionController {
                 return NetResult.makeResult(result, null);
             }
         });
-
     }
     @RequestMapping("questionCount")
     public NetResult getCount() {

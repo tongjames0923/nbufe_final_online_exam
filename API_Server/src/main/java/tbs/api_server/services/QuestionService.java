@@ -26,6 +26,6 @@ public interface QuestionService
 
     ServiceResult questionsLength(UserSecurityInfo user) throws Error.BackendError;
 
-
+    ServiceResult updateTags(int[] tags,int ques);
 
 }

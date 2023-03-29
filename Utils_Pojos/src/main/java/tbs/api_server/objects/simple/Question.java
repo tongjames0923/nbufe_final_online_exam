@@ -5,6 +5,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 public class Question {
     private final static long serialVersionUID = 1L;    private int que_id;
@@ -22,6 +23,17 @@ public class Question {
     private transient int use_time;
     private int answerd;
     private float answerd_right;
+
+    private transient List<Tag> tags;
+
+    public List<Tag> getTags() {
+        return tags;
+    }
+
+    public void setTags(List<Tag> tags) {
+        this.tags = tags;
+    }
+
     public String getAnswer_data() {
         return answer_data;
     }

@@ -52,7 +52,7 @@ export default {
     },
     methods: {
         put(user) {
-            debugger
+            
             this.info = user;
             this.$forceUpdate();
         },
