@@ -180,7 +180,7 @@ public class QuestionController {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-                ServiceResult result = service.updateQuestionValue(ques, const_Question.col_publicable, publicable);
+                ServiceResult result = service.updateQuestionValue(applyUser,ques, const_Question.col_publicable, publicable);
                 return NetResult.makeResult(result, null);
             }
         });
@@ -192,7 +192,7 @@ public class QuestionController {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-                ServiceResult result = service.updateQuestionValue(ques, const_Question.col_title, title);
+                ServiceResult result = service.updateQuestionValue(applyUser,ques, const_Question.col_title, title);
                 return NetResult.makeResult(result, null);
             }
         });
@@ -204,7 +204,7 @@ public class QuestionController {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
-                ServiceResult result = service.updateQuestionValue(ques, const_Question.col_type, type);
+                ServiceResult result = service.updateQuestionValue(applyUser,ques, const_Question.col_type, type);
                 return NetResult.makeResult(result, null);
             }
         });

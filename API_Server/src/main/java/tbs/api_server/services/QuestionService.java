@@ -22,7 +22,7 @@ public interface QuestionService
 
     ServiceResult listQuestions(int from,int num) throws Error.BackendError;
 
-    ServiceResult updateQuestionValue(int ques_id,String field,Object value) throws Error.BackendError;
+    ServiceResult updateQuestionValue(UserSecurityInfo user, int ques_id, String field, Object value) throws Error.BackendError;
 
     ServiceResult questionsLength(UserSecurityInfo user) throws Error.BackendError;
 

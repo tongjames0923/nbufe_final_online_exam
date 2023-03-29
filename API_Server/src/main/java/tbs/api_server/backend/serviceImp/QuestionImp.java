@@ -171,8 +171,10 @@ public class QuestionImp implements QuestionService {
     }
 
     @Override
-    public ServiceResult updateQuestionValue(int ques_id, String field, Object value) throws Error.BackendError {
+    public ServiceResult updateQuestionValue(UserSecurityInfo user,int ques_id, String field, Object value) throws Error.BackendError {
 
+        if(!ownsQuestion(ques_id,user.getId()))
+            throw _ERROR.throwError(EC_LOW_PERMISSIONS,"未拥有此题，无法修改");
         String[] banded = {const_Question.col_id, const_Question.col_altertime};
         for (String i : banded) {
             if (field.equals(i))
