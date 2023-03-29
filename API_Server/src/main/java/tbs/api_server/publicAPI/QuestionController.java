@@ -187,7 +187,7 @@ public class QuestionController {
     }
 
     @Transactional
-    @RequestMapping(value = "updateTitle", method = RequestMethod.POST)
+    @RequestMapping(value = "updateTitle")
     public NetResult updateTitle(int ques, String title) {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override

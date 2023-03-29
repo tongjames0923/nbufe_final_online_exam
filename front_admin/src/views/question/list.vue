@@ -27,6 +27,9 @@
                 </template>
             </el-table-column>
             <el-table-column prop="title" label="标题" width="280" fixed>
+                <template slot-scope="d">
+                    <el-input v-model="d.row.title" @blur="changeTitle(d.row.que_id, d.row.title)"></el-input>
+                </template>
             </el-table-column>
             <el-table-column label="标签">
                 <template slot-scope="data">
@@ -92,7 +95,7 @@ import UserInfo from '@/views/dashboard/components/userinfo.vue';
 import TagList from '@/views/tag/list.vue';
 import { api_getUnselect, getAllTags, getTagByQues } from '@/api/tag';
 import { getUser } from '@/api/user'
-import { list, CountQues, questionBody, api_changePublic, searchByTitle, searchByID, searchByTag, deleteQues, api_updateTags } from '@/api/question';
+import { list, CountQues, questionBody, api_changePublic, searchByTitle, searchByID, searchByTag, deleteQues, api_updateTags, api_changeTitle } from '@/api/question';
 import Answer from './answer.vue';
 import { getToken } from '@/utils/auth';
 const SelectCallback = function (item) { }
@@ -132,8 +135,8 @@ export default
                 tableFilter: [{ text: '选择题', value: 0 }, { text: '填空题', value: 1 }, { text: '简答题', value: 2 }],
                 acFilter: [{ text: '>20%', value: 20 }, { text: '>50%', value: 50 }, { text: '>80%', value: 80 }],
                 pbFilter: [{ text: '公开', value: 1 }, { text: '私有', value: 0 }],
-                tags:[],
-                selected_tags:[]
+                tags: [],
+                selected_tags: []
             };
         }
         ,
@@ -143,10 +146,31 @@ export default
         },
         methods:
         {
-            updateTag(index)
-            {
-                api_updateTags(this.tableData[index].que_id,this.selected_tags[index]).then(res=>{
+
+            changeTitle(que_id, title) {
+                this.$confirm(
+                    "确认将[" + que_id + "]题的标题修改为" + title + "吗？",
+                    "确认修改标题",
+                    {
+                        confirmButtonText: "确定",
+                        cancelButtonText: "取消",
+                        type: "warning",
+                    }
+                ).then(() => {
+                    api_changeTitle(que_id,title).then(res=>{
+                        this.$message({ message: "更新成功", type: 'success' })
+                    }).catch(err=>{
+                        this.load();
+                    })
+                }).catch(()=>{
+                    this.load();
+                })
+            },
+            updateTag(index) {
+                api_updateTags(this.tableData[index].que_id, this.selected_tags[index]).then(res => {
                     this.$message({ message: "更新成功", type: 'success' })
+                }).catch(e => {
+                    this.load();
                 })
             },
             deleteQues(que_id) {
@@ -174,7 +198,7 @@ export default
             pul(ix) {
                 this.drawer = true
                 getUser(ix).then(data => {
-                    
+
                     this.$refs.user.put(data);
                 });
             },
@@ -203,17 +227,17 @@ export default
             load() {
                 list((this.cur - 1) * this.per, this.per).then(res => {
                     this.tableData = res
-                    for(let i=0;i<res.length;i++)
-                    {
-                        this.selected_tags=[]
-                        this.selected_tags.push(res[i].tags)
-                    }
-                    console.log("stg="+this.selected_tags)
+                    this.settags();
                 })
+            },
+            settags() {
                 getAllTags().then(tgs => {
-                    this.tags=tgs;
+                    this.tags = tgs;
                 })
-
+                this.selected_tags = []
+                for (let i = 0; i < this.tableData.length; i++) {
+                    this.selected_tags.push(this.tableData[i].tags)
+                }
             },
             select(val) {
                 // if(val!==this.cur&&this.cb!=undefined)
@@ -239,16 +263,19 @@ export default
                 if (this.searchtype == 1) {
                     searchByTitle(this.text, 0, this.total).then(res => {
                         this.tableData = res;
+                        this.settags();
                     })
                 }
                 else if (this.searchtype == 2) {
                     searchByID(this.text).then(res => {
                         this.tableData = res;
+                        this.settags();
                     })
                 }
                 else if (this.searchtype == 3) {
                     searchByTag(this.text).then(res => {
                         this.tableData = res;
+                        this.settags();
                     })
                 }
             }

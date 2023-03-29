@@ -66,3 +66,14 @@ export function api_updateTags(que,tags)
 
     })
 }
+export function api_changeTitle(q,t)
+{
+    return request({
+        url:'question/updateTitle',
+        method:'get',
+        params:{
+            'ques':q,
+            'title':t
+        }
+    })
+}
