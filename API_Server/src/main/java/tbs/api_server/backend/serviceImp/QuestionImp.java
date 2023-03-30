@@ -61,7 +61,7 @@ public class QuestionImp implements QuestionService {
     public ServiceResult uploadQuestion(int que_type, String title, int creator_id, byte[] que_file, Integer isopen, String ans) throws BackendError {
         int id = getID();
         int c = mp.insertQuestion(id, que_type, creator_id, que_file, title, isopen);
-        c+= answerMapper.insertAnswer(id,ans,null);
+        c += answerMapper.insertAnswer(id, ans, null);
         if (c > 1) {
             return ServiceResult.makeResult(SUCCESS, id);
         } else
@@ -87,8 +87,7 @@ public class QuestionImp implements QuestionService {
         }
         List<Question> result = new ArrayList<>(res);
         result = result.stream().filter(QuestionFilter.VisibleFilter).collect(Collectors.toList());
-        for(Question q:result)
-        {
+        for (Question q : result) {
             q.setTags(tagMapper.findTagsByQuestion(q.getQue_id()));
         }
         if (result.size() > 0)
@@ -108,8 +107,7 @@ public class QuestionImp implements QuestionService {
         }
         List<Question> result = new ArrayList<>(res);
         result = result.stream().filter(QuestionFilter.VisibleFilter).collect(Collectors.toList());
-        for(Question q:result)
-        {
+        for (Question q : result) {
             q.setTags(tagMapper.findTagsByQuestion(q.getQue_id()));
         }
         if (result.size() > 0)
@@ -123,8 +121,7 @@ public class QuestionImp implements QuestionService {
     public ServiceResult findQuestionsByTitle(String title, int from, int num) throws BackendError {
         List<Question> ls = mp.findQuestionByTitle(title, from, num);
         ls = ls.stream().filter(QuestionFilter.VisibleFilter).collect(Collectors.toList());
-        for(Question q:ls)
-        {
+        for (Question q : ls) {
             q.setTags(tagMapper.findTagsByQuestion(q.getQue_id()));
         }
         if (ls.size() > 0)
@@ -142,8 +139,7 @@ public class QuestionImp implements QuestionService {
         List<Question> ls = new ArrayList<>();
         ls.add(q);
         ls = ls.stream().filter(QuestionFilter.VisibleFilter).collect(Collectors.toList());
-        for(Question qx:ls)
-        {
+        for (Question qx : ls) {
             qx.setTags(tagMapper.findTagsByQuestion(qx.getQue_id()));
         }
         return ServiceResult.makeResult(SUCCESS, ls);
@@ -151,7 +147,12 @@ public class QuestionImp implements QuestionService {
 
     @Override
     public ServiceResult findQuestionsByTag(String tagname) throws BackendError {
-        return ServiceResult.makeResult(SUCCESS, mp.getQuestionByTag(tagname));
+        List<Question> result = mp.getQuestionByTag(tagname);
+        result = result.stream().distinct().filter(QuestionFilter.VisibleFilter).collect(Collectors.toList());
+        for (Question qx : result) {
+            qx.setTags(tagMapper.findTagsByQuestion(qx.getQue_id()));
+        }
+        return ServiceResult.makeResult(SUCCESS, result);
     }
 
     @Override
@@ -159,8 +160,7 @@ public class QuestionImp implements QuestionService {
 
         List<Question> obj = mp.getQuestions(from, num);
         obj = obj.stream().filter(QuestionFilter.VisibleFilter).collect(Collectors.toList());
-        for(Question q:obj)
-        {
+        for (Question q : obj) {
             q.setTags(tagMapper.findTagsByQuestion(q.getQue_id()));
         }
         if (obj.size() > 0)
@@ -171,10 +171,10 @@ public class QuestionImp implements QuestionService {
     }
 
     @Override
-    public ServiceResult updateQuestionValue(UserSecurityInfo user,int ques_id, String field, Object value) throws Error.BackendError {
+    public ServiceResult updateQuestionValue(UserSecurityInfo user, int ques_id, String field, Object value) throws Error.BackendError {
 
-        if(!ownsQuestion(ques_id,user.getId()))
-            throw _ERROR.throwError(EC_LOW_PERMISSIONS,"未拥有此题，无法修改");
+        if (!ownsQuestion(ques_id, user.getId()))
+            throw _ERROR.throwError(EC_LOW_PERMISSIONS, "未拥有此题，无法修改");
         String[] banded = {const_Question.col_id, const_Question.col_altertime};
         for (String i : banded) {
             if (field.equals(i))
@@ -191,15 +191,14 @@ public class QuestionImp implements QuestionService {
 
     @Override
     public ServiceResult questionsLength(UserSecurityInfo u) throws BackendError {
-        return ServiceResult.makeResult(SUCCESS, mp.countQuestions(u.getId(),u.getLevel()));
+        return ServiceResult.makeResult(SUCCESS, mp.countQuestions(u.getId(), u.getLevel()));
     }
 
     @Override
     public ServiceResult updateTags(int[] tags, int ques) {
         tagMapper.unLinkTagByQuestion(ques);
-        for(int tg:tags)
-        {
-            tagMapper.linkTag(ques,tg);
+        for (int tg : tags) {
+            tagMapper.linkTag(ques, tg);
         }
         return ServiceResult.makeResult(SUCCESS);
     }

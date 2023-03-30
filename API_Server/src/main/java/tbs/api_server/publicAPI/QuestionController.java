@@ -138,11 +138,15 @@ public class QuestionController {
 
     @RequestMapping("findByid")
     @Transactional
-    public  NetResult findById(int id)
+    public  NetResult findById(@RequestParam(required = false) Integer id)
     {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws BackendError, Exception {
+                if(id==null)
+                {
+                    return NetResult.makeResult(service.listQuestions(0,20), null);
+                }
                 return NetResult.makeResult(service.findQuestionsByID(id),null);
             }
         }).methodWithLogined();

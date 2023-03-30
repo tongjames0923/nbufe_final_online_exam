@@ -61,8 +61,8 @@ public interface QuestionMapper {
             "WHERE `que_id`=#{que_id} and `que_creator`=#{user} FOR UPDATE")
     Question OwnQuestion(int que_id, int user);
 
-    @Select("SELECT q.`que_id`,q.`que_type`, q.`que_creator`,ans.answer_content as answer_data, q.`que_alter_time`, q.`publicable`,(select count(1) from exam_link where questionid=q.que_id) as use_time, q.`answerd`, q.`answerd_right`,q.`title` " +
+    @Select("SELECT distinct q.`que_id`,q.`que_type`, q.`que_creator`,ans.answer_content as answer_data, q.`que_alter_time`, q.`publicable`,(select count(1) from exam_link where questionid=q.que_id) as use_time, q.`answerd`, q.`answerd_right`,q.`title` " +
             "FROM `question` q join `answer` ans on ans.ques_id=q.que_id " +
-            " JOIN tag_link l ON l.ques_id=q.que_id JOIN tag t ON t.tag_id=l.tag_id WHERE t.tag_name LIKE '%${tag}%'")
+            " JOIN tag_link l ON l.ques_id=q.que_id JOIN tag t ON t.tag_id=l.tag_id WHERE t.tag_name LIKE '${tag}%'")
     List<Question> getQuestionByTag(@Param(value = "tag") String tag);
 }

@@ -12,3 +12,13 @@ export function api_log(f,v,p)
         }
     })
 }
+export function api_log_top(n)
+{
+    return req({
+        url:'log/top',
+        method:'get',
+        params:{
+            'num':n
+        }
+    })
+}

@@ -47,6 +47,7 @@ service.interceptors.response.use(
         message: res.message || 'Error',
         type: res.code > 40000 ? 'error' : 'warning',
         duration: res.code == 39999 ? 500 : 5 * 1000,
+        showClose:true,
         onClose: () => {
           if (res.code == 39999) {
             store.dispatch('user/resetToken').then(() => {
@@ -68,7 +69,7 @@ service.interceptors.response.use(
       //     })
       //   })
       // }
-      return Promise.reject(new Error(res.message || 'Error'))
+      return Promise.reject(new Error(res.message || '网络错误'))
     } else {
       return res.data
     }
@@ -77,7 +78,8 @@ service.interceptors.response.use(
     Message({
       message: error.message,
       type: 'error',
-      duration: 5 * 1000
+      duration: 5 * 1000,
+      showClose:true
     })
     return Promise.reject(error)
   }

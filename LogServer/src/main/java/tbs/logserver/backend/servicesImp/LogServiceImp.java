@@ -2,6 +2,7 @@ package tbs.logserver.backend.servicesImp;
 
 import org.springframework.stereotype.Service;
 import tbs.api_server.objects.simple.LogPojo;
+import tbs.api_server.objects.simple.LogVo;
 import tbs.logserver.backend.mappers.LogMapper;
 import tbs.logserver.services.ILogService;
 
@@ -20,5 +21,10 @@ public class LogServiceImp implements ILogService {
           return logMapper.select(from,num,avaliables[fied],val);
         }
         return null;
+    }
+
+    @Override
+    public List<LogVo> listTopCost(int num) {
+        return logMapper.listTopCostFunction(num);
     }
 }

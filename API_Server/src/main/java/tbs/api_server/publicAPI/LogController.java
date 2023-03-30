@@ -21,6 +21,21 @@ import static tbs.api_server.utility.Error.SUCCESS;
 public class LogController {
 
 
+    @Resource
+    ILogService service;
+    @RequestMapping("top")
+    @NoLog
+    @AccessLimit
+    public NetResult top(@RequestParam(required = false,defaultValue = "3")Integer num)
+    {
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
+                return NetResult.makeResult(SUCCESS,null,service.listTopCost(num));
+            }
+        });
+    }
+
     @RequestMapping("get")
     @NoLog
     @AccessLimit
@@ -28,7 +43,7 @@ public class LogController {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
-                ILogService service= SpringUtil.getBean(ILogService.class);
+
                 return new NetResult(SUCCESS, service.listLogInPage(0, maxpage, field, val), null);
             }
         });

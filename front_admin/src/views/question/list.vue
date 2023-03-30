@@ -15,9 +15,9 @@
         </el-input>
 
         <el-table max-height="750" :data="tableData" border style="width: 100%">
-            <el-table-column fixed prop="que_id" label="ID" width="120">
+            <el-table-column fixed="left" prop="que_id" label="ID" width="120">
             </el-table-column>
-            <el-table-column label="题型" prop="que_type" width="90" fixed :filters="tableFilter"
+            <el-table-column fixed="left" label="题型" prop="que_type" width="90" :filters="tableFilter"
                 :filter-method="filterHandler">
                 <template slot-scope="data">
                     <el-tag v-if="data.row.que_type == 0" type="warning">选择题</el-tag>
@@ -26,12 +26,12 @@
                     <el-tag v-else type="danger">错误</el-tag>
                 </template>
             </el-table-column>
-            <el-table-column prop="title" label="标题" width="280" fixed>
+            <el-table-column  prop="title" label="标题" width="280">
                 <template slot-scope="d">
                     <el-input v-model="d.row.title" @blur="changeTitle(d.row.que_id, d.row.title)"></el-input>
                 </template>
             </el-table-column>
-            <el-table-column label="标签">
+            <el-table-column label="标签" fixed="left" width="150">
                 <template slot-scope="data">
                     <el-select v-model="selected_tags[data.$index]" value-key="tag_name" multiple placeholder="请选择">
                         <el-option v-for="item in tags" :key="item.tag_name" :label="item.tag_name" :value="item">
@@ -55,22 +55,20 @@
             </el-table-column>
             <el-table-column prop="use_time" label="使用次数" width="85" sortable>
             </el-table-column>
-            <el-table-column label="公开性" :filters='pbFilter' :filter-method="pbfilterHandler" fixed>
+            <el-table-column label="公开" :filters='pbFilter' :filter-method="pbfilterHandler" fixed="right" width="50">
                 <template slot-scope="scope">
-                    <el-button icon="el-icon-unlock" v-if="scope.row.publicable == 1"
+                    <el-button type="text" size="small" v-if="scope.row.publicable == 1"
                         @click="changePublic(scope.$index, 0)">公开</el-button>
-                    <el-button icon="el-icon-lock" v-else @click="changePublic(scope.$index, 1)">私有</el-button>
+                    <el-button type="text" size="small" v-else @click="changePublic(scope.$index, 1)">私有</el-button>
                 </template>
             </el-table-column>
-            <el-table-column label="操作">
+            <el-table-column label="操作" width="320" fixed="right">
                 <template slot-scope="scope">
                     <el-button type="text" size="small" v-if="selectable" @click="select(scope.row)">选择本题</el-button>
                     <el-button type="text" size="small" @click="updateTag(scope.$index)">更新Tag</el-button>
                     <el-button type="text" size="small" @click="findAnswer(scope.$index)">查看答案</el-button>
                     <el-button type="text" size="small" @click="showBody(scope.row.que_id)">查看题目</el-button>
                     <el-button type="text" size="small" @click="deleteQues(scope.row.que_id)">删除题目</el-button>
-
-
                 </template>
             </el-table-column>
         </el-table>

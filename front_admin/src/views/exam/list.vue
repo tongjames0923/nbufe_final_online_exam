@@ -1,8 +1,8 @@
 <template>
   <div>
     <el-table :data="exlist" style="width: 100%">
-      <el-table-column label="考试ID" prop="exam_id" width="80"> </el-table-column>
-      <el-table-column label="考试名称" width="180">
+      <el-table-column label="考试ID" prop="exam_id" width="80" fixed="left"> </el-table-column>
+      <el-table-column label="考试名称" width="180" fixed="left">
         <template slot-scope="data">
           <el-input v-model="data.row.exam_name"
             @blur="ue(3, data.$index, data.row.exam_name, data.row.exam_id)"></el-input>
@@ -33,7 +33,7 @@
           <el-tag>{{ ex_status[data.row.exam_status] }}</el-tag>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="150">
+      <el-table-column label="操作" width="150" fixed="right">
         <template slot-scope="data">
           <el-button type="text" size="small" @click="examDetail(data.row.exam_id)">详情</el-button>
           <el-button type="text" size="small" @click="del(data.row.exam_id)">删除考试</el-button>

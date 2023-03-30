@@ -6,20 +6,22 @@
                 </el-option>
             </el-select>
             <el-input v-model="input" placeholder="请输入搜索内容" style="margin-right: 15px; width: 350px;"></el-input>
-            <el-button icon="el-icon-search" @click.prevent.native="search()" type="primary" style="margin-right: 10px;">搜索日志</el-button>
-           条数：
+            <el-button icon="el-icon-search" @click.prevent.native="search()" type="primary"
+                style="margin-right: 10px;">搜索日志</el-button>
+            条数：
             <el-input-number v-model="MaxPage" :step="2"></el-input-number>
-            <el-table :data="logData" style="width: 100%">
+            <el-table :data="logData" style="width: 100%" v-if="type != 3">
+
                 <el-table-column prop="log_begin" label="调用日期" width="220">
+                </el-table-column>
+                <el-table-column prop="log_invoker" label="调用者信息" width="180">
                 </el-table-column>
                 <el-table-column label="耗时" width="80">
                     <template slot-scope="data">
-                        <el-tag v-if="data.row.cost<100" type="success">{{data.row.cost}}ms</el-tag>
-                        <el-tag v-else-if="data.row.cost<500">{{data.row.cost}}ms</el-tag>
-                        <el-tag v-else type="danger">{{data.row.cost}}ms</el-tag>
+                        <el-tag v-if="data.row.cost < 100" type="success">{{ data.row.cost }}ms</el-tag>
+                        <el-tag v-else-if="data.row.cost < 500">{{ data.row.cost }}ms</el-tag>
+                        <el-tag v-else type="danger">{{ data.row.cost }}ms</el-tag>
                     </template>
-                </el-table-column>
-                <el-table-column prop="log_invoker" label="调用者信息" width="180">
                 </el-table-column>
                 <el-table-column prop="log_type" label="日志类型">
                 </el-table-column>
@@ -30,7 +32,10 @@
                 <el-table-column prop="log_error" label="错误">
                 </el-table-column>
             </el-table>
-
+            <el-table :data="log_cost_data" style="width: 100%" v-else-if="type == 3">
+                <el-table-column label="方法名" prop="function"></el-table-column>
+                <el-table-column label="平均耗时" prop="avg_cost"></el-table-column>
+            </el-table>
         </div>
         <div v-else>
             您没有权限查看系统日志
@@ -39,7 +44,7 @@
 </template>
 <script>
 import { getToken } from '@/utils/auth';
-import { api_log } from '@/api/log'
+import { api_log, api_log_top } from '@/api/log'
 /* eslint-disable */
 export default
     {
@@ -49,8 +54,9 @@ export default
                 type: 0,
                 input: "",
                 logData: [],
+                log_cost_data:[],
                 hasRights: false,
-                MaxPage:100,
+                MaxPage: 100,
                 selectables: [
                     {
                         index: 0,
@@ -63,6 +69,10 @@ export default
                     {
                         index: 2,
                         label: "根据调用方法名"
+                    },
+                    {
+                        index: 3,
+                        label: '耗时Top'
                     }
                 ]
             };
@@ -73,7 +83,13 @@ export default
         },
         methods: {
             search() {
-                api_log(this.type, this.input,this.MaxPage).then(res => {
+                if (this.type == 3) {
+                    api_log_top(this.MaxPage).then(res => {
+                        this.log_cost_data = res;
+                    })
+                    return;
+                }
+                api_log(this.type, this.input, this.MaxPage).then(res => {
                     this.logData = res;
                 })
             }

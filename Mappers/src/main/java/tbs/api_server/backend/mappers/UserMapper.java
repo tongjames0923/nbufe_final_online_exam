@@ -17,7 +17,7 @@ public interface UserMapper {
     @Select("select *,ui.level from `user_sec` uc join `user_info` ui on ui.id=uc.id  where uc.`id`=#{id} FOR UPDATE")
     @Cacheable(value = "userSec",key = "#id")
     UserSecurityInfo getUserSecurityInfo(int id);
-    @Select("select *,ui.level from `user_sec` uc join `user_info` ui on ui.id=uc.id  where uc.`name`=#{name} FOR UPDATE")
+    @Select("select *,ui.level from `user_sec` uc join `user_info` ui on ui.id=uc.id  where uc.`name`=#{name}")
     UserSecurityInfo getUserSecurityInfoByName( @NonNull String name);
 
 
