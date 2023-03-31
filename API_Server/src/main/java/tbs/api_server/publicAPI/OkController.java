@@ -15,15 +15,13 @@ import static tbs.api_server.utility.Error.SUCCESS;
 @RestController
 public class OkController {
 
-    @Resource
-    AI_Client aiClient;
+
 
     @RequestMapping("/")
     @NoNeedAccess
     @NoLog
     public NetResult ok(@RequestParam(required = false,defaultValue = "光走一年叫光年，狗走一天叫什么？") String text)
     {
-        return NetResult.makeResult(SUCCESS,"every thing is fine",
-                aiClient.request(text));
+        return NetResult.makeResult(SUCCESS,"every thing is fine");
     }
 }

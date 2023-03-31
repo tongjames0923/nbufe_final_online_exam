@@ -1,7 +1,7 @@
 <!-- eslint-disable vue/multi-word-component-names -->
 /* eslint-disable */
 <template>
-    <div>
+    <el-row v-loading="loading">
         <el-radio-group v-model="type" size="small" @change="change">
             <el-radio-button label=0>{{ typename[0] }}</el-radio-button>
             <el-radio-button label=1>{{ typename[1] }}</el-radio-button>
@@ -13,7 +13,7 @@
             <el-radio-button label=1>公开</el-radio-button>
         </el-radio-group>
         <div style="height:15px"></div>
-        <el-input v-model=title placeholder="题目标题"></el-input>
+        <el-input v-model=title placeholder="题目标题" @input="(value) => { this.title = value }"></el-input>
         <div style="height:15px"></div>
         <el-collapse>
             <el-collapse-item title="标签选择">
@@ -57,7 +57,7 @@
                 </div>
                 <div v-else-if="this.type == 1">
                     <el-table :data="ques" style="width: 100%">
-                        <el-table-column  label="填空答案" width="180">
+                        <el-table-column label="填空答案" width="180">
                             <template slot-scope="data">
                                 <el-input v-model="data.row.text"></el-input>
                             </template>
@@ -99,15 +99,20 @@
         </el-collapse>
         <div style="height:15px"></div>
         <el-button @click="upload()">提交</el-button>
-    </div>
+        <el-tooltip class="item" effect="dark" content="根据考题标题为您AI生成题目" placement="right-end">
+            <el-button @click="ai_help()">帮我出题</el-button>
+        </el-tooltip>
+
+    </el-row>
 </template>
 
 <script>
 /* eslint-disable */
 import TagAdd from "@/views/tag/add.vue"
 import TagList from '@/views/tag/list.vue';
-import {create_ques} from '@/api/question'
+import { create_ques } from '@/api/question'
 import { getToken } from '@/utils/auth';
+import { api_makeSelectQ } from "@/api/ai";
 export default {
     components: { TagAdd, TagList },
     data() {
@@ -121,31 +126,49 @@ export default {
             fill_blank_visibility: false,
             isopen: 1,
             title: "",
-            addtag: false
+            addtag: false,
+            loading:false
         };
     },
     methods:
     {
+        ai_help(tx) {
+            if (this.type !== '0') {
+                console.log(this.type)
+                this.$message({ message: "仅支持选择题", type: 'warning' })
+                return;
+            }
+            this.loading=true
+            api_makeSelectQ(this.title).then(res => {
+                this.ques = []
+                this.text = res.text;
+                for (let i = 0; i < res.options.length; i++) {
+                    this.ques.push({ "text": res.options[i].answer, "right": res.options[i].right ? '1' : '0' });
+                }
+            }).finally(()=>{
+                this.loading=false
+            });
+        },
         upload() {
             let arr = this.$refs.tags.getSelects();
             let files = new File([new Blob([this.text], { type: 'text/plain;chartset=UTF-8' })],
-             "quesfile.md")
-             var data=new FormData();
-             const user=JSON.parse(getToken())
-             data.append("type",this.type);
-             data.append("creator",user.id);
-             data.append("title",this.title)
-             data.append("md",files)
-             data.append("isopen",this.isopen)
-             data.append("tags",arr),
-             console.log(JSON.stringify(this.ques))
-             data.append("answer",JSON.stringify(this.ques))
-             create_ques(data).then(res=>{
+                "quesfile.md")
+            var data = new FormData();
+            const user = JSON.parse(getToken())
+            data.append("type", this.type);
+            data.append("creator", user.id);
+            data.append("title", this.title)
+            data.append("md", files)
+            data.append("isopen", this.isopen)
+            data.append("tags", arr),
+                console.log(JSON.stringify(this.ques))
+            data.append("answer", JSON.stringify(this.ques))
+            create_ques(data).then(res => {
                 this.$message({
-                        message: '新增题目成功',
-                        type: 'success'
-                    });
-             });
+                    message: '新增题目成功',
+                    type: 'success'
+                });
+            });
         },
         oninput() {
             this.ques[0] = this.temp;
@@ -183,8 +206,8 @@ export default {
         }
     },
     mounted() {
-        tagapi.getAllTags().then(res=>{
-            const data=res.data;
+        tagapi.getAllTags().then(res => {
+            const data = res.data;
             this.$refs.tags.updateData(data);
             this.$forceUpdate();
         })
@@ -192,6 +215,4 @@ export default {
 }
 </script>
 
-<style>
-
-</style>
+<style></style>
