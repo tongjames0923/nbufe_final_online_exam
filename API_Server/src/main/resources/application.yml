@@ -19,7 +19,7 @@ spring:
     redis:
         host: 127.0.0.1
         password: redispw
-        port: 32768
+        port: 32769
         database: 0
         timeout: 1000
     rabbitmq:
@@ -42,3 +42,5 @@ tbs:
     log:
         server: rmi://127.0.0.1:8888/
     app_save: /Users/abstergo/Downloads/毕设resource
+    ai_token: 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
+    ai_address: https://api.openai.com/v1/chat/completions

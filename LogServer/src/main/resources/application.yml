@@ -19,7 +19,7 @@ spring:
   redis:
       host: 127.0.0.1
       password: redispw
-      port: 32768
+      port: 32769
       database: 0
       timeout: 1000
   rabbitmq:
