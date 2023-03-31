@@ -112,7 +112,7 @@ import TagAdd from "@/views/tag/add.vue"
 import TagList from '@/views/tag/list.vue';
 import { create_ques } from '@/api/question'
 import { getToken } from '@/utils/auth';
-import { api_makeSelectQ } from "@/api/ai";
+import { api_makeFillBlankQ, api_makeSelectQ } from "@/api/ai";
 export default {
     components: { TagAdd, TagList },
     data() {
@@ -127,27 +127,40 @@ export default {
             isopen: 1,
             title: "",
             addtag: false,
-            loading:false
+            loading: false
         };
     },
     methods:
     {
         ai_help(tx) {
-            if (this.type !== '0') {
+            if (this.type !== '0' && this.type !== '1') {
                 console.log(this.type)
-                this.$message({ message: "仅支持选择题", type: 'warning' })
+                this.$message({ message: "仅支持选择题和填空题", type: 'warning' })
                 return;
             }
-            this.loading=true
-            api_makeSelectQ(this.title).then(res => {
-                this.ques = []
-                this.text = res.text;
-                for (let i = 0; i < res.options.length; i++) {
-                    this.ques.push({ "text": res.options[i].answer, "right": res.options[i].right ? '1' : '0' });
-                }
-            }).finally(()=>{
-                this.loading=false
-            });
+
+            if (this.type === '0') {
+                this.loading = true
+                api_makeSelectQ(this.title).then(res => {
+                    this.ques = []
+                    this.text = res.text;
+                    for (let i = 0; i < res.options.length; i++) {
+                        this.ques.push({ "text": res.options[i].answer, "right": res.options[i].right ? '1' : '0' });
+                    }
+                }).finally(() => {
+                    this.loading = false
+                });
+            }
+            else if (this.type === '1') {
+                this.loading = true
+                api_makeFillBlankQ(this.title).then(res => {
+                    this.ques = []
+                    this.text = res.text;
+                    this.ques.push({ 'text': res.answer, 'equal': '1' })
+                }).finally(() => {
+                    this.loading = false;
+                })
+            }
         },
         upload() {
             let arr = this.$refs.tags.getSelects();

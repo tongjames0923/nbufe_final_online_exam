@@ -39,14 +39,15 @@ public class AnswerController
             }
         }).methodWithLogined();
     }
-    public NetResult get(int ques,int user)
+    @RequestMapping("get")
+    public NetResult get(int ques)
     {
         return ApiMethod.make(new ApiMethod.IAction()
         {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception
             {
-                return NetResult.makeResult(service.getAnswer(ques,user),null);
+                return NetResult.makeResult(service.getAnswer(ques, applyUser.getId()),null);
             }
         }).methodWithLogined();
     }

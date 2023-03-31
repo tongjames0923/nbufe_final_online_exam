@@ -66,7 +66,7 @@
                 <template slot-scope="scope">
                     <el-button type="text" size="small" v-if="selectable" @click="select(scope.row)">选择本题</el-button>
                     <el-button type="text" size="small" @click="updateTag(scope.$index)">更新Tag</el-button>
-                    <el-button type="text" size="small" @click="findAnswer(scope.$index)">查看答案</el-button>
+                    <el-button type="text" size="small" @click="findAnswer(scope.row.que_id)">查看答案</el-button>
                     <el-button type="text" size="small" @click="showBody(scope.row.que_id)">查看题目</el-button>
                     <el-button type="text" size="small" @click="deleteQues(scope.row.que_id)">删除题目</el-button>
                 </template>
@@ -93,6 +93,7 @@ import UserInfo from '@/views/dashboard/components/userinfo.vue';
 import TagList from '@/views/tag/list.vue';
 import { api_getUnselect, getAllTags, getTagByQues } from '@/api/tag';
 import { getUser } from '@/api/user'
+import {api_getAnswer} from '@/api/answer'
 import { list, CountQues, questionBody, api_changePublic, searchByTitle, searchByID, searchByTag, deleteQues, api_updateTags, api_changeTitle } from '@/api/question';
 import Answer from './answer.vue';
 import { getToken } from '@/utils/auth';
@@ -191,7 +192,10 @@ export default
             },
             findAnswer(idx) {
                 this.showAns = true
-                this.$refs.ans.updateUI(this.tableData[idx].que_type, this.tableData[idx].answer_data);
+                api_getAnswer(idx).then(res=>{
+                    this.$refs.ans.updateUI(res.type, res.answer_content);
+                    this.$forceUpdate();
+                })
             },
             pul(ix) {
                 this.drawer = true

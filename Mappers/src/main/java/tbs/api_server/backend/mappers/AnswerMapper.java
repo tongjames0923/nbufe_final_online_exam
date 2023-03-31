@@ -9,7 +9,7 @@ import tbs.api_server.objects.simple.StandardAnswer;
 @Mapper
 public interface AnswerMapper
 {
-    @Select("SELECT * FROM answer WHERE ques_id=#{ques_id} FOR UPDATE")
+    @Select("SELECT a.*,q.que_type as type FROM answer a join question q on q.que_id=a.ques_id WHERE a.ques_id=#{ques_id} FOR UPDATE")
     StandardAnswer getAnswerForQuestion(int ques_id);
 
 //    @Update("UPDATE answer SET answer_content =#{answer} where ques_id=#{ques_id}")

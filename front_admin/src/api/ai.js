@@ -13,9 +13,16 @@ export function api_ask(text)
 }
 export function api_makeSelectQ(text)
 {
-    debugger
     return req({
         url:"ai/makeSelectQ",
+        method:'post',
+        data:text
+    })
+}
+export function api_makeFillBlankQ(text)
+{
+    return req({
+        url:"ai/makeFillBlankQ",
         method:'post',
         data:text
     })
