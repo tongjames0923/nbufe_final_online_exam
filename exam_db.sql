@@ -11,7 +11,7 @@
  Target Server Version : 80031 (8.0.31)
  File Encoding         : 65001
 
- Date: 31/03/2023 15:01:57
+ Date: 31/03/2023 16:12:21
 */
 
 SET NAMES utf8mb4;
@@ -73,14 +73,17 @@ CREATE TABLE `exam_ reply` (
   `exam_id` bigint(16) unsigned zerofill NOT NULL COMMENT '答题对应的试卷',
   `exam_number` varchar(128) NOT NULL COMMENT '考号',
   `person_id` varchar(128) NOT NULL COMMENT '身份证号',
-  `reply_file` varchar(128) NOT NULL COMMENT '答题卷文件',
+  `ques_id` int(10) unsigned zerofill NOT NULL COMMENT '对应的题目id',
   `status` int NOT NULL DEFAULT '0' COMMENT '批阅状态',
-  `check_file` varchar(128) DEFAULT NULL COMMENT '批阅数据文件',
+  `score` double DEFAULT NULL COMMENT '得分',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `reply_file` (`reply_file`),
+  UNIQUE KEY `reply_file` (`ques_id`),
   KEY `exam_id` (`exam_id`),
   KEY `exam_number` (`exam_number`),
-  CONSTRAINT `exam_ reply_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`exam_id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `ques_id` (`ques_id`),
+  KEY `status` (`status`),
+  CONSTRAINT `exam_ reply_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`exam_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `exam_ reply_ibfk_2` FOREIGN KEY (`ques_id`) REFERENCES `question` (`que_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='答题表，用于储存考生答题数据';
 
 -- ----------------------------
@@ -107,7 +110,7 @@ CREATE TABLE `exam_link` (
   CONSTRAINT `exam_link_ibfk_1` FOREIGN KEY (`examname`) REFERENCES `exam` (`exam_name`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `exam_link_ibfk_2` FOREIGN KEY (`questionid`) REFERENCES `question` (`que_id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `exam_link_ibfk_3` FOREIGN KEY (`insertor`) REFERENCES `user_sec` (`name`) ON DELETE SET NULL ON UPDATE SET NULL
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='试卷题目表';
+) ENGINE=InnoDB AUTO_INCREMENT=100008 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='试卷题目表';
 
 -- ----------------------------
 -- Records of exam_link
