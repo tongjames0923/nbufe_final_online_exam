@@ -3,9 +3,13 @@ package tbs.api_server.objects.simple;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.persistence.*;
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Date;
 
+@Entity
+@Table(name = "log", schema = "exam_db", catalog = "")
 public class LogPojo implements Serializable {
     private final static long serialVersionUID = 1L;
     private int log_id;
@@ -15,7 +19,8 @@ public class LogPojo implements Serializable {
     private Date log_begin;
 
     long cost;
-
+    @Basic
+    @Column(name = "log_error", nullable = true, length = -1)
     public String getLog_error() {
         return log_error;
     }
@@ -26,7 +31,8 @@ public class LogPojo implements Serializable {
 
     private String log_return,log_params,log_error;
 
-
+    @Basic
+    @Column(name = "cost", nullable = false)
     public long getCost() {
         return cost;
     }
@@ -49,6 +55,9 @@ public class LogPojo implements Serializable {
 
     public LogPojo() {
     }
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @Column(name = "log_id", nullable = false)
 
     public int getLog_id() {
         return log_id;
@@ -58,7 +67,8 @@ public class LogPojo implements Serializable {
         this.log_id = log_id;
     }
 
-
+    @Basic
+    @Column(name = "log_type", nullable = false, length = 255)
     public String getLog_type() {
         return log_type;
     }
@@ -66,7 +76,8 @@ public class LogPojo implements Serializable {
     public void setLog_type(String log_type) {
         this.log_type = log_type;
     }
-
+    @Basic
+    @Column(name = "log_function", nullable = false, length = 255)
     public String getLog_function() {
         return log_function;
     }
@@ -74,7 +85,8 @@ public class LogPojo implements Serializable {
     public void setLog_function(String log_function) {
         this.log_function = log_function;
     }
-
+    @Basic
+    @Column(name = "log_invoker", nullable = false, length = 512)
     public String getLog_invoker() {
         return log_invoker;
     }
@@ -82,7 +94,11 @@ public class LogPojo implements Serializable {
     public void setLog_invoker(String log_invoker) {
         this.log_invoker = log_invoker;
     }
-
+    @Basic
+    @Column(name = "log_begin", nullable = false)
+    @DateTimeFormat(pattern="yyyy年MM月dd日 hh:mm:ss")
+    @JsonFormat(pattern="yyyy年MM月dd日 hh:mm:ss",timezone="GMT+8")
+    @Temporal(value = TemporalType.TIMESTAMP)
     public Date getLog_begin() {
         return log_begin;
     }
@@ -91,7 +107,8 @@ public class LogPojo implements Serializable {
         this.log_begin = log_begin;
     }
 
-
+    @Basic
+    @Column(name = "log_return", nullable = true, length = -1)
     public String getLog_return() {
         return log_return;
     }
@@ -99,7 +116,8 @@ public class LogPojo implements Serializable {
     public void setLog_return(String log_return) {
         this.log_return = log_return;
     }
-
+    @Basic
+    @Column(name = "log_params", nullable = true, length = -1)
     public String getLog_params() {
         return log_params;
     }
@@ -107,5 +125,4 @@ public class LogPojo implements Serializable {
     public void setLog_params(String log_params) {
         this.log_params = log_params;
     }
-
 }
