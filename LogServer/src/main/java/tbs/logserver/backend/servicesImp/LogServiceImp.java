@@ -23,8 +23,8 @@ public class LogServiceImp implements ILogService {
         if(fied>=0&&fied<avaliables.length)
         {
             LogpageSpec spec=new LogpageSpec(avaliables[fied],val);
-            Page<LogPojo> result= logMapper.findAll(spec,PageRequest.of(from,num));
-            return result.stream().collect(Collectors.toList());
+            Page<LogPojo> result= logMapper.findAllWithoutTotal(spec,PageRequest.of(from,num));
+            return  result.getContent();
         }
         return null;
     }
