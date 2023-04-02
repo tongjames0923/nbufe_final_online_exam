@@ -16,12 +16,18 @@ public class LogHandle {
 
     @Resource
     LogMapper mapper;
-
     @RabbitListener(queues = "log_queue")
-    @Transactional(rollbackFor = Exception.class)
-    public void writeLog(LogPojo log, Channel cha, Message msg) throws IOException {
+    @Transactional
+    public void writeLog(LogPojo log, Channel cha, Message msg)
+    {
+       int t= mapper.writeLog(log);
+       if(t>0) {
+           try {
+               cha.basicAck(msg.getMessageProperties().getDeliveryTag(),false);
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+       }
 
-        mapper.save(log);
-        cha.basicAck(msg.getMessageProperties().getDeliveryTag(), false);
     }
 }

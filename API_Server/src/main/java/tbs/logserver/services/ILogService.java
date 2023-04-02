@@ -6,6 +6,6 @@ import tbs.api_server.objects.simple.LogVo;
 import java.util.List;
 
 public interface ILogService {
-    List<LogPojo> listLogInPage(int from, int num, int fied, String val);
+    public List<LogPojo> listLogInPage(int from, int num, int fied, String val) ;
     List<LogVo> listTopCost(int num);
 }
