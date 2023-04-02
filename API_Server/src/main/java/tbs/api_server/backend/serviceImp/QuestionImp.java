@@ -58,7 +58,7 @@ public class QuestionImp implements QuestionService {
     AnswerMapper answerMapper;
 
     @Override
-    public ServiceResult uploadQuestion(int que_type, String title, int creator_id, byte[] que_file, Integer isopen, String ans) throws BackendError {
+    public ServiceResult uploadQuestion(int que_type, String title, int creator_id,String que_file, Integer isopen, String ans) throws BackendError {
         int id = getID();
         int c = mp.insertQuestion(id, que_type, creator_id, que_file, title, isopen);
         c += answerMapper.insertAnswer(id, ans, null);

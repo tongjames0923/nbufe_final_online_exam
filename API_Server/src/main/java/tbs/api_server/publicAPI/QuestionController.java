@@ -55,10 +55,10 @@ public class QuestionController {
     @RequestMapping(value = "create", method = RequestMethod.POST)
     @Transactional
     public NetResult uploadQuestion(@RequestParam int type,@RequestParam int creator,@RequestParam String title,
-                                    @RequestParam MultipartFile md,@RequestParam Integer isopen
+                                    @RequestParam String md,@RequestParam Integer isopen
             , @RequestParam List<String>  tags,@RequestParam String answer) {
         try {
-            ServiceResult result = service.uploadQuestion(type, title, creator, md.getBytes(), isopen,answer);
+            ServiceResult result = service.uploadQuestion(type, title, creator, md, isopen,answer);
             int id= (int) result.getObj();
             for (String ch:tags)
             {

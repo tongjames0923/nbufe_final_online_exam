@@ -12,7 +12,7 @@ import java.util.List;
 public interface QuestionMapper {
     //问题
     @Insert("INSERT INTO `question` (`que_id`,`que_type`, `que_creator`, `que_alter_time`, `que_file`, `publicable`,   `answerd`, `answerd_right`,`title`) VALUES (#{id},#{que_type},#{creator_id}, CURRENT_TIMESTAMP, #{que_file}, #{isopen},'0', '0',#{title})")
-    int insertQuestion(long id, int que_type, int creator_id, byte[] que_file, String title, Integer isopen);
+    int insertQuestion(long id, int que_type, int creator_id, String que_file, String title, Integer isopen);
 
     @Select("SELECT q.`que_id`,q.`que_type`, q.`que_creator`,ans.answer_content as answer_data, q.`que_alter_time`, q.`publicable`,(select count(1) from exam_link where questionid=q.que_id) as use_time, q.`answerd`, q.`answerd_right`,q.`title` " +
             "FROM `question` q join `answer` ans on ans.ques_id=q.que_id " +

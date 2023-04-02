@@ -296,6 +296,7 @@ public class ExamImp implements ExamService {
                 post.setExam_len(data.getExam_len());
                 post.setExam_note(data.getExam_note());
                 post.setExam_name(data.getExam_name());
+                post.setQuestions(data.getQuestions());
                 return ServiceResult.makeResult(SUCCESS, post);
             }
 

@@ -6,16 +6,7 @@
         xmlns:local="clr-namespace:Examer_Client"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-    <Grid Height="450" Width="800">
+    <Frame x:Name="area" NavigationUIVisibility="Hidden">
+    </Frame>
 
-        <Button x:Name="btn" Content="检查考试" Height="30" Margin="350,335,350,70" Width="100" d:LayoutOverrides="HorizontalAlignment" Click="Button_Click" />
-        <ComboBox x:Name="exams" Margin="188,270,188,140" d:LayoutOverrides="HorizontalAlignment"/>
-        <TextBox x:Name="name"  Margin="188,170,188,245" Text="" TextWrapping="Wrap" AutomationProperties.HelpText="姓名" TextChanged="name_TextChanged"/>
-        <TextBox x:Name="number" Margin="188,130,188,285" Text="" TextWrapping="Wrap" AutomationProperties.HelpText="考号"/>
-        <TextBox x:Name="id" Margin="188,217,188,198" Text="" TextWrapping="Wrap" d:LayoutOverrides="VerticalAlignment" AutomationProperties.HelpText="身份证号"/>
-        <Label Content="考号" Margin="113,130,617,285" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Height="35" Width="70" d:LayoutOverrides="Width"/>
-        <Label Content="身份证号" Margin="118,217,612,198" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Height="35" Width="70" d:LayoutOverrides="VerticalAlignment"/>
-        <Label Content="考生姓名" Margin="113,170,617,245" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Height="35" Width="70"/>
-        <Label Content="考试选项" Margin="113,275,617,140" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Height="35" Width="70"/>
-    </Grid>
 </Window>

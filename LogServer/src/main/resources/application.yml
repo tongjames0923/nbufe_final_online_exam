@@ -19,13 +19,13 @@ spring:
   redis:
       host: 127.0.0.1
       password: redispw
-      port: 6379
+      port: 32768
       database: 0
       timeout: 1000
   rabbitmq:
       host: 127.0.0.1
-      port: 5672
-      username: abstergo
+      port: 19889
+      username: root
       password: tongyi0923
       listener:
        simple:
@@ -34,6 +34,7 @@ spring:
           enabled: true # 是否支持重试
   jpa:
     show-sql: true
+
 tbs:
   queue:
     log: log_queue

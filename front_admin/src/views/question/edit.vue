@@ -164,19 +164,19 @@ export default {
         },
         upload() {
             let arr = this.$refs.tags.getSelects();
-            let files = new File([new Blob([this.text], { type: 'text/plain;chartset=UTF-8' })],
-                "quesfile.md")
-            var data = new FormData();
-            const user = JSON.parse(getToken())
-            data.append("type", this.type);
-            data.append("creator", user.id);
-            data.append("title", this.title)
-            data.append("md", files)
-            data.append("isopen", this.isopen)
-            data.append("tags", arr),
-                console.log(JSON.stringify(this.ques))
-            data.append("answer", JSON.stringify(this.ques))
-            create_ques(data).then(res => {
+            // let files = new File([new Blob([this.text], { type: 'text/plain;chartset=UTF-8' })],
+            //  "quesfile.md")
+             var data=new FormData();
+             const user=JSON.parse(getToken())
+             data.append("type",this.type);
+             data.append("creator",user.id);
+             data.append("title",this.title)
+             data.append("md",this.text)
+             data.append("isopen",this.isopen)
+             data.append("tags",arr),
+             console.log(JSON.stringify(this.ques))
+             data.append("answer",JSON.stringify(this.ques))
+             create_ques(data).then(res=>{
                 this.$message({
                     message: '新增题目成功',
                     type: 'success'

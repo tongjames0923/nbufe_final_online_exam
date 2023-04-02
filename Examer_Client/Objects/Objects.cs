@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Examer_Client.Objects
 {
@@ -154,7 +151,7 @@ namespace Examer_Client.Objects
             get;
             set;
         }
-        public byte[] que_file
+        public String que_file
         {
             get;
             set;

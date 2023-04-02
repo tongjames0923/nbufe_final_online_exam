@@ -1,0 +1,29 @@
+﻿<Page x:Class="Examer_Client.Pages.QuestionPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:Examer_Client.Pages"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Title="QuestionPage">
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="30">
+            </RowDefinition>
+            <RowDefinition Height="150">
+            </RowDefinition>
+            <RowDefinition Height="250">
+            </RowDefinition>
+            <RowDefinition Height="250">
+
+            </RowDefinition>
+        </Grid.RowDefinitions>
+
+        <Label Grid.Row="0" x:Name="title" Content="标题"/>
+        <WebBrowser Grid.Row="1" x:Name="questionContent" VerticalAlignment="Top"></WebBrowser>
+        <Button Grid.Row="2"  x:Name="lastQuestion" Content="上一题" VerticalAlignment="Top" Click="lastQuestion_Click" Margin="0,0,650,0" Width="150"/>
+        <Button Grid.Row="2" x:Name="nextQuestion" Content="下一题"  VerticalAlignment="Top" Click="nextQuestion_Click" Margin="650,0,0,0" Width="150"/>
+    </Grid>
+</Page>
