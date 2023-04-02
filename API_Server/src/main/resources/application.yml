@@ -42,5 +42,5 @@ tbs:
     log:
         server: rmi://127.0.0.1:8888/
     app_save: /Users/abstergo/Downloads/毕设resource
-    ai_token: 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
+    ai_token: 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
     ai_address: https://api.openai.com/v1/chat/completions
