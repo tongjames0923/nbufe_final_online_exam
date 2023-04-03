@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import tbs.api_server.objects.simple.LogPojo;
 import tbs.api_server.objects.simple.LogVo;
 import tbs.logserver.backend.mappers.LogMapper;
+import tbs.logserver.config.BatchCenter;
 import tbs.logserver.services.ILogService;
 
 import javax.annotation.Resource;
@@ -15,6 +16,7 @@ public class LogServiceImp implements ILogService {
     LogMapper logMapper;
     @Override
     public List<LogPojo> listLogInPage(int from, int num, int fied, String val) {
+        BatchCenter.Center.flush(true);
         String[] avaliables={"log_type","log_invoker","log_function"};
         if(fied>=0&&fied<avaliables.length)
         {
@@ -25,6 +27,7 @@ public class LogServiceImp implements ILogService {
 
     @Override
     public List<LogVo> listTopCost(int num) {
+        BatchCenter.Center.flush(true);
         return logMapper.listTopCostFunction(num);
     }
 }
