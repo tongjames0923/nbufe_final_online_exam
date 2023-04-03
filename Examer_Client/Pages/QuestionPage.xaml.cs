@@ -2,19 +2,8 @@
 using Examer_Client.Utils;
 using Markdig;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Examer_Client.Pages
 {
@@ -41,19 +30,21 @@ namespace Examer_Client.Pages
                 else
                     index = value;
                 Question = SystemManager.Manager.Questions[index];
+                answer.Content = new SelectAnswerArea(index);
             }
         }
 
         public ExamQuestion Question
         {
             get => q;
-            set {
+            set
+            {
                 q = value;
                 var result = Markdown.ToHtml(q.detail.que_file);
                 //Console.WriteLine(result);   // prints: <p>This is a text with some <em>emphasis</em></p>
                 questionContent.NavigateToString(result);
                 String type = "";
-                switch(q.detail.que_type)
+                switch (q.detail.que_type)
                 {
                     case 0:
                         type = "选择题";

@@ -14,16 +14,18 @@
             </RowDefinition>
             <RowDefinition Height="150">
             </RowDefinition>
-            <RowDefinition Height="250">
+            <RowDefinition Height="200">
             </RowDefinition>
-            <RowDefinition Height="250">
+            <RowDefinition Height="20">
 
             </RowDefinition>
         </Grid.RowDefinitions>
 
         <Label Grid.Row="0" x:Name="title" Content="标题"/>
         <WebBrowser Grid.Row="1" x:Name="questionContent" VerticalAlignment="Top"></WebBrowser>
-        <Button Grid.Row="2"  x:Name="lastQuestion" Content="上一题" VerticalAlignment="Top" Click="lastQuestion_Click" Margin="0,0,650,0" Width="150"/>
-        <Button Grid.Row="2" x:Name="nextQuestion" Content="下一题"  VerticalAlignment="Top" Click="nextQuestion_Click" Margin="650,0,0,0" Width="150"/>
+        <Button Grid.Row="3"  x:Name="lastQuestion" Content="上一题" VerticalAlignment="Top" Click="lastQuestion_Click" Margin="0,0,650,0" Width="150"/>
+        <Button Grid.Row="3" x:Name="nextQuestion" Content="下一题"  VerticalAlignment="Top" Click="nextQuestion_Click" Margin="650,0,0,0" Width="150"/>
+        <Frame Grid.Row="2" x:Name="answer" NavigationUIVisibility="Hidden">
+        </Frame>
     </Grid>
 </Page>

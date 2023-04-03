@@ -16,8 +16,6 @@ import tbs.api_server.objects.compound.exam.ExamQuestion;
 import tbs.api_server.objects.compound.exam.ExamUser;
 import tbs.api_server.objects.simple.*;
 import tbs.api_server.services.ExamService;
-import tbs.api_server.utils.BatchUtil;
-import tbs.api_server.utils.MybatisBatchUtils;
 import tbs.api_server.utils.TimeUtil;
 
 import javax.annotation.Resource;
@@ -107,7 +105,7 @@ public class ExamImp implements ExamService {
             throw _ERROR.throwError(EC_DB_INSERT_FAIL, "考试权限赋予失败");
         c = 0;
         for (ExamQuestion eq : qs) {
-            c += examLinkMapper.insertQuestion(eq.getQues_id(), data.getExam_name(), (int) eq.getScore(), opertname);
+            c += examLinkMapper.insertQuestionLink(eq.getQues_id(), data.getExam_name(), (int) eq.getScore(), opertname);
         }
         if (c != qs.size())
             throw _ERROR.throwError(EC_DB_INSERT_FAIL, "插入考题数据不完整");

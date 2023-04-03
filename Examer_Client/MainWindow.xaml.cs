@@ -15,7 +15,6 @@ namespace Examer_Client
             InitializeComponent();
             area.Content = new LoginPage();
             SystemManager.Manager.WindowArea = area;
-
         }
 
 

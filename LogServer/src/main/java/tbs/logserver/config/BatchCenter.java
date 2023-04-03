@@ -16,7 +16,7 @@ import java.util.function.BiFunction;
 public class BatchCenter {
     List<LogPojo> list=new ArrayList<>();
 
-    @Value("${tbs.log.batchsize}")
+    @Value("${tbs.batchsize}")
     int max;
     public static BatchCenter Center;
 

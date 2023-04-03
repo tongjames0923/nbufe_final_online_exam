@@ -16,7 +16,7 @@ public interface ExamLinkMapper {
     @Insert("insert into `exam_link`(questionid,examname,score,insertor) values (" +
             "#{qid},#{examname},#{score},#{insertor}" +
             ");")
-    int insertQuestion(int qid,String examname,int score,String insertor);
+    int insertQuestionLink(int qid, String examname, int score, String insertor);
 
     @Select("select *  from exam_link where examname=#{name}")
     @Cacheable(value = "ques_links",key = "#name")

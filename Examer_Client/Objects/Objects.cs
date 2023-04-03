@@ -21,6 +21,32 @@ namespace Examer_Client.Objects
             set;
         }
     }
+    public class CheckData
+    {
+        public int queid
+        {
+            get;
+            set;
+        }
+        public List<string> text
+        {
+            get;
+            set;
+        }
+    }
+    public class SingleSelect
+    {
+        public String text
+        {
+            get;
+            set;
+        }
+        public String right
+        {
+            get;
+            set;
+        }
+    }
     public class ExamInfo
     {
         /// <summary>

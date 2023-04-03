@@ -19,7 +19,7 @@ spring:
   redis:
       host: 127.0.0.1
       password: redispw
-      port: 32768
+      port: 6379
       database: 0
       timeout: 1000
   rabbitmq:
@@ -32,10 +32,9 @@ spring:
         acknowledge-mode: manual
         retry:
           enabled: true # 是否支持重试
-  jpa:
-    show-sql: true
 
 tbs:
+  batchsize: 128
   queue:
     log: log_queue
   log:

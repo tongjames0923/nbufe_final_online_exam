@@ -39,11 +39,30 @@ namespace Examer_Client.Utils
             get;
             set;
         }
+        private ExamPost exam = null;
+        Dictionary<int, CheckData> checks;
+
+
+        public CheckData getByQuestionId(int ques)
+        {
+            return checks[ques];
+        }
 
         public ExamPost Exam
         {
-            get;
-            set;
+            get => exam;
+            set
+            {
+                checks = new Dictionary<int, CheckData>();
+                for (int i = 0; i < value.questions.Count; i++)
+                {
+                    CheckData d = new CheckData();
+                    d.queid = value.questions[i].ques_id;
+                    d.text = new List<string>();
+                    checks.Add(d.queid, d);
+                }
+                exam = value;
+            }
         }
     }
 }

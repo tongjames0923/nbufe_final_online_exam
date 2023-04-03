@@ -60,6 +60,10 @@ namespace Examer_Client.Pages
                 {
                     SystemManager.Manager.Exam = ei;
                     SystemManager.Manager.WindowArea.Content = new QuestionPage();
+                    if (SystemManager.Manager.WindowArea.CanGoBack)
+                    {
+                        SystemManager.Manager.WindowArea.RemoveBackEntry();
+                    }
                 });
             }
 

@@ -3,17 +3,18 @@ package tbs.api_server.utils;
 import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 import tbs.api_server.objects.simple.LogPojo;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiFunction;
-
+@Component
 public class BatchUtil<T> {
     List<T> list = new ArrayList<>();
 
-    @Value("${tbs.log.batchsize}")
+    @Value("${tbs.batchsize}")
     int max;
     public static BatchUtil Center;
 
