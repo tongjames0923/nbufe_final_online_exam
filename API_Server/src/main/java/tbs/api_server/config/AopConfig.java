@@ -75,6 +75,7 @@ public class AopConfig {
         }
 
         UserSecurityInfo sec = manager.getLogined(token);
+        logPojo.setLogined(sec);
         if (sec == null) {
             logPojo.setLog_invoker(String.format("invoke ip:%s", getRemoteHost(request)));
         } else
@@ -104,10 +105,15 @@ public class AopConfig {
     @Resource
     HttpServletRequest request;
 
-    String sub(String s) {
-        if (s.length() > 200)
-            return s.substring(0, 200);
+    String sub(String s,int max) {
+        if(s==null)
+            return "";
+        if (s.length() > max)
+            return s.substring(0, max);
         return s;
+    }
+    String sub(String s) {
+        return sub(s,200);
     }
 
     @Around("sqlPointCut()")
@@ -120,7 +126,7 @@ public class AopConfig {
             MappedStatement statement = sqlSessionFactory.getConfiguration().getMappedStatement(signature.getName());
             String sql = statement.getBoundSql(null).getSql();
             result = proceedingJoinPoint.proceed();
-            log.setLog_function(sql);
+            log.setLog_function(sub(sql));
             log.setCost(new Date().getTime() - log.getLog_begin().getTime());
             WriteLog(log);
         } catch (Throwable e) {
@@ -150,12 +156,7 @@ public class AopConfig {
             AccessLimit limit = signature.getMethod().getAnnotation(AccessLimit.class);
             needlog = nolog == null;
             if (annotation == null) {
-                Enumeration<String> em = request.getHeaders("X-TOKEN");
-                String token = null;
-                while (em.hasMoreElements()) {
-                    token = em.nextElement();
-                }
-                UserSecurityInfo sec = manager.getLogined(token);
+                UserSecurityInfo sec = log.getLogined();
                 if (sec == null) {
                     throw _ERROR.throwError(FC_NEED_LOGIN, "需要登录");
                 }

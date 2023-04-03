@@ -1,8 +1,10 @@
 package tbs.api_server.publicAPI;
 
+import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+import tbs.api_server.backend.mappers.ExamMapper;
 import tbs.api_server.config.NoNeedAccess;
 import tbs.api_server.config.constant.const_Exam;
 import tbs.api_server.config.constant.const_User;
@@ -16,6 +18,8 @@ import tbs.api_server.services.ExamPermissionService;
 import tbs.api_server.services.ExamService;
 import tbs.api_server.utility.ApiMethod;
 import tbs.api_server.utility.Error;
+import tbs.api_server.utils.BatchUtil;
+import tbs.api_server.utils.MybatisBatchUtils;
 import tbs.api_server.utils.TimeUtil;
 
 import javax.annotation.Resource;
@@ -23,6 +27,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.BiFunction;
 
 import static tbs.api_server.utility.Error.SUCCESS;
 
@@ -33,6 +38,8 @@ public class ExamController {
     ExamService service;
     @Resource
     ExamPermissionService permissionService;
+    @Resource
+    BatchUtil<ExamInfo> examInfoBatchUtil;
     private void update(UserSecurityInfo user,List<ExamInfo> list) throws Error.BackendError {
 
         Iterator<ExamInfo> iter= list.iterator();
@@ -60,20 +67,32 @@ public class ExamController {
                     continue;
                 if(info.getExam_status()<const_Exam.EXAM_STATUS_CLOSED&&TimeUtil.isClosed(info))
                 {
-                    service.updateStatus(const_Exam.EXAM_STATUS_CLOSED, info.getExam_id());
                     info.setExam_status(const_Exam.EXAM_STATUS_CLOSED);
+                    examInfoBatchUtil.getList().add(info);
                     continue;
                 }
                 if(info.getExam_status()==const_Exam.EXAM_STATUS_WAIT&&TimeUtil.isStart(info))
                 {
-                    service.updateStatus(const_Exam.EXAM_STATUS_START, info.getExam_id());
                     info.setExam_status(const_Exam.EXAM_STATUS_START);
+                    examInfoBatchUtil.getList().add(info);
                 }
             }catch (Exception e)
             {
 
             }
-
+            examInfoBatchUtil.flush(new BatchUtil.Activitor<ExamInfo>() {
+                @Override
+                public void flush(MybatisBatchUtils obj, List<ExamInfo> list) {
+                    ExamMapper mapper= SpringUtil.getBean(ExamMapper.class);
+                    obj.batchUpdateOrInsert(list, ExamMapper.class, new BiFunction<ExamInfo, ExamMapper, Object>() {
+                        @Override
+                        public Object apply(ExamInfo examInfo, ExamMapper examMapper) {
+                            return mapper.updateExam(examInfo.getExam_id(),const_Exam.col_status,examInfo.getExam_status());
+                        }
+                    });
+                }
+                
+            }, true);
             if(info.getReadable()==0)
                 iter.remove();
         }
@@ -135,7 +154,9 @@ public class ExamController {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
-                return NetResult.makeResult(service.list(applyUser,from,num),null);
+                List<ExamInfo> infos= (List<ExamInfo>) service.list(applyUser,from,num).getObj();
+                update(applyUser,infos);
+                return NetResult.makeResult(SUCCESS,null,infos);
             }
         });
     }

@@ -14,21 +14,21 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
-    @Select("select *,ui.level from `user_sec` uc join `user_info` ui on ui.id=uc.id  where uc.`id`=#{id} FOR UPDATE")
+    @Select("select uc.*,ui.`level` from `user_sec` uc left join `user_info` ui on ui.id=uc.id where uc.`id`=#{id} FOR UPDATE")
     @Cacheable(value = "userSec",key = "#id")
     UserSecurityInfo getUserSecurityInfo(int id);
-    @Select("select *,ui.level from `user_sec` uc join `user_info` ui on ui.id=uc.id  where uc.`name`=#{name}")
+    @Select("select uc.*,ui.`level` from `user_sec` uc left join `user_info` ui on ui.id=uc.id where uc.`name`=#{name}")
     UserSecurityInfo getUserSecurityInfoByName( @NonNull String name);
 
 
-    @Select("select a.*,b.`name` from `user_info` a INNER JOIN user_sec b ON b.id=a.id where b.name like '${name}%' order by b.name limit #{from},#{num} FOR UPDATE")
+    @Select("select a.*,b.`name` from `user_info` a LEFT JOIN user_sec b ON b.id=a.id where b.name like '${name}%' order by b.name limit #{from},#{num} FOR UPDATE")
     List<UserDetailInfo> findByNameLike(String name,int from,int num);
 
-    @Select("select a.*,b.`name` from `user_info` a INNER JOIN user_sec b ON b.id=a.id limit #{from},#{num}")
+    @Select("select a.*,b.`name` from `user_info` a LEFT JOIN user_sec b ON b.id=a.id limit #{from},#{num}")
     List<UserDetailInfo> getUserDetailInfos(int from,int num);
 
 
-    @Select("select a.*,b.`name` from `user_info` a INNER JOIN user_sec b ON b.id=a.id where a.`id`=#{id}")
+    @Select("select a.*,b.`name` from `user_info` a LEFT JOIN user_sec b ON b.id=a.id where a.`id`=#{id}")
     @Cacheable(value = "userDetail",key = "#id")
     UserDetailInfo getUserDetailInfoByID(int id);
 
@@ -63,6 +63,6 @@ public interface UserMapper {
 
 
 
-    @Select("SELECT COUNT(*) FROM user_sec WHERE sec_ans=#{ans} AND `name`=#{name};")
+    @Select("SELECT exists(SELECT * FROM user_sec WHERE sec_ans=#{ans} AND `name`=#{name});")
     int answerSecQues(String name,String ans);
 }

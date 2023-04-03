@@ -16,6 +16,8 @@ import tbs.api_server.objects.compound.exam.ExamQuestion;
 import tbs.api_server.objects.compound.exam.ExamUser;
 import tbs.api_server.objects.simple.*;
 import tbs.api_server.services.ExamService;
+import tbs.api_server.utils.BatchUtil;
+import tbs.api_server.utils.MybatisBatchUtils;
 import tbs.api_server.utils.TimeUtil;
 
 import javax.annotation.Resource;
@@ -156,6 +158,7 @@ public class ExamImp implements ExamService {
             return false;
         return permission.getWriteable() != 0;
     }
+
 
     @Override
     public ServiceResult updateStatus(int status, int examid) throws BackendError {

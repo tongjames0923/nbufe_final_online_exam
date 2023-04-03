@@ -3,6 +3,7 @@ package tbs.api_server.objects.simple;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.beans.Transient;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -13,6 +14,16 @@ public class LogPojo implements Serializable {
     @DateTimeFormat(pattern="yyyy年MM月dd日 hh:mm:ss")
     @JsonFormat(pattern="yyyy年MM月dd日 hh:mm:ss",timezone="GMT+8")
     private Date log_begin;
+
+    private transient UserSecurityInfo logined=null;
+
+    public UserSecurityInfo getLogined() {
+        return logined;
+    }
+
+    public void setLogined(UserSecurityInfo logined) {
+        this.logined = logined;
+    }
 
     long cost;
 

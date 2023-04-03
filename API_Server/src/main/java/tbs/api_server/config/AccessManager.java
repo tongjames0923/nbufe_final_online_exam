@@ -32,7 +32,17 @@ public class AccessManager {
     @Resource
     RedisTemplate<String, String> str_redis;
     public static AccessManager ACCESS_MANAGER;
+    ValueOperations<String, UserSecurityInfo> ops;
+    ValueOperations<String, String> str_ops;
 
+
+
+    @Autowired
+    void init()
+    {
+        ops = redis.opsForValue();
+        str_ops = str_redis.opsForValue();
+    }
     @Autowired
     public AccessManager() {
         ACCESS_MANAGER = this;
@@ -47,13 +57,9 @@ public class AccessManager {
     }
 
     public String putLogined(UserSecurityInfo info) throws Error.BackendError {
-        ValueOperations<String, UserSecurityInfo> ops = redis.opsForValue();
-        ValueOperations<String, String> str_ops = str_redis.opsForValue();
         if (str_ops.get("single_login-" + info.getId()) != null)
             throw _ERROR.throwError(FC_UNAVALIABLE, "禁止多地登录,请先登出账户");
-        String uid = UUID.randomUUID().toString();
-        while (ops.get(uid) != null) {
-        }
+        String uid = UUID.randomUUID().toString()+"-mix-"+info.getId();
         str_ops.set("single_login-" + info.getId(), uid, login_timeout, TimeUnit.MINUTES);
         ops.set("loginKey-" + uid, info, login_timeout, TimeUnit.MINUTES);
         return uid;
