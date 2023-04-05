@@ -43,18 +43,15 @@ public interface ExamMapper {
             "`exam` where `exam_file` like '%${student}%' limit #{from},#{num} FOR UPDATE")
     List<ExamInfo> listForStudent(String student,int from, int num);
 
-    @Select("SELECT `exam_file` FROM `exam` where `exam_id`=#{exam_id} FOR UPDATE")
-    @Cacheable(value = "examFile",key = "#exam_id")
-    String getExamFile(int exam_id);
 
 
     @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status` from" +
             " `exam` where `exam_name`=#{name} FOR UPDATE")
     ExamInfo getExamIDByExamName(String name);
 
-    @Insert("INSERT INTO `exam`(`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_file`) VALUES (" +
+    @Insert("INSERT INTO `exam`(`exam_name`,`exam_begin`,`exam_len`,`exam_note`) VALUES (" +
             "#{name},#{beg},#{len},#{note},#{file})")
-    int uploadExam(String name, Date beg, String note, byte[] file, Integer len);
+    int uploadExam(String name, Date beg, String note,  Integer len);
 
     @Delete("DELETE FROM `exam` WHERE `exam_id`=#{exam_id}")
     @Caching(evict = {

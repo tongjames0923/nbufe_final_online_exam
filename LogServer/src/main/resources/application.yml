@@ -18,14 +18,14 @@ spring:
     time-zone: GMT+8
   redis:
       host: 127.0.0.1
-      password: redispw
+      password: tongyi0923
       port: 6379
       database: 0
       timeout: 1000
   rabbitmq:
       host: 127.0.0.1
-      port: 19889
-      username: root
+      port: 5672
+      username: abstergo
       password: tongyi0923
       listener:
        simple:

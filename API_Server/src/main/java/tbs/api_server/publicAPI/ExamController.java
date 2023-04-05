@@ -214,7 +214,7 @@ public class ExamController {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
-                return  NetResult.makeResult(service.getFullExamInfoById(id),null);
+                return  NetResult.makeResult(service.getFullExamInfoById(id,true),null);
             }
         }).methodWithLogined();
     }

@@ -7,23 +7,21 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
 import tbs.api_server.backend.mappers.*;
+import tbs.api_server.backend.repos.ExamerMapper;
 import tbs.api_server.config.AccessManager;
 import tbs.api_server.config.constant.const_Exam;
 import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.ServiceResult;
 import tbs.api_server.objects.compound.exam.ExamPost;
 import tbs.api_server.objects.compound.exam.ExamQuestion;
-import tbs.api_server.objects.compound.exam.ExamUser;
+import tbs.api_server.objects.jpa.ExamUser;
 import tbs.api_server.objects.simple.*;
 import tbs.api_server.services.ExamService;
 import tbs.api_server.utils.TimeUtil;
 
 import javax.annotation.Resource;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static tbs.api_server.utility.Error.*;
 
@@ -84,6 +82,9 @@ public class ExamImp implements ExamService {
     @Resource
     ExamLinkMapper examLinkMapper;
 
+    @Resource
+    ExamerMapper examerMapper;
+
     @Override
     public ServiceResult uploadExam(int user, ExamPost data)
             throws BackendError {
@@ -96,10 +97,16 @@ public class ExamImp implements ExamService {
         } catch (Exception e) {
             throw _ERROR.throwError(EC_UNKNOWN, "数据文件转换失败");
         }
-        int c = mp.uploadExam(data.getExam_name(), data.getExam_begin(), data.getExam_note(), file, data.getExam_len());
+
+        int c = mp.uploadExam(data.getExam_name(), data.getExam_begin(), data.getExam_note(), data.getExam_len());
         if (c <= 0)
             throw _ERROR.throwError(EC_DB_INSERT_FAIL, "上传考试失败", null);
         ExamInfo info = mp.getExamIDByExamName(data.getExam_name());
+        for(ExamUser u:data.getStudents())
+        {
+            u.setExamid(info.getExam_id());
+        }
+        examerMapper.saveAll(data.getStudents());
         c = permit.putPermission(user, info.getExam_id(), 1, 1, 1);
         if (c <= 0)
             throw _ERROR.throwError(EC_DB_INSERT_FAIL, "考试权限赋予失败");
@@ -253,14 +260,19 @@ public class ExamImp implements ExamService {
     }
 
     @Override
-    public ServiceResult getFullExamInfoById(int exam_id) throws BackendError {
+    public ServiceResult getFullExamInfoById(int exam_id,boolean fulluserlist) throws BackendError {
         ExamInfo info = mp.getExamByid(exam_id);
         if (info == null) {
             throw _ERROR.throwError(EC_DB_SELECT_NOTHING, "考试不存在");
         }
-        ExamPost obj = JSON.parseObject(mp.getExamFile(exam_id), ExamPost.class);
+        ExamPost obj =new ExamPost();
+        obj.setExam_begin(info.getExam_begin());
+        obj.setExam_len(info.getExam_len());
+        obj.setExam_name(info.getExam_name());
+        obj.setExam_note(info.getExam_note());
+        if(fulluserlist)
+            obj.setStudents(examerMapper.findAllByExamid(exam_id));
         List<ExamQuestionLink> links = examLinkMapper.getExamQuestions(obj.getExam_name());
-
         for (ExamQuestionLink l : links) {
             Question q = questionMapper.getQuestionByID(l.getQuestionid());
             q.setQue_file(questionMapper.getQuestionFile(l.getQuestionid()));
@@ -288,19 +300,18 @@ public class ExamImp implements ExamService {
 
     @Override
     public ServiceResult StudentLogin(String name, String id, String number, int exam) throws BackendError {
-        ExamPost data = (ExamPost) getFullExamInfoById(exam).getObj();
-        for (ExamUser u : data.getStudents()) {
-            if (u.getId().equals(id) && u.getName().equals(name) && u.getNumber().equals(number)) {
-                ExamPost post = new ExamPost();
-                post.setStudents(new ArrayList<>(Arrays.asList(u)));
-                post.setExam_begin(data.getExam_begin());
-                post.setExam_len(data.getExam_len());
-                post.setExam_note(data.getExam_note());
-                post.setExam_name(data.getExam_name());
-                post.setQuestions(data.getQuestions());
-                return ServiceResult.makeResult(SUCCESS, post);
-            }
-
+        ExamPost data = (ExamPost) getFullExamInfoById(exam,false).getObj();
+        ExamUser u= examerMapper.findOne(exam,name,id,number);
+        if(u!=null)
+        {
+            ExamPost post = new ExamPost();
+            post.setStudents(new ArrayList<>(Collections.singletonList(u)));
+            post.setExam_begin(data.getExam_begin());
+            post.setExam_len(data.getExam_len());
+            post.setExam_note(data.getExam_note());
+            post.setExam_name(data.getExam_name());
+            post.setQuestions(data.getQuestions());
+            return ServiceResult.makeResult(SUCCESS,post);
         }
         throw _ERROR.throwError(FC_NOTFOUND, "该考试不存在相关考生数据");
     }

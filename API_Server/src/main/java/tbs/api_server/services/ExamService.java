@@ -24,7 +24,7 @@ public interface ExamService
     ServiceResult updateName(String name ,UserSecurityInfo user,int examid) throws Error.BackendError;
     ServiceResult getExamByNote(String note,int from,int num)throws Error.BackendError;
     ServiceResult getExamBeforeTime(Date d,int from,int num)throws Error.BackendError;
-    ServiceResult getFullExamInfoById(int exam_id) throws Error.BackendError;
+    ServiceResult getFullExamInfoById(int exam_id,boolean fullUserList) throws Error.BackendError;
     ServiceResult updateScore(String exam,int qid,int score) throws Error.BackendError;
     ServiceResult StudentLogin(String name,String id,String number,int exam) throws Error.BackendError;
 

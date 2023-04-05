@@ -56,15 +56,6 @@ public class FileController
     }
 
     @Autowired
-    ExamMapper examMapper;
-    @NoNeedAccess
-    @RequestMapping("exam")
-    public String downloadExam(int id)
-    {
-        return examMapper.getExamFile(id);
-    }
-
-    @Autowired
     QuestionMapper qmp;
     @NoNeedAccess
     @RequestMapping(value = "question")
@@ -75,14 +66,7 @@ public class FileController
     }
 
 
-    @Autowired
-    UserMapper mp;
-    @Autowired
-    ExamReplyMapper examReplyMapper;
 
-    @Autowired
-    ExamPermissionMapper examPermissionMapper;
-//    @NoNeedAccess
 //    @RequestMapping(value = "reply")
 //    public byte[] downloadRep(String number, int user, String password)
 //    {
