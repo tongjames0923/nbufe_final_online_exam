@@ -102,6 +102,9 @@
     <Compile Include="Pages\SelectAnswerArea.xaml.cs">
       <DependentUpon>SelectAnswerArea.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Pages\SimpleAnswerArea.xaml.cs">
+      <DependentUpon>SimpleAnswerArea.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utils\Feature.cs" />
     <Compile Include="Utils\HttpHelper.cs" />
     <Compile Include="Utils\System.cs" />
@@ -130,6 +133,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\SelectAnswerArea.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Pages\SimpleAnswerArea.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

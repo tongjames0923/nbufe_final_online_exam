@@ -17,13 +17,11 @@ using System.Windows.Shapes;
 
 namespace Examer_Client.Pages
 {
-
     /// <summary>
-    /// FillBlankAnswerArea.xaml 的交互逻辑
+    /// SimpleAnswerArea.xaml 的交互逻辑
     /// </summary>
-    public partial class FillBlankAnswerArea : Page
+    public partial class SimpleAnswerArea : Page
     {
-
         int ques;
 
         public int Q
@@ -40,44 +38,30 @@ namespace Examer_Client.Pages
 
         }
         bool init = true;
-        public FillBlankAnswerArea(int index)
+        public SimpleAnswerArea(int index)
         {
             InitializeComponent();
             this.Q = SystemManager.Manager.Questions[index].ques_id;
-            fill.Items.Clear();
-            List<FillBlank> selects =
-            System.Text.Json.JsonSerializer.Deserialize<List<FillBlank>>(SystemManager.Manager.Questions[index].detail.answer_data);
-            int i = 0;
-            foreach (var item in selects)
+            if(Check.text.Count==0)
             {
-                TextBox box = new TextBox();
-                box.Width = 150;
-                if(Check.text.Count<=i)
-                {
-                    Check.text.Add("");
-
-                }
-                else
-                {
-                    box.Text = Check.text[i];
-                }
-                box.TextChanged += Box_TextChanged;
-                box.Tag =i;
-
-                i++;
-                fill.Items.Add(box);
+                Check.text.Add("");
+            }
+            else
+            {
+                rich.Selection.Text = Check.text[0];
             }
             init = false;
+
         }
 
-        private void Box_TextChanged(object sender, TextChangedEventArgs e)
+        private void RichTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             if(!init)
             {
-                TextBox item = (TextBox)sender;
-                int index = (int)(item).Tag;
-                Check.text[index] = item.Text;
+                TextRange text = new TextRange(rich.Document.ContentStart, rich.Document.ContentEnd);
+                Check.text[0] = text.Text;
             }
+
 
         }
     }

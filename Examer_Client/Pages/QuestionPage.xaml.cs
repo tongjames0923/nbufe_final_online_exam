@@ -39,9 +39,12 @@ namespace Examer_Client.Pages
                     case 1:willgo = new FillBlankAnswerArea(index);
                         break;
                     case 2:
+                        willgo = new SimpleAnswerArea(index);
                         break;
                 }
                 answer.Content = willgo;
+                if(answer.CanGoBack)
+                answer.RemoveBackEntry();
             }
         }
 

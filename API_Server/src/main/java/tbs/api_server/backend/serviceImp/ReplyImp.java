@@ -62,10 +62,9 @@ public class ReplyImp implements ReplyService
             throw _ERROR.throwError(FC_DUPLICATE,"请勿重复提交答案");
         }
         ExamReplyInsertor insertor=new ExamReplyInsertor();
-        int i=0;
         for(CheckData c :rs)
         {
-
+            int i=0;
             for(String text:c.getText())
             {
                 ExamReply reply=new ExamReply(eid,c.getQueid(),text,en,pid,pname,i++);

@@ -41,7 +41,6 @@ public interface ExamMapper {
 
     @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status` from " +
             "`exam` where `exam_file` like '%${student}%' limit #{from},#{num} FOR UPDATE")
-    @Cacheable(value = "willExam",key = "#student")
     List<ExamInfo> listForStudent(String student,int from, int num);
 
     @Select("SELECT `exam_file` FROM `exam` where `exam_id`=#{exam_id} FOR UPDATE")
