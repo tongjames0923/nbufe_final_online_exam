@@ -74,6 +74,19 @@ namespace Examer_Client.Objects
             set;
         }
     }
+    public class FillBlank
+    {
+        public string text
+        {
+            get;
+            set;
+        }
+        public String equal
+        {
+            get;
+            set;
+        }
+    }
     public class ExamInfo
     {
         /// <summary>

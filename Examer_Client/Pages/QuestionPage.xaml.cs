@@ -31,7 +31,17 @@ namespace Examer_Client.Pages
                 else
                     index = value;
                 Question = SystemManager.Manager.Questions[index];
-                answer.Content = new SelectAnswerArea(index);
+                Page willgo=null;
+                switch(Question.detail.que_type)
+                {
+                    case 0:willgo = new SelectAnswerArea(index);
+                        break;
+                    case 1:willgo = new FillBlankAnswerArea(index);
+                        break;
+                    case 2:
+                        break;
+                }
+                answer.Content = willgo;
             }
         }
 

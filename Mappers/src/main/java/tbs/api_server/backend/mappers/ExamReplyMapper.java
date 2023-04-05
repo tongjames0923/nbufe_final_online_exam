@@ -30,9 +30,8 @@ public interface ExamReplyMapper
 //    int updateReplyCheck(String examnumber,String check_file,int status);
 
 
-    @Insert("insert into `exam_ reply`(exam_id, exam_number, person_id, ques_id,content,person_name) VALUES (#{eid},#{en},#{pid},#{qid},#{content},#{pname})")
-    int insertReply(int eid,String en,String pid,String pname,int qid,String content);
-
+    @Insert("insert into `exam_ reply`(exam_id, exam_number, person_id, ques_id,content,person_name,sortcode) VALUES (#{eid},#{en},#{pid},#{qid},#{content},#{pname},#{sortcode})")
+    int insertReply(int eid,String en,String pid,String pname,int qid,String content,int sortcode);
     @Select("select not exists(select * from `exam_ reply` where exam_number=#{en} and exam_id=#{eid} and person_id=#{pid} and person_name=#{pname})")
     int canReply(int eid,String en,String pid,String pname);
 }

@@ -48,7 +48,7 @@ public class ReplyImp implements ReplyService
             obj.batchUpdateOrInsert(list, ExamReplyMapper.class, new BiFunction<ExamReply, ExamReplyMapper, Object>() {
                 @Override
                 public Object apply(ExamReply examReply, ExamReplyMapper examReplyMapper) {
-                    return examReplyMapper.insertReply(examReply.getExam_id(), examReply.getExam_number(), examReply.getPerson_id(), examReply.getPerson_name(),examReply.getQues_id(), examReply.getContent());
+                    return examReplyMapper.insertReply(examReply.getExam_id(), examReply.getExam_number(), examReply.getPerson_id(), examReply.getPerson_name(),examReply.getQues_id(), examReply.getContent(),examReply.getSortcode());
                 }
             });
         }
@@ -62,11 +62,13 @@ public class ReplyImp implements ReplyService
             throw _ERROR.throwError(FC_DUPLICATE,"请勿重复提交答案");
         }
         ExamReplyInsertor insertor=new ExamReplyInsertor();
+        int i=0;
         for(CheckData c :rs)
         {
+
             for(String text:c.getText())
             {
-                ExamReply reply=new ExamReply(eid,c.getQueid(),text,en,pid,pname);
+                ExamReply reply=new ExamReply(eid,c.getQueid(),text,en,pid,pname,i++);
                 batchUtil.write(reply,insertor,false);
             }
         }

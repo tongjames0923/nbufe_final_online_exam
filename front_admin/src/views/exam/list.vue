@@ -8,27 +8,27 @@
             @blur="ue(3, data.$index, data.row.exam_name, data.row.exam_id)"></el-input>
         </template>
       </el-table-column>
-      <el-table-column label="考试时间" width="280">
+      <el-table-column label="考试时间" width="280" fixed="left">
         <template slot-scope="data">
           <el-date-picker v-model="data.row.exam_begin" @blur="ue(1, data.$index, data.row.exam_begin, data.row.exam_id)"
             type="datetime" placeholder="考试日期" format="yyyy年MM月dd日 HH:mm" value-format="yyyy-MM-dd HH:mm">
           </el-date-picker>
         </template>
       </el-table-column>
-      <el-table-column label="考试时长" width="200">
+      <el-table-column label="考试时长" min-width="200">
         <template slot-scope="data">
           <el-input-number @blur="ue(2, data.$index, data.row.exam_len, data.row.exam_id)" v-model="data.row.exam_len"
             :min="15" controls-position="right">
           </el-input-number>
         </template>
       </el-table-column>
-      <el-table-column label="考试备注" width="300">
+      <el-table-column label="考试备注" min-width="300">
         <template slot-scope="data">
           <el-input @blur="ue(4, data.$index, data.row.exam_note, data.row.exam_id)"
             v-model="data.row.exam_note"></el-input>
         </template>
       </el-table-column>
-      <el-table-column label="考试状态" width="100">
+      <el-table-column label="考试状态" min-width="100">
         <template slot-scope="data">
           <el-tag>{{ ex_status[data.row.exam_status] }}</el-tag>
         </template>

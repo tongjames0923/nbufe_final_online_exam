@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 C:\Users\tongj\Documents\GitHub\nbufe_final_online_exam\Examer_Client\App.xaml
-4-1520435258
+5-703550866
 
-12-454642926
+13-1374248008
 261304718261
-MainWindow.xaml;Pages\LoginPage.xaml;Pages\QuestionPage.xaml;Pages\SelectAnswerArea.xaml;
+MainWindow.xaml;Pages\FillBlankAnswerArea.xaml;Pages\LoginPage.xaml;Pages\QuestionPage.xaml;Pages\SelectAnswerArea.xaml;
 
 False
 

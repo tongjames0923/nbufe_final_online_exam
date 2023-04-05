@@ -1,12 +1,18 @@
 package tbs.api_server.objects.simple;
 
-import java.util.Arrays;
-
 public class ExamReply {
     private final static long serialVersionUID = 1L;
-    private int id,exam_id,ques_id,status;
+    private int id,exam_id,ques_id,status, sortcode;
     private  double score;
     private String content,exam_number,person_id,person_name;
+
+    public int getSortcode() {
+        return sortcode;
+    }
+
+    public void setSortcode(int sortcode) {
+        this.sortcode = sortcode;
+    }
 
     public String getPerson_name() {
         return person_name;
@@ -16,13 +22,14 @@ public class ExamReply {
         this.person_name = person_name;
     }
 
-    public ExamReply(int exam_id, int ques_id, String content, String exam_number, String person_id, String person_name) {
+    public ExamReply(int exam_id, int ques_id, String content, String exam_number, String person_id, String person_name,int custom) {
         this.exam_id = exam_id;
         this.ques_id = ques_id;
         this.content = content;
         this.exam_number = exam_number;
         this.person_id = person_id;
         this.person_name = person_name;
+        this.sortcode =custom;
     }
 
     public ExamReply() {
