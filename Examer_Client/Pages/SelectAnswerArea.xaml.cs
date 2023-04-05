@@ -14,7 +14,7 @@ namespace Examer_Client.Pages
 
         public int Q
         {
-            get=>ques;
+            get => ques;
             private set
             {
                 this.ques = value;
@@ -39,9 +39,9 @@ namespace Examer_Client.Pages
                 listBox.Content = item.text;
                 listBox.Tag = item;
 
-                foreach(var str in Check.text)
+                foreach (var str in Check.text)
                 {
-                    if(str.Equals(item.text))
+                    if (str.Equals(item.text))
                     {
                         listBox.IsSelected = true;
                         break;
@@ -54,7 +54,7 @@ namespace Examer_Client.Pages
 
         private void select_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if(!init)
+            if (!init)
             {
                 Check.text.Clear();
                 foreach (var i in select.SelectedItems)

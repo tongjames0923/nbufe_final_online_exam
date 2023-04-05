@@ -21,6 +21,7 @@ namespace Examer_Client.Objects
             set;
         }
     }
+    [Serializable]
     public class CheckData
     {
         public int queid
@@ -32,6 +33,32 @@ namespace Examer_Client.Objects
         {
             get;
             set;
+        }
+    }
+    public class UploadData
+    {
+        public int examid
+        {
+            get;
+            set;
+        }
+        public String number
+        {
+            get;
+            set;
+        }
+        public String personid
+        {
+            get;
+            set;
+        }
+        public String personname
+        {
+            get; set;
+        }
+        public List<CheckData> datas
+        {
+            get; set;
         }
     }
     public class SingleSelect

@@ -82,55 +82,55 @@ public class FileController
 
     @Autowired
     ExamPermissionMapper examPermissionMapper;
-    @NoNeedAccess
-    @RequestMapping(value = "reply")
-    public byte[] downloadRep(String number, int user, String password)
-    {
-        try
-        {
-            UserSecurityInfo sc = mp.getUserSecurityInfo(user);
-            if (sc == null)
-                return null;
-            if (UserUtility.passwordEncode(password).equals(sc.getPassword()))
-            {
-                ExamReply reply = examReplyMapper.getExamReply(number);
-                if (reply == null)
-                    return null;
-                ExamPermission permissi = examPermissionMapper.getPermission(user, reply.getExam_id());
-                if (permissi == null)
-                    return null;
-                if (permissi.getCheckable() == 0 && permissi.getWriteable() == 0)
-                    return null;
-                FileUtility.BaseThen then = new FileUtility.FileReadThen();
-                FileUtility.existFile(ReplyImp.Help.makeRepPath(reply.getExam_number(), reply.getPerson_id()), then);
-                return (byte[]) then.result();
-            }
-            return null;
-
-        } catch (Exception e)
-        {
-            return null;
-        }
-    }
-    @NoNeedAccess
-    @RequestMapping("check")
-    public byte[] downloadCheck(String number)
-    {
-        try
-        {
-            ExamReply reply = examReplyMapper.getExamReply(number);
-            if (reply == null)
-                return null;
-            if (reply.getCheck_file().length() < 3)
-                return null;
-            FileUtility.BaseThen then = new FileUtility.FileReadThen();
-            FileUtility.existFile(ReplyImp.Help.makeCheckPath(reply.getExam_number(), reply.getPerson_id()), then);
-            return (byte[]) then.result();
-        } catch (Exception e)
-        {
-            return null;
-        }
-    }
+//    @NoNeedAccess
+//    @RequestMapping(value = "reply")
+//    public byte[] downloadRep(String number, int user, String password)
+//    {
+//        try
+//        {
+//            UserSecurityInfo sc = mp.getUserSecurityInfo(user);
+//            if (sc == null)
+//                return null;
+//            if (UserUtility.passwordEncode(password).equals(sc.getPassword()))
+//            {
+//                ExamReply reply = examReplyMapper.getExamReply(number);
+//                if (reply == null)
+//                    return null;
+//                ExamPermission permissi = examPermissionMapper.getPermission(user, reply.getExam_id());
+//                if (permissi == null)
+//                    return null;
+//                if (permissi.getCheckable() == 0 && permissi.getWriteable() == 0)
+//                    return null;
+//                FileUtility.BaseThen then = new FileUtility.FileReadThen();
+//                FileUtility.existFile(ReplyImp.Help.makeRepPath(reply.getExam_number(), reply.getPerson_id()), then);
+//                return (byte[]) then.result();
+//            }
+//            return null;
+//
+//        } catch (Exception e)
+//        {
+//            return null;
+//        }
+//    }
+//    @NoNeedAccess
+//    @RequestMapping("check")
+//    public byte[] downloadCheck(String number)
+//    {
+//        try
+//        {
+//            ExamReply reply = examReplyMapper.getExamReply(number);
+//            if (reply == null)
+//                return null;
+//            if (reply.getCheck_file().length() < 3)
+//                return null;
+//            FileUtility.BaseThen then = new FileUtility.FileReadThen();
+//            FileUtility.existFile(ReplyImp.Help.makeCheckPath(reply.getExam_number(), reply.getPerson_id()), then);
+//            return (byte[]) then.result();
+//        } catch (Exception e)
+//        {
+//            return null;
+//        }
+//    }
 
 
 }

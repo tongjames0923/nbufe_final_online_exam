@@ -4,6 +4,7 @@ using Markdig;
 using System;
 using System.Windows;
 using System.Windows.Controls;
+using static Examer_Client.Utils.SystemManager;
 
 namespace Examer_Client.Pages
 {
@@ -73,6 +74,15 @@ namespace Examer_Client.Pages
         private void nextQuestion_Click(object sender, RoutedEventArgs e)
         {
             Index++;
+        }
+
+        private void submit_Click(object sender, RoutedEventArgs e)
+        {
+            SystemManager.Manager.Feature.uploadCheck(Manager.ExamInfo.exam_id, Manager.ExamUser.number, Manager.ExamUser.id, Manager.ExamUser.name
+                , Manager.AllChecks, (Object o) =>
+                 {
+                     MessageBox.Show("提交成功");
+                 });
         }
     }
 }

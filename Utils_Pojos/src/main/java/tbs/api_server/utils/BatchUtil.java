@@ -16,15 +16,10 @@ public class BatchUtil<T> {
 
     @Value("${tbs.batchsize}")
     int max;
-    public static BatchUtil Center;
 
     @Resource
     MybatisBatchUtils utils;
 
-    @Autowired
-    public BatchUtil() {
-        Center = this;
-    }
 
     public static interface Activitor<T> {
         void flush(MybatisBatchUtils obj,List<T> list);
@@ -39,7 +34,6 @@ public class BatchUtil<T> {
     void check() throws Exception {
         if (max > MybatisBatchUtils.BATCH_SIZE)
             throw new Exception("批量处理上限容量过大");
-        Center = this;
     }
 
     public List<T> getList() {

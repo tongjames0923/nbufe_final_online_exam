@@ -48,6 +48,23 @@ namespace Examer_Client.Utils
             return checks[ques];
         }
 
+        public List<CheckData> AllChecks
+        {
+            get
+            {
+                List<CheckData> d = new List<CheckData>();
+                foreach (var i in checks)
+                {
+                    d.Add(i.Value);
+                }
+                return d;
+            }
+        }
+        public ExamInfo ExamInfo
+        {
+            get;
+            set;
+        }
         public ExamPost Exam
         {
             get => exam;

@@ -3,33 +3,30 @@ package tbs.api_server.objects.simple;
 import java.util.Arrays;
 
 public class ExamReply {
-    private final static long serialVersionUID = 1L;    private int id;
-    private int exam_id,status;
+    private final static long serialVersionUID = 1L;
+    private int id,exam_id,ques_id,status;
+    private  double score;
+    private String content,exam_number,person_id,person_name;
 
-    public int getStatus()
-    {
-        return status;
+    public String getPerson_name() {
+        return person_name;
     }
 
-    public void setStatus(int status)
-    {
-        this.status = status;
+    public void setPerson_name(String person_name) {
+        this.person_name = person_name;
     }
 
-    private String exam_number,check_file;
-
-    public String getCheck_file()
-    {
-        return check_file;
+    public ExamReply(int exam_id, int ques_id, String content, String exam_number, String person_id, String person_name) {
+        this.exam_id = exam_id;
+        this.ques_id = ques_id;
+        this.content = content;
+        this.exam_number = exam_number;
+        this.person_id = person_id;
+        this.person_name = person_name;
     }
 
-    public void setCheck_file(String check_file)
-    {
-        this.check_file = check_file;
+    public ExamReply() {
     }
-
-    private String person_id;
-    private byte[] reply_file;
 
     public int getId() {
         return id;
@@ -47,6 +44,38 @@ public class ExamReply {
         this.exam_id = exam_id;
     }
 
+    public int getQues_id() {
+        return ques_id;
+    }
+
+    public void setQues_id(int ques_id) {
+        this.ques_id = ques_id;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public double getScore() {
+        return score;
+    }
+
+    public void setScore(double score) {
+        this.score = score;
+    }
+
+    public String getContent() {
+        return content;
+    }
+
+    public void setContent(String content) {
+        this.content = content;
+    }
+
     public String getExam_number() {
         return exam_number;
     }
@@ -61,25 +90,5 @@ public class ExamReply {
 
     public void setPerson_id(String person_id) {
         this.person_id = person_id;
-    }
-
-    public byte[] getReply_file() {
-        return reply_file;
-    }
-
-    public void setReply_file(byte[] reply_file) {
-        this.reply_file = reply_file;
-    }
-
-    @Override
-    public String toString() {
-        return "ExamReply{" +
-                "id=" + id +
-                ", exam_id=" + exam_id +
-                ", status=" + status +
-                ", exam_number='" + exam_number + '\'' +
-                ", check_file='" + check_file + '\'' +
-                ", person_id='" + person_id + '\'' +
-                '}';
     }
 }

@@ -59,6 +59,8 @@ namespace Examer_Client.Pages
                 SystemManager.Manager.Feature.startExam(name.Text, number.Text, id.Text, info.exam_id.ToString(), (ExamPost ei) =>
                 {
                     SystemManager.Manager.Exam = ei;
+                    SystemManager.Manager.ExamInfo = info;
+                    SystemManager.Manager.ExamUser = ei.students[0];
                     SystemManager.Manager.WindowArea.Content = new QuestionPage();
                     if (SystemManager.Manager.WindowArea.CanGoBack)
                     {
