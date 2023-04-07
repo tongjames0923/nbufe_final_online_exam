@@ -42,9 +42,10 @@ public interface ExamReplyMapper
     List<ExamReply> listByExamUserIdAndExamId(int examid,String examer);
 
     @Select("select * from exam_reply where id=#{id}")
-    @Cacheable(value = "single_examreply",key = "#id")
     ExamReply findById(int id);
     @Update("update exam_reply set score=#{score} where id=#{id}")
-    @CacheEvict(value = "single_examreply",key = "#id")
     int updateScore(int id,double score);
+
+    @Update("update exam_reply set status=#{status} where exam_id=#{examid}")
+    int updateStatus(int examid,int status);
 }

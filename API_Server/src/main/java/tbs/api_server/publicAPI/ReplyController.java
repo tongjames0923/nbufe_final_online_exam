@@ -21,50 +21,55 @@ import java.util.List;
 
 @RestController
 @RequestMapping("reply/*")
-public class ReplyController
-{
+public class ReplyController {
 
 
     @Autowired
     ReplyService service;
 
 
-    @RequestMapping(value = "upload",method = RequestMethod.POST)
+    @RequestMapping(value = "upload", method = RequestMethod.POST)
     @Transactional
     @NoNeedAccess
-    public NetResult upload(@RequestBody ReplyUpload u)
-    {
+    public NetResult upload(@RequestBody ReplyUpload u) {
         return ApiMethod.makeResultNoLogin(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
-                return NetResult.makeResult(service.uploadReply(u.getExamid(),u.getUid(),u.getDatas()),null);
+                return NetResult.makeResult(service.uploadReply(u.getExamid(), u.getUid(), u.getDatas()), null);
             }
         });
     }
 
     @RequestMapping("list")
-    public NetResult list(int examid)
-    {
+    public NetResult list(int examid) {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
-                return NetResult.makeResult(service.list(examid,applyUser),null);
+                return NetResult.makeResult(service.list(examid, applyUser), null);
             }
         });
     }
 
 
     @RequestMapping("updateScore")
-    public NetResult setScore(int rep_id,double score)
-    {
+    public NetResult setScore(int rep_id, double score) {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
-                return NetResult.makeResult(service.updateScore(rep_id,score,applyUser),null);
+                return NetResult.makeResult(service.updateScore(rep_id, score, applyUser), null);
             }
         });
     }
 
+    @RequestMapping("confirm")
+    public NetResult comfirm(int examid) {
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
+                return NetResult.makeResult(service.confirm(examid,applyUser),null);
+            }
+        });
+    }
 //    @RequestMapping(value = "check",method = RequestMethod.POST)
 //    @Transactional
 //    public NetResult uploadCheck(String number,int status,int checker,String password,MultipartFile file)

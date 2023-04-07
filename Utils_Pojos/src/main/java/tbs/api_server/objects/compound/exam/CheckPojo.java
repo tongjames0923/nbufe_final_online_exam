@@ -3,6 +3,7 @@ package tbs.api_server.objects.compound.exam;
 import tbs.api_server.objects.jpa.ExamUser;
 import tbs.api_server.objects.simple.ExamReply;
 import tbs.api_server.objects.simple.Question;
+import tbs.api_server.objects.simple.StandardAnswer;
 
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,16 @@ public class CheckPojo {
     public static class InnerReply
     {
         int question;
+        StandardAnswer answer;
+
+        public StandardAnswer getAnswer() {
+            return answer;
+        }
+
+        public void setAnswer(StandardAnswer answer) {
+            this.answer = answer;
+        }
+
         List<ExamReply> replyList;
 
         public int getQuestion() {
