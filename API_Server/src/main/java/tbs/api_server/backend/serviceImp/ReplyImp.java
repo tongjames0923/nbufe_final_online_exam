@@ -6,14 +6,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import tbs.api_server.backend.mappers.ExamPermissionMapper;
 import tbs.api_server.backend.mappers.ExamReplyMapper;
+import tbs.api_server.backend.mappers.QuestionMapper;
 import tbs.api_server.backend.mappers.UserMapper;
+import tbs.api_server.backend.repos.ExamerMapper;
 import tbs.api_server.config.ApplicationConfig;
 import tbs.api_server.config.constant.const_Exam_Reply;
+import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.ServiceResult;
-import tbs.api_server.objects.simple.CheckData;
-import tbs.api_server.objects.simple.ExamPermission;
-import tbs.api_server.objects.simple.ExamReply;
-import tbs.api_server.objects.simple.UserSecurityInfo;
+import tbs.api_server.objects.compound.exam.CheckPojo;
+import tbs.api_server.objects.jpa.ExamUser;
+import tbs.api_server.objects.simple.*;
 import tbs.api_server.services.ReplyService;
 import tbs.api_server.utility.FileUtility;
 import tbs.api_server.utils.BatchUtil;
@@ -24,6 +26,8 @@ import tbs.api_server.utility.UserUtility;
 import javax.annotation.Resource;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiFunction;
 
@@ -31,8 +35,7 @@ import static tbs.api_server.utility.Error.*;
 
 @Service
 @Scope("prototype")
-public class ReplyImp implements ReplyService
-{
+public class ReplyImp implements ReplyService {
 
     @Resource
     ExamReplyMapper replyMapper;
@@ -40,15 +43,14 @@ public class ReplyImp implements ReplyService
     @Resource
     BatchUtil<ExamReply> batchUtil;
 
-    static class ExamReplyInsertor implements BatchUtil.Activitor<ExamReply>
-    {
+    static class ExamReplyInsertor implements BatchUtil.Activitor<ExamReply> {
 
         @Override
         public void flush(MybatisBatchUtils obj, List<ExamReply> list) {
             obj.batchUpdateOrInsert(list, ExamReplyMapper.class, new BiFunction<ExamReply, ExamReplyMapper, Object>() {
                 @Override
                 public Object apply(ExamReply examReply, ExamReplyMapper examReplyMapper) {
-                    return examReplyMapper.insertReply(examReply.getExam_id(), examReply.getExam_number(), examReply.getPerson_id(), examReply.getPerson_name(),examReply.getQues_id(), examReply.getContent(),examReply.getSortcode());
+                    return examReplyMapper.insertReply(examReply.getExam_id(), examReply.getQues_id(), examReply.getContent(), examReply.getSortcode(),examReply.getExamer_uid());
                 }
             });
         }
@@ -56,23 +58,67 @@ public class ReplyImp implements ReplyService
 
 
     @Override
-    public ServiceResult uploadReply(String en, int eid, String pid, String pname,List<CheckData> rs) throws BackendError {
-        if(replyMapper.canReply(eid, en, pid,pname)!=1)
-        {
-            throw _ERROR.throwError(FC_DUPLICATE,"请勿重复提交答案");
+    public ServiceResult uploadReply(int eid, String uid, List<CheckData> rs) throws BackendError {
+        ExamUser e = examerMapper.findExamUserByExamidAndUid(eid, uid);
+        if (e == null)
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING, "本考试不存在本考生");
+        if (replyMapper.canReply(eid, uid) != 1) {
+            throw _ERROR.throwError(FC_DUPLICATE, "请勿重复提交答案");
         }
-        ExamReplyInsertor insertor=new ExamReplyInsertor();
-        for(CheckData c :rs)
-        {
-            int i=0;
-            for(String text:c.getText())
-            {
-                ExamReply reply=new ExamReply(eid,c.getQueid(),text,en,pid,pname,i++);
-                batchUtil.write(reply,insertor,false);
+        ExamReplyInsertor insertor = new ExamReplyInsertor();
+        for (CheckData c : rs) {
+            int i = 0;
+            for (String text : c.getText()) {
+                ExamReply reply = new ExamReply(eid, c.getQueid(), const_Exam_Reply.UnCheck, i++,
+                        0, text, e.getUid());
+                batchUtil.write(reply, insertor, false);
             }
         }
-        batchUtil.flush(insertor,true);
-        return ServiceResult.makeResult(SUCCESS,null);
+        batchUtil.flush(insertor, true);
+        return ServiceResult.makeResult(SUCCESS, null);
+    }
+
+    @Resource
+    ExamPermissionMapper examPermissionMapper;
+    @Resource
+    ExamerMapper examerMapper;
+
+    @Resource
+    QuestionMapper questionMapper;
+    @Override
+    public ServiceResult list(int examid, UserSecurityInfo u) throws BackendError {
+        boolean hasPer = false;
+        if (u.getLevel() >= const_User.LEVEL_EXAM_STAFF)
+            hasPer = true;
+        else {
+            ExamPermission permission = examPermissionMapper.getPermission(u.getId(), examid);
+            hasPer = permission == null ? false : permission.getCheckable() == 1;
+        }
+        if (!hasPer)
+            throw _ERROR.throwError(EC_LOW_PERMISSIONS, "不存在针对该考试的批阅权限");
+        List<ExamUser> all = examerMapper.findAllByExamid(examid);
+        List<CheckPojo> cps = new ArrayList<>();
+        for (ExamUser eu : all) {
+            CheckPojo cp = new CheckPojo();
+            cp.setExamid(examid);
+            cp.setExamUser(eu);
+            List<ExamReply> els= replyMapper.listByExamUserIdAndExamId(examid, eu.getId());
+            HashMap<Question,List<ExamReply>> replist=new HashMap<>();
+            for(ExamReply reply :els)
+            {
+                Question q=questionMapper.getQuestionByID(reply.getQues_id());
+                if(replist.containsKey(q))
+                {
+                    replist.get(q).add(reply);
+                }
+                else
+                {
+                    replist.put(q,new ArrayList<>(Arrays.asList(reply)));
+                }
+            }
+            cp.setReplyList(replist);
+        }
+        return ServiceResult.makeResult(SUCCESS, cps);
     }
 //    public static class Help
 //    {

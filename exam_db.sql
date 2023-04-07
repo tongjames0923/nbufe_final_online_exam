@@ -1,17 +1,17 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : local
+ Source Server         : docker
  Source Server Type    : MySQL
- Source Server Version : 80030 (8.0.30)
+ Source Server Version : 80031 (8.0.31)
  Source Host           : localhost:3306
  Source Schema         : exam_db
 
  Target Server Type    : MySQL
- Target Server Version : 80030 (8.0.30)
+ Target Server Version : 80031 (8.0.31)
  File Encoding         : 65001
 
- Date: 05/04/2023 20:17:21
+ Date: 07/04/2023 11:43:16
 */
 
 SET NAMES utf8mb4;
@@ -69,44 +69,6 @@ INSERT INTO `exam` (`exam_id`, `exam_name`, `exam_begin`, `exam_len`, `exam_note
 COMMIT;
 
 -- ----------------------------
--- Table structure for exam_ reply
--- ----------------------------
-DROP TABLE IF EXISTS `exam_ reply`;
-CREATE TABLE `exam_ reply` (
-  `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '答题id',
-  `exam_id` bigint(16) unsigned zerofill NOT NULL COMMENT '答题对应的试卷',
-  `exam_number` varchar(128) NOT NULL COMMENT '考号',
-  `person_id` varchar(128) NOT NULL COMMENT '身份证号',
-  `ques_id` int(10) unsigned zerofill NOT NULL COMMENT '对应的题目id',
-  `status` int NOT NULL DEFAULT '0' COMMENT '批阅状态',
-  `score` double DEFAULT '0' COMMENT '得分',
-  `content` varchar(255) DEFAULT NULL,
-  `person_name` varchar(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
-  `sortcode` tinyint DEFAULT NULL COMMENT '顺序',
-  PRIMARY KEY (`id`),
-  KEY `exam_id` (`exam_id`),
-  KEY `exam_number` (`exam_number`),
-  KEY `ques_id` (`ques_id`),
-  KEY `status` (`status`),
-  KEY `exam_id_2` (`exam_id`,`exam_number`,`person_id`,`ques_id`),
-  KEY `reply_file` (`ques_id`) USING BTREE,
-  CONSTRAINT `exam_ reply_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`exam_id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `exam_ reply_ibfk_2` FOREIGN KEY (`ques_id`) REFERENCES `question` (`que_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='答题表，用于储存考生答题数据';
-
--- ----------------------------
--- Records of exam_ reply
--- ----------------------------
-BEGIN;
-INSERT INTO `exam_ reply` (`id`, `exam_id`, `exam_number`, `person_id`, `ques_id`, `status`, `score`, `content`, `person_name`, `sortcode`) VALUES (0000000001, 0000000000000021, '1', '1', 0260346094, 0, 0, '一门编程语言。', 'test', NULL);
-INSERT INTO `exam_ reply` (`id`, `exam_id`, `exam_number`, `person_id`, `ques_id`, `status`, `score`, `content`, `person_name`, `sortcode`) VALUES (0000000002, 0000000000000021, '1', '1', 0504789498, 0, 0, 'D. 中年期的健康心理学', 'test', NULL);
-INSERT INTO `exam_ reply` (`id`, `exam_id`, `exam_number`, `person_id`, `ques_id`, `status`, `score`, `content`, `person_name`, `sortcode`) VALUES (0000000005, 0000000000000021, '2022550009', '2022550009', 0260346094, 0, 0, '一款软件。', '冯铮垲', NULL);
-INSERT INTO `exam_ reply` (`id`, `exam_id`, `exam_number`, `person_id`, `ques_id`, `status`, `score`, `content`, `person_name`, `sortcode`) VALUES (0000000006, 0000000000000021, '2022550009', '2022550009', 0260346094, 0, 0, '一款软件。', '冯铮垲', NULL);
-INSERT INTO `exam_ reply` (`id`, `exam_id`, `exam_number`, `person_id`, `ques_id`, `status`, `score`, `content`, `person_name`, `sortcode`) VALUES (0000000009, 0000000000000022, '1', '1', 0176453322, 0, 0, '17', 'test', 0);
-INSERT INTO `exam_ reply` (`id`, `exam_id`, `exam_number`, `person_id`, `ques_id`, `status`, `score`, `content`, `person_name`, `sortcode`) VALUES (0000000010, 0000000000000022, '1', '1', 0243902262, 0, 0, 'break', 'test', 1);
-COMMIT;
-
--- ----------------------------
 -- Table structure for exam_link
 -- ----------------------------
 DROP TABLE IF EXISTS `exam_link`;
@@ -144,6 +106,43 @@ INSERT INTO `exam_link` (`id`, `examname`, `questionid`, `insertor`, `score`) VA
 COMMIT;
 
 -- ----------------------------
+-- Table structure for exam_reply
+-- ----------------------------
+DROP TABLE IF EXISTS `exam_reply`;
+CREATE TABLE `exam_reply` (
+  `id` int(10) unsigned zerofill NOT NULL AUTO_INCREMENT COMMENT '答题id',
+  `exam_id` bigint(16) unsigned zerofill NOT NULL COMMENT '答题对应的试卷',
+  `ques_id` int(10) unsigned zerofill NOT NULL COMMENT '对应的题目id',
+  `status` int NOT NULL DEFAULT '0' COMMENT '批阅状态',
+  `score` double DEFAULT '0' COMMENT '得分',
+  `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '答题内容',
+  `sortcode` tinyint DEFAULT NULL COMMENT '顺序',
+  `examer_uid` varchar(72) DEFAULT NULL COMMENT '考生uid',
+  PRIMARY KEY (`id`),
+  KEY `exam_id` (`exam_id`),
+  KEY `ques_id` (`ques_id`),
+  KEY `status` (`status`),
+  KEY `exam_id_2` (`exam_id`,`ques_id`),
+  KEY `reply_file` (`ques_id`) USING BTREE,
+  KEY `examer_uid` (`examer_uid`),
+  CONSTRAINT `exam_reply_ibfk_1` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`exam_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `exam_reply_ibfk_2` FOREIGN KEY (`ques_id`) REFERENCES `question` (`que_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `exam_reply_ibfk_3` FOREIGN KEY (`examer_uid`) REFERENCES `exam_user` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='答题表，用于储存考生答题数据';
+
+-- ----------------------------
+-- Records of exam_reply
+-- ----------------------------
+BEGIN;
+INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `score`, `content`, `sortcode`, `examer_uid`) VALUES (0000000001, 0000000000000021, 0260346094, 0, 0, '一门编程语言。', NULL, NULL);
+INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `score`, `content`, `sortcode`, `examer_uid`) VALUES (0000000002, 0000000000000021, 0504789498, 0, 0, 'D. 中年期的健康心理学', NULL, NULL);
+INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `score`, `content`, `sortcode`, `examer_uid`) VALUES (0000000005, 0000000000000021, 0260346094, 0, 0, '一款软件。', NULL, NULL);
+INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `score`, `content`, `sortcode`, `examer_uid`) VALUES (0000000006, 0000000000000021, 0260346094, 0, 0, '一款软件。', NULL, NULL);
+INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `score`, `content`, `sortcode`, `examer_uid`) VALUES (0000000009, 0000000000000022, 0176453322, 0, 0, '17', 0, NULL);
+INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `score`, `content`, `sortcode`, `examer_uid`) VALUES (0000000010, 0000000000000022, 0243902262, 0, 0, 'break', 1, NULL);
+COMMIT;
+
+-- ----------------------------
 -- Table structure for exam_user
 -- ----------------------------
 DROP TABLE IF EXISTS `exam_user`;
@@ -157,7 +156,7 @@ CREATE TABLE `exam_user` (
   KEY `exam` (`exam`,`id`,`name`,`number`),
   KEY `exam_2` (`exam`),
   CONSTRAINT `exam_user_ibfk_1` FOREIGN KEY (`exam`) REFERENCES `exam` (`exam_id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci COMMENT='用于储存考生信息';
 
 -- ----------------------------
 -- Records of exam_user

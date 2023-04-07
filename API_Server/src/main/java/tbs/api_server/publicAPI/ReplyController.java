@@ -37,7 +37,18 @@ public class ReplyController
         return ApiMethod.makeResultNoLogin(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
-                return NetResult.makeResult(service.uploadReply(u.getNumber(),u.getExamid(),u.getPersonid(),u.getPersonname(),u.getDatas()),null);
+                return NetResult.makeResult(service.uploadReply(u.getExamid(),u.getUid(),u.getDatas()),null);
+            }
+        });
+    }
+
+    @RequestMapping("list")
+    public NetResult list(int examid)
+    {
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
+                return null;
             }
         });
     }

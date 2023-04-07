@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.lang.NonNull;
 import tbs.api_server.objects.simple.ExamReply;
 
@@ -30,8 +31,13 @@ public interface ExamReplyMapper
 //    int updateReplyCheck(String examnumber,String check_file,int status);
 
 
-    @Insert("insert into `exam_ reply`(exam_id, exam_number, person_id, ques_id,content,person_name,sortcode) VALUES (#{eid},#{en},#{pid},#{qid},#{content},#{pname},#{sortcode})")
-    int insertReply(int eid,String en,String pid,String pname,int qid,String content,int sortcode);
-    @Select("select not exists(select * from `exam_ reply` where exam_number=#{en} and exam_id=#{eid} and person_id=#{pid} and person_name=#{pname})")
-    int canReply(int eid,String en,String pid,String pname);
+    @Insert("insert into `exam_reply`(exam_id,  ques_id,content,sortcode,examer_uid) VALUES (#{eid},#{qid},#{content},#{sortcode},#{uid})")
+    int insertReply(int eid,int qid,String content,int sortcode,String uid);
+    @Select("select not exists(select * from `exam_reply` where examer_uid=#{uid})")
+    int canReply(int eid,String uid);
+
+
+    @Select("select  * from `exam_reply` where examer_uid=#{examer} and exam_id=#{examid} order by sortcode ASC")
+    @Cacheable(value = "examreply",key = "#examid+#examer")
+    List<ExamReply> listByExamUserIdAndExamId(int examid,String examer);
 }

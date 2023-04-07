@@ -66,7 +66,6 @@ public class AccessManager {
     }
 
     public UserSecurityInfo getLogined(String uid) {
-        ValueOperations<String, UserSecurityInfo> ops = redis.opsForValue();
         return (UserSecurityInfo) ops.get("loginKey-" + uid);
     }
 

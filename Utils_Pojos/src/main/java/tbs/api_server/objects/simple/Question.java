@@ -11,8 +11,6 @@ public class Question {
     private final static long serialVersionUID = 1L;    private int que_id;
     private int que_type;
     private String title;
-
-
     private transient String answer_data;
     private int que_creator;
     @DateTimeFormat(pattern="yyyy年MM月dd日 hh:mm:ss")
@@ -138,6 +136,23 @@ public class Question {
     public void setAnswerd_right(float answerd_right)
     {
         this.answerd_right = answerd_right;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Question)) return false;
+
+        Question question = (Question) o;
+
+        if (que_id != question.que_id) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return que_id;
     }
 
     @Override

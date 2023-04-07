@@ -6,7 +6,7 @@ import java.util.List;
 
 public class ReplyUpload {
     int examid;
-    String number; String personid; String personname;
+    String uid;
     List<CheckData> datas;
 
     public int getExamid() {
@@ -17,28 +17,12 @@ public class ReplyUpload {
         this.examid = examid;
     }
 
-    public String getNumber() {
-        return number;
+    public String getUid() {
+        return uid;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
-    public String getPersonid() {
-        return personid;
-    }
-
-    public void setPersonid(String personid) {
-        this.personid = personid;
-    }
-
-    public String getPersonname() {
-        return personname;
-    }
-
-    public void setPersonname(String personname) {
-        this.personname = personname;
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     public List<CheckData> getDatas() {

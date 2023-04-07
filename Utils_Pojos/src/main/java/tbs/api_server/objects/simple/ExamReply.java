@@ -4,7 +4,7 @@ public class ExamReply {
     private final static long serialVersionUID = 1L;
     private int id,exam_id,ques_id,status, sortcode;
     private  double score;
-    private String content,exam_number,person_id,person_name;
+    private String content,examer_uid;
 
     public int getSortcode() {
         return sortcode;
@@ -14,22 +14,22 @@ public class ExamReply {
         this.sortcode = sortcode;
     }
 
-    public String getPerson_name() {
-        return person_name;
+    public String getExamer_uid() {
+        return examer_uid;
     }
 
-    public void setPerson_name(String person_name) {
-        this.person_name = person_name;
+    public void setExamer_uid(String examer_uid) {
+        this.examer_uid = examer_uid;
     }
 
-    public ExamReply(int exam_id, int ques_id, String content, String exam_number, String person_id, String person_name,int custom) {
+    public ExamReply(int exam_id, int ques_id, int status, int sortcode, double score, String content, String examer_uid) {
         this.exam_id = exam_id;
         this.ques_id = ques_id;
+        this.status = status;
+        this.sortcode = sortcode;
+        this.score = score;
         this.content = content;
-        this.exam_number = exam_number;
-        this.person_id = person_id;
-        this.person_name = person_name;
-        this.sortcode =custom;
+        this.examer_uid = examer_uid;
     }
 
     public ExamReply() {
@@ -83,19 +83,4 @@ public class ExamReply {
         this.content = content;
     }
 
-    public String getExam_number() {
-        return exam_number;
-    }
-
-    public void setExam_number(String exam_number) {
-        this.exam_number = exam_number;
-    }
-
-    public String getPerson_id() {
-        return person_id;
-    }
-
-    public void setPerson_id(String person_id) {
-        this.person_id = person_id;
-    }
 }

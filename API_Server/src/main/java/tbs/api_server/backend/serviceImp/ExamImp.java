@@ -90,13 +90,7 @@ public class ExamImp implements ExamService {
             throws BackendError {
         String opertname = AccessManager.ACCESS_MANAGER.getLoginedFromHttp().getName();
         byte[] file = null;
-        List<ExamQuestion> qs = new ArrayList<>(CollUtil.newCopyOnWriteArrayList(data.getQuestions()));
-        try {
-            data.setQuestions(null);
-            file = JSON.toJSONString(data).getBytes(StandardCharsets.UTF_8);
-        } catch (Exception e) {
-            throw _ERROR.throwError(EC_UNKNOWN, "数据文件转换失败");
-        }
+        List<ExamQuestion> qs =data.getQuestions();
 
         int c = mp.uploadExam(data.getExam_name(), data.getExam_begin(), data.getExam_note(), data.getExam_len());
         if (c <= 0)

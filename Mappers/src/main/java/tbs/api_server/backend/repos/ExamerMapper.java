@@ -15,4 +15,6 @@ public interface ExamerMapper extends CrudRepository<ExamUser,String> {
     ExamUser findOne(int eid,String name,String id,String number);
 
     List<ExamUser> findAllByExamid(int eid);
+
+    ExamUser findExamUserByExamidAndUid(int eid,String uid);
 }
