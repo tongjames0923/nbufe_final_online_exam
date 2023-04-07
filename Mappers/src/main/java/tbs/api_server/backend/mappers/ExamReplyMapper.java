@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.lang.NonNull;
 import tbs.api_server.objects.simple.ExamReply;
@@ -38,6 +39,12 @@ public interface ExamReplyMapper
 
 
     @Select("select  * from `exam_reply` where examer_uid=#{examer} and exam_id=#{examid} order by sortcode ASC")
-    @Cacheable(value = "examreply",key = "#examid+#examer")
     List<ExamReply> listByExamUserIdAndExamId(int examid,String examer);
+
+    @Select("select * from exam_reply where id=#{id}")
+    @Cacheable(value = "single_examreply",key = "#id")
+    ExamReply findById(int id);
+    @Update("update exam_reply set score=#{score} where id=#{id}")
+    @CacheEvict(value = "single_examreply",key = "#id")
+    int updateScore(int id,double score);
 }

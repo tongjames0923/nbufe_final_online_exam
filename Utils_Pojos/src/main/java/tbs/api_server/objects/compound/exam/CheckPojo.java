@@ -6,11 +6,33 @@ import tbs.api_server.objects.simple.Question;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class CheckPojo {
     int examid;
     ExamUser examUser;
-    Map<Question,List<ExamReply>> replyList;
+    public static class InnerReply
+    {
+        int question;
+        List<ExamReply> replyList;
+
+        public int getQuestion() {
+            return question;
+        }
+
+        public void setQuestion(int question) {
+            this.question = question;
+        }
+
+        public List<ExamReply> getReplyList() {
+            return replyList;
+        }
+
+        public void setReplyList(List<ExamReply> replyList) {
+            this.replyList = replyList;
+        }
+    }
+    List<InnerReply> replyList;
 
     public int getExamid() {
         return examid;
@@ -28,11 +50,11 @@ public class CheckPojo {
         this.examUser = examUser;
     }
 
-    public Map<Question, List<ExamReply>> getReplyList() {
+    public List<InnerReply> getReplyList() {
         return replyList;
     }
 
-    public void setReplyList(Map<Question, List<ExamReply>> replyList) {
+    public void setReplyList(List<InnerReply> replyList) {
         this.replyList = replyList;
     }
 }

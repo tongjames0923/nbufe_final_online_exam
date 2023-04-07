@@ -29,12 +29,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 
 import static tbs.api_server.utility.Error.*;
 
 @Service
-@Scope("prototype")
 public class ReplyImp implements ReplyService {
 
     @Resource
@@ -56,6 +56,20 @@ public class ReplyImp implements ReplyService {
         }
     }
 
+    static class ExamReplyUpdateScore implements BatchUtil.Activitor<ExamReply>
+    {
+        @Override
+        public void flush(MybatisBatchUtils obj, List<ExamReply> list) {
+            obj.batchUpdateOrInsert(list, ExamReplyMapper.class, new BiFunction<ExamReply, ExamReplyMapper, Object>() {
+                @Override
+                public Object apply(ExamReply examReply, ExamReplyMapper examReplyMapper) {
+                    return examReplyMapper.updateScore(examReply.getId(),examReply.getScore());
+                }
+            });
+        }
+    }
+    ExamReplyInsertor insertor = new ExamReplyInsertor();
+    ExamReplyUpdateScore updateScore=new ExamReplyUpdateScore();
 
     @Override
     public ServiceResult uploadReply(int eid, String uid, List<CheckData> rs) throws BackendError {
@@ -65,7 +79,7 @@ public class ReplyImp implements ReplyService {
         if (replyMapper.canReply(eid, uid) != 1) {
             throw _ERROR.throwError(FC_DUPLICATE, "请勿重复提交答案");
         }
-        ExamReplyInsertor insertor = new ExamReplyInsertor();
+
         for (CheckData c : rs) {
             int i = 0;
             for (String text : c.getText()) {
@@ -83,10 +97,7 @@ public class ReplyImp implements ReplyService {
     @Resource
     ExamerMapper examerMapper;
 
-    @Resource
-    QuestionMapper questionMapper;
-    @Override
-    public ServiceResult list(int examid, UserSecurityInfo u) throws BackendError {
+    void checkPermit(UserSecurityInfo u,int examid) throws BackendError {
         boolean hasPer = false;
         if (u.getLevel() >= const_User.LEVEL_EXAM_STAFF)
             hasPer = true;
@@ -96,17 +107,25 @@ public class ReplyImp implements ReplyService {
         }
         if (!hasPer)
             throw _ERROR.throwError(EC_LOW_PERMISSIONS, "不存在针对该考试的批阅权限");
+    }
+
+
+    @Resource
+    QuestionMapper questionMapper;
+    @Override
+    public ServiceResult list(int examid, UserSecurityInfo u) throws BackendError {
+        checkPermit(u,examid);
         List<ExamUser> all = examerMapper.findAllByExamid(examid);
         List<CheckPojo> cps = new ArrayList<>();
         for (ExamUser eu : all) {
             CheckPojo cp = new CheckPojo();
             cp.setExamid(examid);
             cp.setExamUser(eu);
-            List<ExamReply> els= replyMapper.listByExamUserIdAndExamId(examid, eu.getId());
-            HashMap<Question,List<ExamReply>> replist=new HashMap<>();
+            List<ExamReply> els= replyMapper.listByExamUserIdAndExamId(examid, eu.getUid());
+            HashMap<Integer,List<ExamReply>> replist=new HashMap<>();
             for(ExamReply reply :els)
             {
-                Question q=questionMapper.getQuestionByID(reply.getQues_id());
+                int q= reply.getQues_id();
                 if(replist.containsKey(q))
                 {
                     replist.get(q).add(reply);
@@ -116,9 +135,30 @@ public class ReplyImp implements ReplyService {
                     replist.put(q,new ArrayList<>(Arrays.asList(reply)));
                 }
             }
-            cp.setReplyList(replist);
+            List<CheckPojo.InnerReply> replies=new ArrayList<>();
+            replist.forEach(new BiConsumer<Integer, List<ExamReply>>() {
+                @Override
+                public void accept(Integer integer, List<ExamReply> examReplies) {
+                    CheckPojo.InnerReply r=new CheckPojo.InnerReply();
+                    r.setQuestion(integer);
+                    r.setReplyList(examReplies);
+                    replies.add(r);
+                }
+            });
+            cp.setReplyList(replies);
+            cps.add(cp);
         }
         return ServiceResult.makeResult(SUCCESS, cps);
+    }
+
+    @Override
+    public ServiceResult updateScore(int er, double score,UserSecurityInfo u) throws BackendError {
+        ExamReply reply= replyMapper.findById(er);
+        if(reply==null)
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING,"不存在相关答卷");
+        checkPermit(u,reply.getExam_id());
+        batchUtil.write(reply,updateScore,false);
+        return ServiceResult.makeResult(SUCCESS,reply);
     }
 //    public static class Help
 //    {

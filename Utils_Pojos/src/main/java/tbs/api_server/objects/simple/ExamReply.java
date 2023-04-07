@@ -83,4 +83,25 @@ public class ExamReply {
         this.content = content;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ExamReply)) return false;
+
+        ExamReply reply = (ExamReply) o;
+
+        if (exam_id != reply.exam_id) return false;
+        if (ques_id != reply.ques_id) return false;
+        if (!examer_uid.equals(reply.examer_uid)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = exam_id;
+        result = 31 * result + ques_id;
+        result = 31 * result + examer_uid.hashCode();
+        return result;
+    }
 }

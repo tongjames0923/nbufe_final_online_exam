@@ -13,4 +13,6 @@ public interface ReplyService
     ServiceResult uploadReply(int eid,String uid,List<CheckData> rs) throws Error.BackendError;
 
     public ServiceResult list(int examid, UserSecurityInfo user) throws Error.BackendError;
+
+    public ServiceResult updateScore(int er, double score,UserSecurityInfo u) throws Error.BackendError;
 }

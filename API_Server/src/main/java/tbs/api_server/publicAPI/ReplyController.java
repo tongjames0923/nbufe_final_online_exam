@@ -48,7 +48,19 @@ public class ReplyController
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
-                return null;
+                return NetResult.makeResult(service.list(examid,applyUser),null);
+            }
+        });
+    }
+
+
+    @RequestMapping("updateScore")
+    public NetResult setScore(int rep_id,double score)
+    {
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
+                return NetResult.makeResult(service.updateScore(rep_id,score,applyUser),null);
             }
         });
     }
