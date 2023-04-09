@@ -13,6 +13,7 @@ public class ExamCheck_Entity {
 
     @Id
     @Column(name = "checkid")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public Integer getCheckid() {
         return checkid;
     }

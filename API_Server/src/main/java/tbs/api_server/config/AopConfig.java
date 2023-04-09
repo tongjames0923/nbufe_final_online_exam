@@ -1,6 +1,5 @@
 package tbs.api_server.config;
 
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -9,7 +8,6 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.NetResult;
@@ -19,7 +17,6 @@ import tbs.api_server.utils.LogQueueSender;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-
 import java.lang.annotation.Annotation;
 import java.util.Date;
 import java.util.Enumeration;
@@ -33,6 +30,14 @@ public class AopConfig {
 
     @Value("${tbs.queue.log}")
     String log_q;
+    @Resource
+    SqlSessionFactory sqlSessionFactory;
+    @Resource
+    LogQueueSender sender;
+    @Resource
+    HttpServletRequest request;
+    @Resource
+    AccessManager manager;
 
     @Pointcut("within(tbs.api_server.publicAPI.*)")
     public void accessPointCut() {
@@ -42,40 +47,50 @@ public class AopConfig {
     public void sqlPointCut() {
     }
 
-    @Resource
-    SqlSessionFactory sqlSessionFactory;
-
     @Pointcut("within(tbs.api_server.backend.serviceImp.*)")
     public void logWritePointCut() {
 
     }
 
     public String getRemoteHost(javax.servlet.http.HttpServletRequest request) {
-        String ip = request.getHeader("x-forwarded-for");
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("Proxy-Client-IP");
+        try {
+            String ip = request.getHeader("x-forwarded-for");
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getHeader("Proxy-Client-IP");
+            }
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getHeader("WL-Proxy-Client-IP");
+            }
+            if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
+                ip = request.getRemoteAddr();
+            }
+            return ip.equals("0:0:0:0:0:0:0:1") ? "127.0.0.1" : ip;
+
+        } catch (Exception e) {
+            return "UNKNOWN";
         }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getHeader("WL-Proxy-Client-IP");
-        }
-        if (ip == null || ip.length() == 0 || "unknown".equalsIgnoreCase(ip)) {
-            ip = request.getRemoteAddr();
-        }
-        return ip.equals("0:0:0:0:0:0:0:1") ? "127.0.0.1" : ip;
+
+
     }
 
     private LogPojo beginALog(ProceedingJoinPoint proceedingJoinPoint) {
         MethodSignature signature = (MethodSignature) proceedingJoinPoint.getSignature();
         LogPojo logPojo = new LogPojo();
         logPojo.setLog_function(proceedingJoinPoint.getTarget().getClass().getName() + "." + signature.getName());
-        Enumeration<String> em = request.getHeaders("X-TOKEN");
-        String token = null;
-        while (em.hasMoreElements()) {
-            token = em.nextElement();
+        UserSecurityInfo sec = null;
+        try {
+            Enumeration<String> em = request.getHeaders("X-TOKEN");
+            String token = null;
+            while (em.hasMoreElements()) {
+                token = em.nextElement();
+            }
+
+            sec = manager.getLogined(token);
+            logPojo.setLogined(sec);
+        } catch (Exception e) {
+
         }
 
-        UserSecurityInfo sec = manager.getLogined(token);
-        logPojo.setLogined(sec);
         if (sec == null) {
             logPojo.setLog_invoker(String.format("invoke ip:%s", getRemoteHost(request)));
         } else
@@ -93,27 +108,21 @@ public class AopConfig {
         return logPojo;
     }
 
-    @Resource
-    LogQueueSender sender;
-
     void WriteLog(LogPojo pojo) {
         System.out.println("invoke log:" + pojo);
         sender.send(log_q, pojo);
     }
 
-
-    @Resource
-    HttpServletRequest request;
-
-    String sub(String s,int max) {
-        if(s==null)
+    String sub(String s, int max) {
+        if (s == null)
             return "";
         if (s.length() > max)
             return s.substring(0, max);
         return s;
     }
+
     String sub(String s) {
-        return sub(s,200);
+        return sub(s, 200);
     }
 
     @Around("sqlPointCut()")
@@ -138,10 +147,6 @@ public class AopConfig {
         }
         return result;
     }
-
-
-    @Resource
-    AccessManager manager;
 
     @Around("accessPointCut()")
     public Object accessControl(ProceedingJoinPoint proceedingJoinPoint) throws Throwable {

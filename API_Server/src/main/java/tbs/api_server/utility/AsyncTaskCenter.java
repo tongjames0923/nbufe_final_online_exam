@@ -29,11 +29,22 @@ public class AsyncTaskCenter {
         void doSomeThing();
     }
     @Async
-    public void doWithAsync(AsyncToDo asyncToDo) throws Error.BackendError {
+    public void doWithAsync(AsyncToDo asyncToDo) throws Error.BackendError,Exception {
         String key=asyncToDo.key();
+        Exception ex=null;
         if(ops.get(key)!=null)
             throw _ERROR.throwError(FC_DUPLICATE,"重复任务");
-        asyncToDo.doSomeThing();
+        ops.set(key,"doing");
+        try {
+            asyncToDo.doSomeThing();
+        }catch (Exception e)
+        {
+
+            ex=e;
+        }
+
         str_redis.delete(key);
+        if(ex!=null)
+        throw ex;
     }
 }

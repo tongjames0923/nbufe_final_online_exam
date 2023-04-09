@@ -18,5 +18,5 @@ public interface ReplyService
 
     public ServiceResult confirm(int eid,UserSecurityInfo u)throws Error.BackendError;
 
-    public ServiceResult preCheck(UserSecurityInfo u,int e) throws Error.BackendError;
+    public ServiceResult preCheck(UserSecurityInfo u,int e) throws Exception;
 }

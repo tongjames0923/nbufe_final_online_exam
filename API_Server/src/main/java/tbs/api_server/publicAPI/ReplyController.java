@@ -78,7 +78,7 @@ public class ReplyController {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
-                return null;
+                return NetResult.makeResult(service.preCheck(applyUser,examid),null);
             }
         });
     }

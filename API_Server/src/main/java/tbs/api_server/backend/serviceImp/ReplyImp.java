@@ -2,7 +2,6 @@ package tbs.api_server.backend.serviceImp;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
-import jdk.jshell.spi.ExecutionControl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
@@ -209,12 +208,10 @@ public class ReplyImp implements ReplyService {
 
     @Override
     @Transactional
-    public ServiceResult preCheck(UserSecurityInfo u, int eid) throws BackendError {
+    public ServiceResult preCheck(UserSecurityInfo u, int eid) throws Exception {
         checkPermit(u, eid);
         ExamInfo examInfo = examMapper.getExamByid(eid);
-        if (examInfo.getExam_status() == const_Exam.EXAM_STATUS_CLOSED ||
-                examInfo.getExam_status() == const_Exam.EXAM_STATUS_CHECKED &&
-                        examInfo.getExam_status() == const_Exam.EXAM_STATUS_WAIT) {
+        if (examInfo.getExam_status()!=const_Exam.EXAM_STATUS_CLOSED) {
             throw _ERROR.throwError(FC_UNAVALIABLE, "当前考试状态无法确认");
         }
         asyncTaskCenter.doWithAsync(new AsyncTaskCenter.AsyncToDo() {
@@ -225,18 +222,16 @@ public class ReplyImp implements ReplyService {
 
             @Override
             public void doSomeThing() {
-                List<Integer> allQuestion = questionMapper.listQuestionIdByExam(examInfo.getExam_name());
-                List<StandardAnswer> answers = answerMapper.listAnswerByQuestions(allQuestion);
+                List<StandardAnswer> answers = answerMapper.listAnswerByQuestions(examInfo.getExam_name());
                 for (StandardAnswer answer : answers) {
 
                     List<ExamReply> replies = replyMapper.findbyExamidAndQuestion(eid, answer.getQues_id());
                     HashMap<String, List<ExamReply>> persons = new HashMap<>();
                     for (ExamReply rep : replies) {
-                        if (persons.containsKey(rep.getExamer_uid())) {
-                            persons.get(rep.getExamer_uid()).add(rep);
-                        } else {
-                            persons.put(rep.getExamer_uid(), Arrays.asList(rep));
+                        if (!persons.containsKey(rep.getExamer_uid())) {
+                            persons.put(rep.getExamer_uid(),new ArrayList<>());
                         }
+                        persons.get(rep.getExamer_uid()).add(rep);
                     }
                     HashMap<String, String> temp = new HashMap<>();
                     String str = null;
@@ -292,7 +287,7 @@ public class ReplyImp implements ReplyService {
                         }
 
                     } catch (Exception e) {
-
+                        e.printStackTrace();
                     }
 
                 }

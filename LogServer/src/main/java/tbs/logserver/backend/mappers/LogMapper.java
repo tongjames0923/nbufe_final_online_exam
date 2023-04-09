@@ -19,6 +19,6 @@ public interface LogMapper {
     @Select("SELECT AVG(ll.cost) as avg_cost,lg.log_function as `function` FROM log lg JOIN log ll ON ll.log_function=lg.log_function GROUP BY lg.log_function ORDER BY avg_cost DESC LIMIT 0,#{num}")
     List<LogVo> listTopCostFunction(int num);
 
-    @Select("select  * from log where `${fied}` like '%${val}%' order by log_begin desc limit #{from},#{num}")
+    @Select("select  * from log where `${fied}` like '${val}%' order by log_begin desc limit #{from},#{num}")
     List<LogPojo> select(int from,int num,String fied,String val);
 }

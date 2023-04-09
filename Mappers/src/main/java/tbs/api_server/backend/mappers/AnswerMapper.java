@@ -24,8 +24,8 @@ public interface AnswerMapper
     int insertAnswer(int ques_id,String answer, String analysis);
 
 
-    @Select("SELECT a.*,q.que_type AS type FROM question q JOIN answer a ON q.que_id=a.ques_id AND q.que_id WHERE q.que_id IN #{qids}")
-    List<StandardAnswer> listAnswerByQuestions(List<Integer> qids);
+    @Select("SELECT a.*,q.que_type AS type FROM question q JOIN answer a ON q.que_id=a.ques_id AND q.que_id WHERE q.que_id IN (select el.questionid from exam_link el where examname=#{examname})")
+    List<StandardAnswer> listAnswerByQuestions(String examname);
 
     @Delete("DELETE FROM answer WHERE ques_id=#{ques_id}")
     int deleteAnswer(int ques_id);
