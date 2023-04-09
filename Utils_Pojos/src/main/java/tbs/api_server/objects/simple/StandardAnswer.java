@@ -7,6 +7,50 @@ public class StandardAnswer {
     private int ques_id;
     private String answer_content;
 
+    public static class Select {
+        public static final String YES = "1", NO = "0";
+        String right;
+        String text;
+
+        public String getRight() {
+            return right;
+        }
+
+        public void setRight(String right) {
+            this.right = right;
+        }
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+    }
+
+    public static class FillBlank {
+        public static final String FULLEQUAL = "1", NOTFULLEQUAL = "0";
+        String text;
+        String equal;
+
+        public String getText() {
+            return text;
+        }
+
+        public void setText(String text) {
+            this.text = text;
+        }
+
+        public String getEqual() {
+            return equal;
+        }
+
+        public void setEqual(String equal) {
+            this.equal = equal;
+        }
+    }
+
     private transient int type;
 
     public int getType() {
@@ -18,7 +62,9 @@ public class StandardAnswer {
     }
 
     private String answer_analysis;
-    private final static long serialVersionUID = 1L;    public int getId() {
+    private final static long serialVersionUID = 1L;
+
+    public int getId() {
         return id;
     }
 

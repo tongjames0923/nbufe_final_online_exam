@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import tbs.api_server.objects.simple.StandardAnswer;
 
+import java.util.List;
+
 @Mapper
 public interface AnswerMapper
 {
@@ -21,6 +23,9 @@ public interface AnswerMapper
     @Insert("INSERT INTO answer(ques_id,answer_content,answer_analysis) VALUES (#{param1},#{param2},#{param3})")
     int insertAnswer(int ques_id,String answer, String analysis);
 
+
+    @Select("SELECT a.*,q.que_type AS type FROM question q JOIN answer a ON q.que_id=a.ques_id AND q.que_id WHERE q.que_id IN #{qids}")
+    List<StandardAnswer> listAnswerByQuestions(List<Integer> qids);
 
     @Delete("DELETE FROM answer WHERE ques_id=#{ques_id}")
     int deleteAnswer(int ques_id);

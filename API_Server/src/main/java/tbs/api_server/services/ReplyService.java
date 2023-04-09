@@ -17,4 +17,6 @@ public interface ReplyService
     public ServiceResult updateScore(int er, double score,UserSecurityInfo u) throws Error.BackendError;
 
     public ServiceResult confirm(int eid,UserSecurityInfo u)throws Error.BackendError;
+
+    public ServiceResult preCheck(UserSecurityInfo u,int e) throws Error.BackendError;
 }

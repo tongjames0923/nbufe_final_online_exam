@@ -65,4 +65,8 @@ public interface QuestionMapper {
             "FROM `question` q join `answer` ans on ans.ques_id=q.que_id " +
             " JOIN tag_link l ON l.ques_id=q.que_id JOIN tag t ON t.tag_id=l.tag_id WHERE t.tag_name LIKE '${tag}%'")
     List<Question> getQuestionByTag(@Param(value = "tag") String tag);
+
+    @Select("select el.questionid from exam_link el where examname=#{examname}")
+    List<Integer> listQuestionIdByExam(String examname);
+
 }

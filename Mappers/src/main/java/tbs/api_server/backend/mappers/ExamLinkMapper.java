@@ -22,6 +22,9 @@ public interface ExamLinkMapper {
     @Cacheable(value = "ques_links",key = "#name")
     List<ExamQuestionLink> getExamQuestions(String name);
 
+    @Select("select score from exam_link where examname=#{ename} and questionid=#{q}")
+    double score(String ename,int q);
+
     @Update("update `exam_link` set score=#{score} where questionid=#{q} and examname=#{e}")
     @CacheEvict(value = "ques_links",key = "#e")
     int updateScoreByQandE(int q,String e,int score);

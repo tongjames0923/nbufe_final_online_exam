@@ -43,9 +43,10 @@ public interface ExamReplyMapper
 
     @Select("select * from exam_reply where id=#{id}")
     ExamReply findById(int id);
-    @Update("update exam_reply set score=#{score} where id=#{id}")
-    int updateScore(int id,double score);
 
     @Update("update exam_reply set status=#{status} where exam_id=#{examid}")
     int updateStatus(int examid,int status);
+
+    @Select("select * from exam_reply where exam_id=#{eid} and ques_id=#{qid} order by sortcode asc")
+    List<ExamReply> findbyExamidAndQuestion(int eid,int qid);
 }

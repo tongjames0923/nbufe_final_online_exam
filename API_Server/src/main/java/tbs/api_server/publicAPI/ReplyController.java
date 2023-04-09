@@ -52,6 +52,7 @@ public class ReplyController {
 
 
     @RequestMapping("updateScore")
+    @Transactional
     public NetResult setScore(int rep_id, double score) {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
@@ -62,11 +63,22 @@ public class ReplyController {
     }
 
     @RequestMapping("confirm")
+    @Transactional
     public NetResult comfirm(int examid) {
         return ApiMethod.makeResult(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
                 return NetResult.makeResult(service.confirm(examid,applyUser),null);
+            }
+        });
+    }
+    @RequestMapping("precheck")
+    public NetResult precheck(int examid)
+    {
+        return ApiMethod.makeResult(new ApiMethod.IAction() {
+            @Override
+            public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
+                return null;
             }
         });
     }

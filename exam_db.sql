@@ -11,7 +11,7 @@
  Target Server Version : 80031 (8.0.31)
  File Encoding         : 65001
 
- Date: 07/04/2023 11:43:16
+ Date: 09/04/2023 10:17:56
 */
 
 SET NAMES utf8mb4;
@@ -64,8 +64,33 @@ CREATE TABLE `exam` (
 BEGIN;
 INSERT INTO `exam` (`exam_id`, `exam_name`, `exam_begin`, `exam_len`, `exam_note`, `exam_status`) VALUES (0000000000000019, '测试', '2023-04-02 15:30:00', 90, NULL, 2);
 INSERT INTO `exam` (`exam_id`, `exam_name`, `exam_begin`, `exam_len`, `exam_note`, `exam_status`) VALUES (0000000000000021, '选择题测试', '2023-04-04 00:00:00', 90, NULL, 2);
-INSERT INTO `exam` (`exam_id`, `exam_name`, `exam_begin`, `exam_len`, `exam_note`, `exam_status`) VALUES (0000000000000022, '填空题测试', '2023-04-06 00:00:00', 90, NULL, 0);
+INSERT INTO `exam` (`exam_id`, `exam_name`, `exam_begin`, `exam_len`, `exam_note`, `exam_status`) VALUES (0000000000000022, '填空题测试', '2023-04-06 00:00:00', 90, NULL, 2);
 INSERT INTO `exam` (`exam_id`, `exam_name`, `exam_begin`, `exam_len`, `exam_note`, `exam_status`) VALUES (0000000000000041, 'test999', '2023-04-13 00:00:00', 90, NULL, 0);
+COMMIT;
+
+-- ----------------------------
+-- Table structure for exam_check
+-- ----------------------------
+DROP TABLE IF EXISTS `exam_check`;
+CREATE TABLE `exam_check` (
+  `checkid` int unsigned NOT NULL AUTO_INCREMENT COMMENT '批阅主键',
+  `ques_id` int(10) unsigned zerofill NOT NULL COMMENT '题目id\n',
+  `exam_id` bigint(16) unsigned zerofill NOT NULL COMMENT '考试id',
+  `examer` varchar(72) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '考生uid',
+  `score` int NOT NULL DEFAULT '0' COMMENT '得分',
+  PRIMARY KEY (`checkid`),
+  KEY `ques_id` (`ques_id`),
+  KEY `exam_id` (`exam_id`),
+  KEY `examer` (`examer`),
+  CONSTRAINT `exam_check_ibfk_1` FOREIGN KEY (`ques_id`) REFERENCES `question` (`que_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `exam_check_ibfk_2` FOREIGN KEY (`exam_id`) REFERENCES `exam` (`exam_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `exam_check_ibfk_3` FOREIGN KEY (`examer`) REFERENCES `exam_user` (`uid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin COMMENT='批阅表';
+
+-- ----------------------------
+-- Records of exam_check
+-- ----------------------------
+BEGIN;
 COMMIT;
 
 -- ----------------------------
@@ -114,7 +139,6 @@ CREATE TABLE `exam_reply` (
   `exam_id` bigint(16) unsigned zerofill NOT NULL COMMENT '答题对应的试卷',
   `ques_id` int(10) unsigned zerofill NOT NULL COMMENT '对应的题目id',
   `status` int NOT NULL DEFAULT '0' COMMENT '批阅状态',
-  `score` double DEFAULT '0' COMMENT '得分',
   `content` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '答题内容',
   `sortcode` tinyint DEFAULT NULL COMMENT '顺序',
   `examer_uid` varchar(72) DEFAULT NULL COMMENT '考生uid',
@@ -134,12 +158,12 @@ CREATE TABLE `exam_reply` (
 -- Records of exam_reply
 -- ----------------------------
 BEGIN;
-INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `score`, `content`, `sortcode`, `examer_uid`) VALUES (0000000001, 0000000000000021, 0260346094, 0, 0, '一门编程语言。', NULL, NULL);
-INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `score`, `content`, `sortcode`, `examer_uid`) VALUES (0000000002, 0000000000000021, 0504789498, 0, 0, 'D. 中年期的健康心理学', NULL, NULL);
-INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `score`, `content`, `sortcode`, `examer_uid`) VALUES (0000000005, 0000000000000021, 0260346094, 0, 0, '一款软件。', NULL, NULL);
-INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `score`, `content`, `sortcode`, `examer_uid`) VALUES (0000000006, 0000000000000021, 0260346094, 0, 0, '一款软件。', NULL, NULL);
-INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `score`, `content`, `sortcode`, `examer_uid`) VALUES (0000000009, 0000000000000022, 0176453322, 0, 0, '17', 0, NULL);
-INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `score`, `content`, `sortcode`, `examer_uid`) VALUES (0000000010, 0000000000000022, 0243902262, 0, 0, 'break', 1, NULL);
+INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `content`, `sortcode`, `examer_uid`) VALUES (0000000001, 0000000000000041, 0260346094, 0, '一门编程语言。', NULL, '4028b27387513ae40187513bbcc10000');
+INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `content`, `sortcode`, `examer_uid`) VALUES (0000000002, 0000000000000041, 0504789498, 0, 'D. 中年期的健康心理学', NULL, '4028b27387513ae40187513bbcc10000');
+INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `content`, `sortcode`, `examer_uid`) VALUES (0000000005, 0000000000000041, 0260346094, 0, '一款软件。', NULL, '4028b27387513ae40187513bbcc10000');
+INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `content`, `sortcode`, `examer_uid`) VALUES (0000000006, 0000000000000041, 0260346094, 0, '一款软件。', NULL, '4028b27387513ae40187513bbd0b0002');
+INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `content`, `sortcode`, `examer_uid`) VALUES (0000000009, 0000000000000041, 0176453322, 0, '17', 0, '4028b27387513ae40187513bbd0b0002');
+INSERT INTO `exam_reply` (`id`, `exam_id`, `ques_id`, `status`, `content`, `sortcode`, `examer_uid`) VALUES (0000000010, 0000000000000041, 0243902262, 0, 'break', 1, '4028b27387513ae40187513bbd0b0002');
 COMMIT;
 
 -- ----------------------------
@@ -186,7 +210,7 @@ CREATE TABLE `log` (
   KEY `log_type` (`log_type`),
   KEY `log_begin` (`log_begin`),
   KEY `log_function` (`log_function`)
-) ENGINE=InnoDB AUTO_INCREMENT=2735 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2745 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- ----------------------------
 -- Records of log
@@ -748,6 +772,16 @@ INSERT INTO `log` (`log_id`, `log_type`, `log_function`, `log_invoker`, `log_beg
 INSERT INTO `log` (`log_id`, `log_type`, `log_function`, `log_invoker`, `log_begin`, `cost`, `log_return`, `log_params`, `log_error`) VALUES (000002732, 'SQL语句执行', 'INSERT INTO `tag_link`(`tag_id`,`ques_id`) VALUES\n(?,?)', 'user id:435411439,username:test923 from:127.0.0.1', '2023-04-05 12:55:20', 1, NULL, '[ques_id]=[1853786809] [tagid]=[3] ', NULL);
 INSERT INTO `log` (`log_id`, `log_type`, `log_function`, `log_invoker`, `log_begin`, `cost`, `log_return`, `log_params`, `log_error`) VALUES (000002733, '业务请求', 'tbs.api_server.backend.serviceImp.TagImp.linkTag', 'user id:435411439,username:test923 from:127.0.0.1', '2023-04-05 12:55:20', 4, 'ServiceResult{code=40000, obj=null}', '[ques_id]=[1853786809] [tagname]=[Test] ', NULL);
 INSERT INTO `log` (`log_id`, `log_type`, `log_function`, `log_invoker`, `log_begin`, `cost`, `log_return`, `log_params`, `log_error`) VALUES (000002734, 'SQL语句执行', 'select t.tag_id,t.tag_name,(select count(1) from tag_link tg where tg.tag_id=t.tag_id) as tag_used from tag t where `tag_name`=? FOR UPDATE', 'user id:435411439,username:test923 from:127.0.0.1', '2023-04-05 12:55:20', 1, NULL, '[name]=[Tello] ', NULL);
+INSERT INTO `log` (`log_id`, `log_type`, `log_function`, `log_invoker`, `log_begin`, `cost`, `log_return`, `log_params`, `log_error`) VALUES (000002735, '错误', 'tbs.api_server.backend.serviceImp.UserImp.logOut', 'invoke ip:127.0.0.1', '2023-04-07 13:47:10', 8, NULL, '[access]=[28b437a1-eee2-45c0-bf2b-30a10b44d656-mix-435411439] ', NULL);
+INSERT INTO `log` (`log_id`, `log_type`, `log_function`, `log_invoker`, `log_begin`, `cost`, `log_return`, `log_params`, `log_error`) VALUES (000002736, 'SQL语句执行', 'select uc.*,ui.`level` from `user_sec` uc left join `user_info` ui on ui.id=uc.id where uc.`name`=?', 'invoke ip:127.0.0.1', '2023-04-07 13:47:12', 35, NULL, '[name]=[test923] ', NULL);
+INSERT INTO `log` (`log_id`, `log_type`, `log_function`, `log_invoker`, `log_begin`, `cost`, `log_return`, `log_params`, `log_error`) VALUES (000002737, '业务请求', 'tbs.api_server.backend.serviceImp.UserImp.loginUser', 'invoke ip:127.0.0.1', '2023-04-07 13:47:12', 58, 'ServiceResult{code=40000, obj=tbs.api_server.objects.compound.exam.UserVo@5f4390a7}', '[username]=[test923] [password]=[09aaaf8a54f3f5547043b3a5b56f1dd0] ', NULL);
+INSERT INTO `log` (`log_id`, `log_type`, `log_function`, `log_invoker`, `log_begin`, `cost`, `log_return`, `log_params`, `log_error`) VALUES (000002738, 'SQL语句执行', 'select a.*,b.`name` from `user_info` a LEFT JOIN user_sec b ON b.id=a.id where a.`id`=?', 'invoke ip:127.0.0.1', '2023-04-07 13:47:12', 6, NULL, '[id]=[435411439] ', NULL);
+INSERT INTO `log` (`log_id`, `log_type`, `log_function`, `log_invoker`, `log_begin`, `cost`, `log_return`, `log_params`, `log_error`) VALUES (000002739, '业务请求', 'tbs.api_server.backend.serviceImp.UserImp.getUserInfo', 'invoke ip:127.0.0.1', '2023-04-07 13:47:12', 50, 'ServiceResult{code=40000, obj=UserDetailInfo{id=435411439, address=\'测试地址\', phone=\'18888988857\', email=\'tongjames@live.com\', note=\'主要测试管理员\'}}', '[userid]=[435411439] ', NULL);
+INSERT INTO `log` (`log_id`, `log_type`, `log_function`, `log_invoker`, `log_begin`, `cost`, `log_return`, `log_params`, `log_error`) VALUES (000002740, 'SQL语句执行', 'select  * from `exam_reply` where examer_uid=? and exam_id=? order by sortcode ASC', 'user id:435411439,username:test923 from:127.0.0.1', '2023-04-07 13:49:26', 23, NULL, '[examid]=[41] [examer]=[4028b27387513ae40187513bbcc10000] ', NULL);
+INSERT INTO `log` (`log_id`, `log_type`, `log_function`, `log_invoker`, `log_begin`, `cost`, `log_return`, `log_params`, `log_error`) VALUES (000002741, 'SQL语句执行', 'select  * from `exam_reply` where examer_uid=? and exam_id=? order by sortcode ASC', 'user id:435411439,username:test923 from:127.0.0.1', '2023-04-07 13:49:26', 2, NULL, '[examid]=[41] [examer]=[4028b27387513ae40187513bbd0b0001] ', NULL);
+INSERT INTO `log` (`log_id`, `log_type`, `log_function`, `log_invoker`, `log_begin`, `cost`, `log_return`, `log_params`, `log_error`) VALUES (000002742, 'SQL语句执行', 'select  * from `exam_reply` where examer_uid=? and exam_id=? order by sortcode ASC', 'user id:435411439,username:test923 from:127.0.0.1', '2023-04-07 13:49:26', 3, NULL, '[examid]=[41] [examer]=[4028b27387513ae40187513bbd0b0002] ', NULL);
+INSERT INTO `log` (`log_id`, `log_type`, `log_function`, `log_invoker`, `log_begin`, `cost`, `log_return`, `log_params`, `log_error`) VALUES (000002743, '业务请求', 'tbs.api_server.backend.serviceImp.ReplyImp.list', 'user id:435411439,username:test923 from:127.0.0.1', '2023-04-07 13:49:26', 162, 'ServiceResult{code=40000, obj=[tbs.api_server.objects.compound.exam.CheckPojo@2772725, tbs.api_server.objects.compound.exam.CheckPojo@639e8294, tbs.api_server.objects.compound.exam.CheckPojo@574170a3]', '[examid]=[41] [u]=[UserSecurityInfo{id=435411439, name=\'test923\', password=\'09aaaf8a54f3f5547043b3a5b56f1dd0\', sec_ques=\'1+1\', sec_ans=\'f7293215936c4dda39325e0642580cf3\'}] ', NULL);
+INSERT INTO `log` (`log_id`, `log_type`, `log_function`, `log_invoker`, `log_begin`, `cost`, `log_return`, `log_params`, `log_error`) VALUES (000002744, 'API请求', 'tbs.api_server.publicAPI.ReplyController.list', 'user id:435411439,username:test923 from:127.0.0.1', '2023-04-07 13:49:26', 167, 'NetResult{code=40000, data=[tbs.api_server.objects.compound.exam.CheckPojo@2772725, tbs.api_server.objects.compound.exam.CheckPojo@639e8294, tbs.api_server.objects.compound.exam.CheckPojo@574170a3], m', '[examid]=[41] ', NULL);
 COMMIT;
 
 -- ----------------------------

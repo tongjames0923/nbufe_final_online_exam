@@ -2,8 +2,7 @@ package tbs.api_server.objects.simple;
 
 public class ExamReply {
     private final static long serialVersionUID = 1L;
-    private int id,exam_id,ques_id,status, sortcode;
-    private  double score;
+    private int id,exam_id,ques_id, sortcode;
     private String content,examer_uid;
 
     public int getSortcode() {
@@ -22,12 +21,10 @@ public class ExamReply {
         this.examer_uid = examer_uid;
     }
 
-    public ExamReply(int exam_id, int ques_id, int status, int sortcode, double score, String content, String examer_uid) {
+    public ExamReply(int exam_id, int ques_id, int sortcode,  String content, String examer_uid) {
         this.exam_id = exam_id;
         this.ques_id = ques_id;
-        this.status = status;
         this.sortcode = sortcode;
-        this.score = score;
         this.content = content;
         this.examer_uid = examer_uid;
     }
@@ -59,21 +56,7 @@ public class ExamReply {
         this.ques_id = ques_id;
     }
 
-    public int getStatus() {
-        return status;
-    }
 
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public double getScore() {
-        return score;
-    }
-
-    public void setScore(double score) {
-        this.score = score;
-    }
 
     public String getContent() {
         return content;
