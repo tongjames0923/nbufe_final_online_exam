@@ -106,3 +106,23 @@ export function api_setAccessForExam(exam,u,w,r,c)
         }
     })
 }
+export function api_precheck(exam)
+{
+    return req({
+        url:"reply/precheck",
+        method:'get',
+        params:{
+            'examid':exam
+        }
+    })
+}
+export function api_listCheck(examid)
+{
+    return req({
+        url:'reply/list',
+        method:'get',
+        params:{
+            'examid':examid
+        }
+    })
+}

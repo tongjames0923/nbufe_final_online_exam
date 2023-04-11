@@ -91,7 +91,7 @@ namespace Examer_Client.Pages
 
         private void submit_Click(object sender, RoutedEventArgs e)
         {
-            SystemManager.Manager.Feature.uploadCheck(Manager.ExamInfo.exam_id, Manager.ExamUser.number, Manager.ExamUser.id, Manager.ExamUser.name
+            SystemManager.Manager.Feature.uploadCheck(Manager.ExamInfo.exam_id, Manager.ExamUser.uid
                 , Manager.AllChecks, (Object o) =>
                  {
                      MessageBox.Show("提交成功");

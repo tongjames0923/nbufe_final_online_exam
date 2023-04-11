@@ -32,19 +32,17 @@ namespace Examer_Client.Utils
                 helper.GET<List<ExamInfo>>($"exam/listExamForStudent", dic), success);
         }
 
-        public void startExam(string name, string number, string id, string examID, Action<ExamPost> suceess)
+        public void startExam(string uid, string examID, Action<ExamPost> suceess)
         {
             Dictionary<string, string> dic = new Dictionary<string, string>();
-            dic.Add("name", name);
-            dic.Add("number", number);
-            dic.Add("id", id);
+            dic.Add("uid", uid);
             dic.Add("examID", examID);
             handle<ExamPost>(helper.GET<ExamPost>($"exam/studentLogin", dic), suceess);
         }
 
-        public void uploadCheck(int examid, String number, String personid, String personname, List<CheckData> datas, Action<Object> suceess)
+        public void uploadCheck(int examid, String uid, List<CheckData> datas, Action<Object> suceess)
         {
-            UploadData d = new UploadData() {examid=examid,datas=datas,number=number,personid=personid,personname=personname };
+            UploadData d = new UploadData() {examid=examid,datas=datas,uid= uid};
             handle<Object>(helper.Post<Object, UploadData>("reply/upload",new Dictionary<string, string>(), d), suceess);
         }
 

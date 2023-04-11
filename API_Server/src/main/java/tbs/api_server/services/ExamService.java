@@ -26,6 +26,6 @@ public interface ExamService
     ServiceResult getExamBeforeTime(Date d,int from,int num)throws Error.BackendError;
     ServiceResult getFullExamInfoById(int exam_id,boolean fullUserList) throws Error.BackendError;
     ServiceResult updateScore(String exam,int qid,int score) throws Error.BackendError;
-    ServiceResult StudentLogin(String name,String id,String number,int exam) throws Error.BackendError;
+    ServiceResult StudentLogin(String uid,int exam) throws Error.BackendError;
 
 }

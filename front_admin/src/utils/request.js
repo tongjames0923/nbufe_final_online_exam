@@ -3,6 +3,9 @@ import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getAccess, getToken } from '@/utils/auth'
 import { Server } from '@/settings'
+import NProgress from 'nprogress' // progress bar
+import 'nprogress/nprogress.css' // progress bar style
+NProgress.configure({ showSpinner: false }) // NProgress Configuration
 const se = Server;
 // create an axios instance
 const service = axios.create({
@@ -14,7 +17,8 @@ const service = axios.create({
 // request interceptor
 service.interceptors.request.use(
   config => {
-
+    if(!NProgress.isStarted())
+    NProgress.start();
     const access = getAccess();
     if (access) {
       config.headers['X-TOKEN'] = access
@@ -22,6 +26,8 @@ service.interceptors.request.use(
     return config
   },
   error => {
+    if(NProgress.isStarted())
+    NProgress.done();
     // do something with request error
     console.log(error) // for debug
     return Promise.reject(error)
@@ -69,8 +75,12 @@ service.interceptors.response.use(
       //     })
       //   })
       // }
+      if(NProgress.isStarted())
+      NProgress.done();
       return Promise.reject(new Error(res.message || '网络错误'))
     } else {
+      if(NProgress.isStarted())
+      NProgress.done();
       return res.data
     }
   },
@@ -81,6 +91,8 @@ service.interceptors.response.use(
       duration: 5 * 1000,
       showClose:true
     })
+    if(NProgress.isStarted())
+    NProgress.done();
     return Promise.reject(error)
   }
 )

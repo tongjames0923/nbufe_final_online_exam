@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.*;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import tbs.api_server.objects.compound.exam.ExamInfoVO;
 import tbs.api_server.objects.simple.ExamInfo;
 
 import java.util.Date;
@@ -39,9 +40,9 @@ public interface ExamMapper {
             "`exam` e join `per_exam` pe on pe.user=#{userid} AND pe.exam_id=e.exam_id where pe.readable=1 limit #{from},#{num} FOR UPDATE")
     List<ExamInfo>listWithPermit(int userid,int from,int num);
 
-    @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status` from " +
-            "`exam` where `exam_file` like '%${student}%' limit #{from},#{num} FOR UPDATE")
-    List<ExamInfo> listForStudent(String student,int from, int num);
+    @Select("Select `exam_id`,`exam_name`,`exam_begin`,`exam_len`,`exam_note`,`exam_status`,eu.uid from " +
+            "`exam` join exam_user eu on exam.exam_id = eu.exam where eu.id=#{id} and eu.name=#{name} and eu.number=#{kn} limit #{from},#{num}")
+    List<ExamInfoVO> listForStudent(String id, String name, String kn, int from, int num);
 
 
 
@@ -50,7 +51,7 @@ public interface ExamMapper {
     ExamInfo getExamIDByExamName(String name);
 
     @Insert("INSERT INTO `exam`(`exam_name`,`exam_begin`,`exam_len`,`exam_note`) VALUES (" +
-            "#{name},#{beg},#{len},#{note},#{file})")
+            "#{name},#{beg},#{len},#{note})")
     int uploadExam(String name, Date beg, String note,  Integer len);
 
     @Delete("DELETE FROM `exam` WHERE `exam_id`=#{exam_id}")

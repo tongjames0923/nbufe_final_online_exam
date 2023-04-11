@@ -212,7 +212,11 @@ public class ReplyImp implements ReplyService {
         checkPermit(u, eid);
         ExamInfo examInfo = examMapper.getExamByid(eid);
         if (examInfo.getExam_status()!=const_Exam.EXAM_STATUS_CLOSED) {
-            throw _ERROR.throwError(FC_UNAVALIABLE, "当前考试状态无法确认");
+            if(examInfo.getExam_status()>const_Exam.EXAM_STATUS_CLOSED)
+            throw _ERROR.throwError(FC_UNAVALIABLE, "当前考试已预批阅");
+            else
+                throw _ERROR.throwError(FC_UNAVALIABLE, "当前考试状态尚未开始");
+
         }
         asyncTaskCenter.doWithAsync(new AsyncTaskCenter.AsyncToDo() {
             @Override
@@ -293,6 +297,7 @@ public class ReplyImp implements ReplyService {
                 }
             }
         });
+        examMapper.updateExam(eid,const_Exam.col_status,const_Exam.EXAM_STATUS_PRECHECK);
         return ServiceResult.makeResult(SUCCESS);
     }
 

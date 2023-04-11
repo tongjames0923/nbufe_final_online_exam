@@ -12,6 +12,7 @@ import tbs.api_server.config.AccessManager;
 import tbs.api_server.config.constant.const_Exam;
 import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.objects.compound.exam.ExamInfoVO;
 import tbs.api_server.objects.compound.exam.ExamPost;
 import tbs.api_server.objects.compound.exam.ExamQuestion;
 import tbs.api_server.objects.jpa.ExamUser;
@@ -53,11 +54,7 @@ public class ExamImp implements ExamService {
 
     @Override
     public ServiceResult listExamsForStudent(String number, String id, String name) {
-        ExamUser user = new ExamUser();
-        user.setId(id);
-        user.setName(name);
-        user.setNumber(number);
-        List<ExamInfo> ex = mp.listForStudent(user.toString(), 0, 10);
+        List<ExamInfoVO> ex = mp.listForStudent(id,name,number, 0, 10);
         return ServiceResult.makeResult(SUCCESS, ex);
     }
 
@@ -293,9 +290,9 @@ public class ExamImp implements ExamService {
     }
 
     @Override
-    public ServiceResult StudentLogin(String name, String id, String number, int exam) throws BackendError {
+    public ServiceResult StudentLogin(String nameuid, int exam) throws BackendError {
         ExamPost data = (ExamPost) getFullExamInfoById(exam,false).getObj();
-        ExamUser u= examerMapper.findOne(exam,name,id,number);
+        ExamUser u= examerMapper.findOne(exam,nameuid);
         if(u!=null)
         {
             ExamPost post = new ExamPost();

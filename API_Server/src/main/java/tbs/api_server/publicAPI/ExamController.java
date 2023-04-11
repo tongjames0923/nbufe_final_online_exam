@@ -235,12 +235,12 @@ public class ExamController {
 
     @RequestMapping("studentLogin")
     @NoNeedAccess
-    public NetResult studentLogin(String name,String number,String id,int examID)
+    public NetResult studentLogin(String uid,int examID)
     {
         return ApiMethod.make(new ApiMethod.IAction() {
             @Override
             public NetResult action(UserSecurityInfo applyUser) throws Error.BackendError, Exception {
-                return NetResult.makeResult(service.StudentLogin(name,id,number,examID),null);
+                return NetResult.makeResult(service.StudentLogin(uid, examID),null);
             }
         }).methodWithLogined();
     }

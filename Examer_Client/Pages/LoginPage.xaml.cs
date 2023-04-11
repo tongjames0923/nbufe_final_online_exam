@@ -1,8 +1,10 @@
 ﻿using Examer_Client.Objects;
 using Examer_Client.Utils;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
+using static Examer_Client.Utils.SystemManager;
 
 namespace Examer_Client.Pages
 {
@@ -37,6 +39,29 @@ namespace Examer_Client.Pages
         }
         private void Button_Click(object sender, RoutedEventArgs e)
         {
+            bool flag = false;
+            string[] badapp = { "msedge", "DingTalk", "chrome", "QQ", "WeChat" };
+            string[] badname = { "Edge浏览器", "钉钉", "Chrome 浏览器", "QQ", "微信" };
+            int i = 0;
+            foreach (var b in badapp)
+            {
+                Process[] processes = Process.GetProcessesByName(b);
+                if (processes.Length > 0)
+                {
+                    MessageBox.Show($"发现{badname[i]}", "请关闭聊天软件和浏览器");
+                    flag = true;
+                    foreach (var proc in processes)
+                    {
+                        proc.Kill();
+                    }
+
+                }
+                i++;
+            }
+            if (flag)
+            {
+                MessageBox.Show("检测到您有非法软件打开中。已强制关闭");
+            }
             if (!ischecked)
             {
                 SystemManager.Manager.Feature.GetExams(name.Text, number.Text, id.Text, (List<ExamInfo> list) =>
@@ -48,15 +73,16 @@ namespace Examer_Client.Pages
                         label.Content = info.exam_name;
                         label.Tag = info;
                         exams.Items.Add(label);
+                        ischecked = true;
                     }
-                    ischecked = true;
+
                 });
             }
             else
             {
                 Label label = (Label)exams.SelectedItem;
                 ExamInfo info = (ExamInfo)label.Tag;
-                SystemManager.Manager.Feature.startExam(name.Text, number.Text, id.Text, info.exam_id.ToString(), (ExamPost ei) =>
+                SystemManager.Manager.Feature.startExam(info.uid, info.exam_id.ToString(), (ExamPost ei) =>
                 {
                     SystemManager.Manager.Exam = ei;
                     SystemManager.Manager.ExamInfo = info;

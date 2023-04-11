@@ -42,19 +42,10 @@ namespace Examer_Client.Objects
             get;
             set;
         }
-        public String number
+        public String uid
         {
             get;
             set;
-        }
-        public String personid
-        {
-            get;
-            set;
-        }
-        public String personname
-        {
-            get; set;
         }
         public List<CheckData> datas
         {
@@ -108,10 +99,6 @@ namespace Examer_Client.Objects
         /// <summary>
         /// 
         /// </summary>
-        public string exam_file { get; set; }
-        /// <summary>
-        /// 
-        /// </summary>
         public string exam_note { get; set; }
         /// <summary>
         /// 
@@ -129,6 +116,12 @@ namespace Examer_Client.Objects
         /// 
         /// </summary>
         public int checkable { get; set; }
+
+        public String uid
+        {
+            get;
+            set;
+        }
     }
 
     public class ExamPost
@@ -246,6 +239,11 @@ namespace Examer_Client.Objects
 
     public class ExamUser
     {
+        public String uid
+        {
+            get;
+            set;
+        }
         public String id
         {
             get;
