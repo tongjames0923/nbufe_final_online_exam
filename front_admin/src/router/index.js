@@ -166,6 +166,21 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/client',
+    name: '考试端测试',
+    meta: { title: '考试端测试', icon: 'el-icon-set-up' },
+    component: Layout,
+    roles:2,
+    children: [
+      {
+        path: 'client',
+        name: '考试端测试',
+        component: () => import('@/views/client/client.vue'),
+        meta: { title: '考试端测试', icon: 'el-icon-s-order' }
+      }
+    ]
+  },
+  {
     path: '/userlist',
     component: Layout,
     roles:2,
