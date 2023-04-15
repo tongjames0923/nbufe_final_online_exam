@@ -2,11 +2,14 @@ package tbs.api_server.services;
 
 import org.springframework.web.multipart.MultipartFile;
 import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.objects.compound.exam.CheckPojo;
+import tbs.api_server.objects.jpa.ExamUser;
 import tbs.api_server.objects.simple.CheckData;
 import tbs.api_server.objects.simple.UserSecurityInfo;
 import tbs.api_server.utility.Error;
 
 import java.util.List;
+import java.util.concurrent.Future;
 
 public interface ReplyService
 {
@@ -19,4 +22,5 @@ public interface ReplyService
     public ServiceResult confirm(int eid,UserSecurityInfo u)throws Error.BackendError;
 
     public ServiceResult preCheck(UserSecurityInfo u,int e) throws Exception;
+
 }

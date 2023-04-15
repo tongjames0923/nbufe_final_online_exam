@@ -5,6 +5,7 @@ import tbs.api_server.objects.simple.ExamReply;
 import tbs.api_server.objects.simple.Question;
 import tbs.api_server.objects.simple.StandardAnswer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -12,20 +13,30 @@ import java.util.Set;
 public class CheckPojo {
     int examid;
     ExamUser examUser;
+
+
     public static class InnerReply
     {
         int question;
-        StandardAnswer answer;
+        List<AnswerVO> replyList=new ArrayList<>();
+        int type;
+        double score=0;
 
-        public StandardAnswer getAnswer() {
-            return answer;
+        public double getScore() {
+            return score;
         }
 
-        public void setAnswer(StandardAnswer answer) {
-            this.answer = answer;
+        public void setScore(double score) {
+            this.score = score;
         }
 
-        List<ExamReply> replyList;
+        public int getType() {
+            return type;
+        }
+
+        public void setType(int type) {
+            this.type = type;
+        }
 
         public int getQuestion() {
             return question;
@@ -35,11 +46,11 @@ public class CheckPojo {
             this.question = question;
         }
 
-        public List<ExamReply> getReplyList() {
+        public List<AnswerVO> getReplyList() {
             return replyList;
         }
 
-        public void setReplyList(List<ExamReply> replyList) {
+        public void setReplyList(List<AnswerVO> replyList) {
             this.replyList = replyList;
         }
     }

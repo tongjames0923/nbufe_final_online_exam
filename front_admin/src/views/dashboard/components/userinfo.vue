@@ -1,7 +1,7 @@
 <template>
     <div style="padding:10px">
 
-        <el-input style="margin-bottom: 6px;" v-model="info.name" :disabled=!editable>
+        <el-input style="margin-bottom: 6px;" v-model="info.name" disabled>
             <template slot="prepend"> 用 户 名 </template>
         </el-input>
         <el-input style="margin-bottom: 6px;" v-model="info.phone" type="tel" :disabled=!editable>

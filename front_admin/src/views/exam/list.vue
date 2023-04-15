@@ -206,98 +206,12 @@
       </el-collapse-item>
     </el-collapse>
     <el-dialog
-      title="提示"
+      title="批阅"
       :visible.sync="dialogVisible"
-      width="30%"
       :before-close="handleClose"
       fullscreen
     >
-      <el-collapse v-for="(val, index) in this.datas" :key="index">
-        <el-collapse-item :title="val.examUser.name + '的试卷'">
-          <el-descriptions title="用户信息">
-            <el-descriptions-item label="唯一考试编号">{{
-              val.examUser.uid
-            }}</el-descriptions-item>
-            <el-descriptions-item label="考号">{{
-              val.examUser.number
-            }}</el-descriptions-item>
-            <el-descriptions-item label="身份证号">{{
-              val.examUser.id
-            }}</el-descriptions-item>
-          </el-descriptions>
-          <el-table :data="val.replyList">
-            <el-table-column>
-              <template slot-scope="tmp">
-                <div>
-                  <div v-if="tmp.row.answer.type == 0">
-                    <el-table
-                      :data="JSON.parse(tmp.row.answer.answer_content)"
-                      style="width: 100%; margin: auto"
-                    >
-                      <el-table-column prop="text" label="选项内容">
-                      </el-table-column>
-                      <el-table-column prop="right" label="正确性">
-                        <template slot-scope="scope">
-                          <el-tag
-                            :type="
-                              scope.row.right === '1' ? 'success' : 'danger'
-                            "
-                          >
-                            {{
-                              scope.row.right === "1" ? "正确" : "错误"
-                            }}</el-tag
-                          >
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                    <div style="height: 15px"></div>
-                  </div>
-                  <div v-else-if="tmp.row.answer.type == 1">
-                    <el-table
-                      :data="JSON.parse(tmp.row.answer.answer_content)"
-                      style="width: 100%; margin: auto"
-                    >
-                      <el-table-column prop="text" label="填空答案">
-                      </el-table-column>
-                      <el-table-column prop="equal" label="完全匹配">
-                        <template slot-scope="scope">
-                          <el-tag
-                            :type="
-                              scope.row.equal === '1' ? 'success' : 'danger'
-                            "
-                          >
-                            {{
-                              scope.row.equal === "1"
-                                ? "需要完全匹配"
-                                : "无需完全匹配"
-                            }}</el-tag
-                          >
-                        </template>
-                      </el-table-column>
-                    </el-table>
-                    <div style="height: 15px"></div>
-                  </div>
-                  <div v-else-if="tmp.row.answer.type == 2">
-                    <el-input
-                      @input="oninput"
-                      type="textarea"
-                      placeholder="请输入简答题答案内容"
-                      v-model="JSON.parse(tmp.row.answer.answer.answer_content)[0]"
-                      maxlength="1024"
-                      show-word-limit
-                      disabled
-                    >
-                    </el-input>
-                  </div>
-                  <div v-else>
-                    <el-empty description="请选择题型"></el-empty>
-                  </div>
-                </div>
-              </template>
-            </el-table-column>
-          </el-table>
-        </el-collapse-item>
-      </el-collapse>
+    <check-page ref="cpage"></check-page>
     </el-dialog>
   </div>
 </template>
@@ -320,7 +234,6 @@ import {
 import { getToken } from "@/utils/auth";
 import { api_findUserByName } from "@/api/user";
 import checkPage from "./components/checkPage.vue";
-import { api_listCheck } from "@/api/exam";
 
 export default {
   components: { checkPage },
@@ -350,7 +263,6 @@ export default {
       nowExamID: undefined,
       me: JSON.parse(getToken()),
       dialogVisible: false,
-      datas: [],
     };
   },
   methods: {
@@ -378,11 +290,11 @@ export default {
         .catch((_) => {});
     },
     showCheck(exam_id) {
-      api_listCheck(exam_id).then((res) => {
-        this.datas = res;
-        this.dialogVisible = true;
-        this.$forceUpdate();
-      });
+      this.dialogVisible = true;
+      this.$nextTick(()=>{
+        this.$refs.cpage.change(exam_id)
+      })
+
     },
     exam_precheck(exam_id) {
       api_precheck(exam_id).then((res) => {

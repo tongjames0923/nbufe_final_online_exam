@@ -24,8 +24,8 @@ spring:
         timeout: 1000
     rabbitmq:
         host: 127.0.0.1
-        port: 5672
-        username: abstergo
+        port: 19889
+        username: root
         password: tongyi0923
     jpa:
         hibernate:
@@ -45,7 +45,7 @@ tbs:
         timeout: 5
     log:
         server: rmi://127.0.0.1:8888/
-    app_save: /Users/abstergo/Downloads/毕设resource
+    app_save: H:\exam_resource
     ai_token: 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
     ai_address: https://api.openai.com/v1/chat/completions
     batchsize: 128

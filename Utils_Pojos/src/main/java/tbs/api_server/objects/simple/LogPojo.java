@@ -119,4 +119,19 @@ public class LogPojo implements Serializable {
         this.log_params = log_params;
     }
 
+    @Override
+    public String toString() {
+        return "LogPojo{" +
+                "log_id=" + log_id +
+                ", log_type='" + log_type + '\'' +
+                ", log_function='" + log_function + '\'' +
+                ", log_invoker='" + log_invoker + '\'' +
+                ", log_begin=" + log_begin +
+                ", logined=" + logined +
+                ", cost=" + cost +
+                ", log_return='" + log_return + '\'' +
+                ", log_params='" + log_params + '\'' +
+                ", log_error='" + log_error + '\'' +
+                '}';
+    }
 }

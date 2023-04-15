@@ -2,36 +2,34 @@ package tbs.api_server.backend.serviceImp;
 
 import cn.hutool.core.collection.CollectionUtil;
 import com.alibaba.fastjson.JSON;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
 import tbs.api_server.backend.mappers.*;
 import tbs.api_server.backend.repos.ExamCheckMapper;
 import tbs.api_server.backend.repos.ExamerMapper;
-import tbs.api_server.config.ApplicationConfig;
+import tbs.api_server.backend.serviceImp.Async.ListInnerReply;
 import tbs.api_server.config.constant.const_Exam;
 import tbs.api_server.config.constant.const_Exam_Reply;
 import tbs.api_server.config.constant.const_Question;
 import tbs.api_server.config.constant.const_User;
 import tbs.api_server.objects.ServiceResult;
+import tbs.api_server.objects.compound.exam.AnswerVO;
 import tbs.api_server.objects.compound.exam.CheckPojo;
 import tbs.api_server.objects.jpa.ExamCheck_Entity;
 import tbs.api_server.objects.jpa.ExamUser;
 import tbs.api_server.objects.simple.*;
 import tbs.api_server.services.ReplyService;
 import tbs.api_server.utility.AsyncTaskCenter;
-import tbs.api_server.utility.FileUtility;
+import tbs.api_server.utility.ListAsyncHelper;
 import tbs.api_server.utils.BatchUtil;
 import tbs.api_server.utils.MybatisBatchUtils;
-import tbs.api_server.utils.SecurityTools;
-import tbs.api_server.utility.UserUtility;
 
 import javax.annotation.Resource;
-import java.io.InputStream;
 import java.util.*;
-import java.util.function.BiConsumer;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.function.BiFunction;
 
 import static tbs.api_server.utility.Error.*;
@@ -104,41 +102,27 @@ public class ReplyImp implements ReplyService {
     @Resource
     AnswerMapper answerMapper;
 
+    @Resource
+    ListInnerReply listInnerReply;
+
     @Override
     public ServiceResult list(int examid, UserSecurityInfo u) throws BackendError {
         checkPermit(u, examid);
         List<ExamUser> all = examerMapper.findAllByExamid(examid);
+        ExamInfo examInfo= examMapper.getExamByid(examid);
+        List<Integer> questionList= questionMapper.listQuestionIdByExam(examInfo.getExam_name());
         List<CheckPojo> cps = new ArrayList<>();
         for (ExamUser eu : all) {
             CheckPojo cp = new CheckPojo();
             cp.setExamid(examid);
             cp.setExamUser(eu);
-            List<ExamReply> els = replyMapper.listByExamUserIdAndExamId(examid, eu.getUid());
-            HashMap<Integer, List<ExamReply>> replist = new HashMap<>();
-            for (ExamReply reply : els) {
-                int q = reply.getQues_id();
-                if (replist.containsKey(q)) {
-                    replist.get(q).add(reply);
-                } else {
-                    replist.put(q, new ArrayList<>(Arrays.asList(reply)));
-                }
-            }
-            List<CheckPojo.InnerReply> replies = new ArrayList<>();
-            replist.forEach(new BiConsumer<Integer, List<ExamReply>>() {
-                @Override
-                public void accept(Integer integer, List<ExamReply> examReplies) {
-                    CheckPojo.InnerReply r = new CheckPojo.InnerReply();
-                    r.setQuestion(integer);
-                    r.setReplyList(examReplies);
-                    r.setAnswer(answerMapper.getAnswerForQuestion(integer));
-                    replies.add(r);
-                }
-            });
-            cp.setReplyList(replies);
+            cp.setReplyList(listInnerReply.listInnerReply(questionList,examid,eu));
             cps.add(cp);
         }
         return ServiceResult.makeResult(SUCCESS, cps);
     }
+
+
 
     @Override
     public ServiceResult updateScore(int er, double score, UserSecurityInfo u) throws BackendError {
@@ -174,6 +158,10 @@ public class ReplyImp implements ReplyService {
 
     @Resource
     AsyncTaskCenter asyncTaskCenter;
+
+
+    @Resource
+    ListAsyncHelper listAsyncHelper;
 
     @Resource
     ExamLinkMapper linkMapper;
@@ -247,9 +235,12 @@ public class ReplyImp implements ReplyService {
                                 List<StandardAnswer.Select> s = JSON.parseArray(answer.getAnswer_content(), StandardAnswer.Select.class);
                                 answerCount.setAll(s.size());
                                 for (StandardAnswer.Select s1 : s) {
-                                    temp.put(s1.getText(), s1.getRight());
                                     if (s1.getRight().equals(StandardAnswer.Select.YES))
+                                    {
+                                        temp.put(s1.getText(),s1.getRight());
                                         answerCount.up();
+                                    }
+
                                 }
                                 break;
                             case const_Question.TYPE_FillBlank:
@@ -283,7 +274,7 @@ public class ReplyImp implements ReplyService {
                             examCheck.setExamer(reps.get(0).getExamer_uid());
                             examCheck.setQuesId(answer.getQues_id());
                             examCheck.setExamId(examInfo.getExam_id());
-                            if (cnt >= answerCount.getShould()) {
+                            if (cnt == answerCount.getShould()) {
                                 examCheck.setScore((int) b);
                             } else
                                 examCheck.setScore(0);
@@ -302,10 +293,10 @@ public class ReplyImp implements ReplyService {
     }
 
     int dealSelect(ExamReply reply, HashMap<String, String> maps) {
-        if (maps.containsKey(reply.getContent()) && maps.get(reply.getContent()).equals(StandardAnswer.Select.YES)) {
+        if (maps.containsKey(reply.getContent())) {
             return 1;
         }
-        return 0;
+        return Integer.MAX_VALUE;
     }
 
     int dealFillBlank(ExamReply reply, HashMap<String, String> maps) {

@@ -37,6 +37,14 @@ public interface ExamReplyMapper
     @Select("select not exists(select * from `exam_reply` where examer_uid=#{uid})")
     int canReply(int eid,String uid);
 
+    @Select("select content from exam_db.exam_reply where sortcode=#{sortCode} and exam_id=#{eid} and ques_id=#{qid} and examer_uid=#{uid} and content=#{content}")
+    ExamReply findByContent(int eid,int qid,int sortCode,String uid,String content);
+    @Select("select content from exam_db.exam_reply where exam_id=#{eid} and ques_id=#{qid} and examer_uid=#{uid} and content=#{content}")
+    ExamReply findByContentForSelect(int eid,int qid,String uid,String content);
+
+    @Select("select * from exam_db.exam_reply where exam_id=#{eid} and ques_id=#{qid} and examer_uid=#{uid}")
+    ExamReply findByContentForShort(int eid,int qid,String uid);
+
 
     @Select("select  * from `exam_reply` where examer_uid=#{examer} and exam_id=#{examid} order by sortcode ASC")
     List<ExamReply> listByExamUserIdAndExamId(int examid,String examer);
