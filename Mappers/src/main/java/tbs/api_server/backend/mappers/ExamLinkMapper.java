@@ -29,4 +29,7 @@ public interface ExamLinkMapper {
     @CacheEvict(value = "ques_links",key = "#e")
     int updateScoreByQandE(int q,String e,int score);
 
+    @Select("select COUNT(ec.score) from exam_db.exam e join exam_link el on e.exam_name = el.examname and el.questionid=#{q} join exam_check ec on ec.exam_id=e.exam_id and ec.score=el.score where e.exam_id=#{e}")
+    int countAnswerRight(int q,int e);
+
 }

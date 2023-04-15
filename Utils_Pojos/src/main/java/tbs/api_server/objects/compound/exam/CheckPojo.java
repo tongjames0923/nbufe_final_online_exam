@@ -14,13 +14,21 @@ public class CheckPojo {
     int examid;
     ExamUser examUser;
 
-
     public static class InnerReply
     {
         int question;
         List<AnswerVO> replyList=new ArrayList<>();
         int type;
         double score=0;
+        int replyId;
+
+        public int getReplyId() {
+            return replyId;
+        }
+
+        public void setReplyId(int replyId) {
+            this.replyId = replyId;
+        }
 
         public double getScore() {
             return score;

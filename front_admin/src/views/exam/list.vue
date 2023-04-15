@@ -68,9 +68,15 @@
             type="text"
             size="small"
             @click="showCheck(data.row.exam_id)"
+            >人工批阅</el-button
+          >
+          <el-button
+            v-if="data.row.exam_status === 3"
+            type="text"
+            size="small"
+            @click="confirmExam(data.row.exam_id)"
             >人工确认</el-button
           >
-
           <el-button type="text" size="small" @click="del(data.row.exam_id)"
             >删除考试</el-button
           >
@@ -211,7 +217,7 @@
       :before-close="handleClose"
       fullscreen
     >
-    <check-page ref="cpage"></check-page>
+      <check-page ref="cpage"></check-page>
     </el-dialog>
   </div>
 </template>
@@ -230,6 +236,7 @@ import {
   api_listExamAccess,
   api_setAccessForExam,
   api_precheck,
+  api_confirmExam,
 } from "@/api/exam";
 import { getToken } from "@/utils/auth";
 import { api_findUserByName } from "@/api/user";
@@ -282,6 +289,16 @@ export default {
           });
         });
     },
+    confirmExam(examid) {
+      api_confirmExam(examid).then((res) => {
+        this.updateCount();
+        api_list(0, this.page).then((res) => {
+          this.exlist = res;
+          this.oldlist = this.exlist;
+          // this.origin=res
+        });
+      });
+    },
     handleClose(done) {
       this.$confirm("确认关闭？")
         .then((_) => {
@@ -291,10 +308,9 @@ export default {
     },
     showCheck(exam_id) {
       this.dialogVisible = true;
-      this.$nextTick(()=>{
-        this.$refs.cpage.change(exam_id)
-      })
-
+      this.$nextTick(() => {
+        this.$refs.cpage.change(exam_id);
+      });
     },
     exam_precheck(exam_id) {
       api_precheck(exam_id).then((res) => {

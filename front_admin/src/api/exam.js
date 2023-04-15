@@ -126,3 +126,24 @@ export function api_listCheck(examid)
         }
     })
 }
+export function api_updateCheckScore(s,er)
+{
+    return req({
+        url:'reply/updateScore',
+        method:'get',
+        params:{
+            'rep_id':er,
+            'score':s
+        }
+    })
+}
+export function api_confirmExam(e)
+{
+    return req({
+        url:'reply/confirm',
+        method:'get',
+        params:{
+            'examid':e
+        }
+    })
+}

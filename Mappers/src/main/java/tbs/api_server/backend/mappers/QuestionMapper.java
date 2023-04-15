@@ -40,6 +40,10 @@ public interface QuestionMapper {
     })
     int updateQuestionValue(int id, String field, Object value);
 
+    @Update("update exam_db.question set exam_db.question.answerd=exam_db.question.answerd+#{answerd},exam_db.question.answerd_right=exam_db.question.answerd_right+#{righted} where exam_db.question.que_id=#{id}")
+    @CacheEvict(value = "que", key = "#id")
+    int updateAnswerStatus(int id,int answerd,int righted);
+
     @Select("select count(*) from `question` where publicable=1 or que_creator=#{user} or #{level}>=2")
     int countQuestions(int user,int level);
 

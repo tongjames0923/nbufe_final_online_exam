@@ -46,14 +46,14 @@ public class ListInnerReply {
                     ExamCheck_Entity examCheck_entity= examCheckMapper.findFirstByQuesIdAndExamerAndExamId(qid,eu.getUid(),examid);
                     if(examCheck_entity!=null)
                         r.setScore(examCheck_entity.getScore());
-                    r.setReplyList(makeAnswerVo(examid,eu,ans));
+                    r.setReplyList(makeAnswerVo(examid,r,eu,ans));
                     return r;
                 }
             });
         }
         return listAsyncHelper.waitForAll(tasks);
     }
-    private List<AnswerVO> makeAnswerVo(int eid, ExamUser eu, StandardAnswer answer)
+    private List<AnswerVO> makeAnswerVo(int eid, CheckPojo.InnerReply rep, ExamUser eu, StandardAnswer answer)
     {
         List<AnswerVO> result=new ArrayList<>();
         if(answer==null)
@@ -68,7 +68,11 @@ public class ListInnerReply {
                 AnswerVO vo=new AnswerVO();
                 ExamReply reply= replyMapper.findByContentForSelect(eid,answer.getQues_id(),eu.getUid(),i.getText());
                 if(reply!=null)
+                {
+                    rep.setReplyId(reply.getId());
                     vo.setReplyText(reply.getContent());
+                }
+
                 vo.setAnswerWord(i.getText());
                 vo.setSign(i.getRight());
                 result.add(vo);
@@ -83,7 +87,11 @@ public class ListInnerReply {
                 AnswerVO vo=new AnswerVO();
                 ExamReply reply= replyMapper.findByContent(eid,answer.getQues_id(),index++, eu.getUid(),i.getText());
                 if(reply!=null)
+                {
+                    rep.setReplyId(reply.getId());
                     vo.setReplyText(reply.getContent());
+                }
+
                 vo.setAnswerWord(i.getText());
                 vo.setSign(i.getEqual());
                 result.add(vo);
@@ -98,7 +106,10 @@ public class ListInnerReply {
             AnswerVO vo=new AnswerVO();
             ExamReply reply= replyMapper.findByContentForShort(eid,answer.getQues_id(),eu.getUid());
             if(reply!=null)
+            {                    rep.setReplyId(reply.getId());
+
                 vo.setReplyText(reply.getContent());
+            }
             vo.setAnswerWord(str);
             result.add(vo);
         }

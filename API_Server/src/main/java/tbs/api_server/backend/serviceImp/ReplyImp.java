@@ -127,13 +127,28 @@ public class ReplyImp implements ReplyService {
     @Override
     public ServiceResult updateScore(int er, double score, UserSecurityInfo u) throws BackendError {
 
-//        if (reply == null)
-//            throw _ERROR.throwError(EC_DB_SELECT_NOTHING, "不存在相关答卷");
-//        if (reply.getStatus() == const_Exam_Reply.Comfirmed)
-//            throw _ERROR.throwError(FC_UNAVALIABLE, "回答批阅已被确认，不可修改");
-//        checkPermit(u, reply.getExam_id());
-//        return ServiceResult.makeResult(SUCCESS, reply);
-        return null;
+        ExamReply reply= replyMapper.findById(er);
+        if (reply == null)
+            throw _ERROR.throwError(EC_DB_SELECT_NOTHING, "不存在相关答卷");
+        checkPermit(u, reply.getExam_id());
+        ExamInfo examInfo= examMapper.getExamByid(reply.getExam_id());
+       double max_s=  examLinkMapper.score(examInfo.getExam_name(),reply.getQues_id());
+       if(max_s<score)
+           throw _ERROR.throwError(FC_UNAVALIABLE,"分值不能大于该题总分");
+        if (examInfo.getExam_status()>=const_Exam.EXAM_STATUS_CHECKED)
+        throw _ERROR.throwError(FC_UNAVALIABLE, "回答批阅已被确认，不可修改");
+        ExamCheck_Entity check_entity=checkMapper.findFirstByQuesIdAndExamerAndExamId(reply.getQues_id(),reply.getExamer_uid(),reply.getExam_id());
+        if(check_entity==null)
+        {
+            check_entity=new ExamCheck_Entity();
+            check_entity.setExamer(reply.getExamer_uid());
+            check_entity.setExamId(reply.getExam_id());
+            check_entity.setQuesId(reply.getQues_id());
+
+        }
+        check_entity.setScore((int) score);
+        checkMapper.save(check_entity);
+        return ServiceResult.makeResult(SUCCESS, reply);
     }
 
     @Resource
@@ -151,8 +166,15 @@ public class ReplyImp implements ReplyService {
                         examInfo.getExam_status() == const_Exam.EXAM_STATUS_WAIT) {
             throw _ERROR.throwError(FC_UNAVALIABLE, "当前考试状态无法确认");
         }
+        List<Integer> questions= questionMapper.listQuestionIdByExam(examInfo.getExam_name());
+        for (Integer i:questions)
+        {
+           int c=examerMapper.countByExamid(eid);
+           int b =examLinkMapper.countAnswerRight(i,eid);
+           questionMapper.updateAnswerStatus(i,c,b);
+        }
+
         examMapper.updateExam(eid, const_Exam.col_status, const_Exam.EXAM_STATUS_CHECKED);
-        replyMapper.updateStatus(eid, const_Exam_Reply.Comfirmed);
         return ServiceResult.makeResult(SUCCESS, null);
     }
 
@@ -160,8 +182,6 @@ public class ReplyImp implements ReplyService {
     AsyncTaskCenter asyncTaskCenter;
 
 
-    @Resource
-    ListAsyncHelper listAsyncHelper;
 
     @Resource
     ExamLinkMapper linkMapper;

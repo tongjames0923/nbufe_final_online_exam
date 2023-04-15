@@ -17,7 +17,11 @@
         <el-table :data="val.replyList"        
         >
           <el-table-column prop="question" label="题号" fixed="left" width="120"></el-table-column>
-          <el-table-column prop="score"  label="分值" fixed="left" width="120"></el-table-column>
+          <el-table-column  label="分值" fixed="left" width="220">
+            <template slot-scope="d">
+                <el-input-number v-model="d.row.score" @blur="updateSocre(d.row.score,d.row.replyId)" :min="0"></el-input-number>            </template>
+
+          </el-table-column>
           <el-table-column label="回答详情">
             <template slot-scope="d">
                 <el-table :data="d.row.replyList"         :row-class-name="tableRowClassName">
@@ -33,12 +37,13 @@
 </template>
 
 <script>
-import { api_listCheck } from "@/api/exam";
+import { api_listCheck, api_updateCheckScore } from "@/api/exam";
 export default {
   data() {
     return {
         loading:false,
       datas: [],
+      copys:[],
     };
   },
   methods: {
@@ -46,10 +51,21 @@ export default {
         if(row.sign==="1")
         return 'success-row'
       },
+      updateSocre(s,er)
+      {
+        api_updateCheckScore(s,er).then((res)=>{
+            this.copys=this.datas;
+        }).catch(err=>{
+        }).finally(()=>{
+            this.$forceUpdate()
+        })
+      },
     change(examid) {
         this.loading=true
+        this.exam_id=examid
       api_listCheck(examid).then((res) => {
         this.datas = res;
+        this.copys=res;
         this.$forceUpdate();
       }).finally(()=>{
         this.loading=false;
